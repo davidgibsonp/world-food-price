@@ -427,33 +427,52 @@ region_average <- function(grouped_food_df){
   region_average
 }
 
-grouping_by_region_average <- function(grouped_food_df){
+grouping_by_region_average <- function(grouped_food_df){ 
   East_Asia_Pacific <- filter(grouped_food_df, region=="East Asia & Pacific")
   East_Asia_Pacific <- region_average(East_Asia_Pacific)
-  East_Asia_Pacific$region <- "East Asia & Pacific"
+  if (is.data.frame(East_Asia_Pacific) && nrow(East_Asia_Pacific)==0) { 
+  }else {  
+    East_Asia_Pacific$region <- "East Asia & Pacific"
+  }
   
   Europe_Central_Asia <- filter(grouped_food_df, region=="Europe & Central Asia")
   Europe_Central_Asia <- region_average(Europe_Central_Asia)
-  Europe_Central_Asia$region <- "Europe & Central Asia"
+  if (is.data.frame(Europe_Central_Asia) && nrow(Europe_Central_Asia)==0) {
+    
+  }else {  
+    Europe_Central_Asia$region <- "Europe & Central Asia"
+  }
   
   Latin_America_Caribbean <- filter(grouped_food_df, region=="Latin America & Caribbean")
   Latin_America_Caribbean <- region_average(Latin_America_Caribbean)
-  Latin_America_Caribbean$region <- "Latin America & Caribbean"
+  if (is.data.frame(Latin_America_Caribbean) && nrow(Latin_America_Caribbean)==0) { 
+  }else {
+    Latin_America_Caribbean$region <- "Latin America & Caribbean"
+  }
+  
   
   Middle_East_North_Africa <- filter(grouped_food_df, region=="Middle East & North Africa")
   Middle_East_North_Africa <- region_average(Middle_East_North_Africa)
-  Middle_East_North_Africa$region <- "Middle East & North Africa"
+  if (is.data.frame(Middle_East_North_Africa) && nrow(Middle_East_North_Africa)==0) {
+  }else {
+    Middle_East_North_Africa$region <- "Middle East & North Africa"
+  }
   
-  South_Asia <- filter(grouped_food_df, region=="South Asia") 
+  South_Asia <- filter(grouped_food_df, region=="South Asia")
   South_Asia <- region_average(South_Asia)
-  South_Asia$region <- "South Asia"
+  if (is.data.frame(South_Asia) && nrow(South_Asia)==0) {
+  }else {  
+    South_Asia$region <- "South Asia"
+  }
   
   Sub_Saharan_Africa <- filter(grouped_food_df, region=="Sub-Saharan Africa")
   Sub_Saharan_Africa <- region_average(Sub_Saharan_Africa)
-  Sub_Saharan_Africa$region <- "Sub-Saharan Africa"
+  if (is.data.frame(Sub_Saharan_Africa) && nrow(Sub_Saharan_Africa)==0) {
+  }else {
+    Sub_Saharan_Africa$region <- "Sub-Saharan Africa"
+  }
   
   grouped_food_df <- do.call("rbind", list(East_Asia_Pacific, Europe_Central_Asia, Latin_America_Caribbean, Middle_East_North_Africa, South_Asia, Sub_Saharan_Africa))
-  
   grouped_food_df
 }
 
@@ -576,9 +595,9 @@ rice_world_avg <- world_average(rice)
 # Calulate price across regions
 rice_avg_region <- grouping_by_region_average(rice)
 
-# Find countries without a nation average UNIQUE() WON'T WORK SHOES ALL COUNTRIES
+# Find countries without a nation average 
 # plot_group_price(rice) #If average price is not calculated 
-show_no_nat_avg(rice)
+# show_no_nat_avg(rice)
 
 # Calculate national average for these countries
 Afghanistan <- national_average_fun(filter(rice, country=="Afghanistan"))
@@ -651,9 +670,9 @@ maize_world_avg <- world_average(maize)
 # Calulate price across regions NOT WORKING
 maize_avg_region <- grouping_by_region_average(maize)
 
-# Find countries without a nation average UNIQUE() WON'T WORK SHOES ALL COUNTRIES
+# Find countries without a nation average 
 # plot_group_price(rice) #If average price is not calculated
-show_no_nat_avg(maize)
+# show_no_nat_avg(maize)
 
 # Calculate national average for these countries
 Benin <- national_average_fun(filter(maize, country=="Benin"))
@@ -714,9 +733,8 @@ flour_world_avg <- world_average(flour)
 # Calulate price across regions
 flour_avg_region <- grouping_by_region_average(flour)
 
-# Find countries without a nation average UNIQUE() WON'T WORK SHOES ALL COUNTRIES
-# plot_group_price(rice) #If average price is not calculated 
-show_no_nat_avg(flour)
+# Find countries without a nation average 
+# show_no_nat_avg(flour)
 
 # Calculate national average for these countries
 Armenia <- national_average_fun(filter(flour, country=="Armenia"))
@@ -772,9 +790,8 @@ sorghum_world_avg <- world_average(sorghum)
 # Calulate price across regions
 sorghum_avg_region <- grouping_by_region_average(sorghum)
 
-# Find countries without a nation average UNIQUE() WON'T WORK SHOES ALL COUNTRIES
-# plot_group_price(rice) #If average price is not calculated 
-show_no_nat_avg(sorghum)
+# Find countries without a nation average 
+# show_no_nat_avg(sorghum)
 
 # Calculate national average for these countries
 Benin <- national_average_fun(filter(sorghum, country=="Benin"))
@@ -820,8 +837,7 @@ beans_world_avg <- world_average(beans)
 # Calulate price across regions
 beans_avg_region <- grouping_by_region_average(beans)
 
-# Find countries without a nation average UNIQUE() WON'T WORK SHOES ALL COUNTRIES
-# plot_group_price(rice) #If average price is not calculated 
+# Find countries without a nation average 
 show_no_nat_avg(beans)
 
 # Calculate national average for these countries
@@ -872,7 +888,7 @@ beans <- rbind(beans, beans2)
 rm(beans2)
 
 
-# Cleaning for millet Analysis---------------------------------
+# Cleaning for Millet Analysis---------------------------------
 millet <- food_group_by("Millet")
 
 # Find world average price for rice and plot price and inflation
@@ -881,9 +897,8 @@ millet_world_avg <- world_average(millet)
 # Calulate price across regions
 millet_avg_region <- grouping_by_region_average(millet)
 
-# Find countries without a nation average UNIQUE() WON'T WORK SHOES ALL COUNTRIES
-# plot_group_price(rice) #If average price is not calculated 
-show_no_nat_avg(millet)
+# Find countries without a nation average 
+# show_no_nat_avg(millet)
 
 # Calculate national average for these countries
 Benin <- national_average_fun(filter(millet, country=="Benin"))  
@@ -922,9 +937,8 @@ oil_world_avg <- world_average(oil)
 # Calulate price across regions
 oil_avg_region <- grouping_by_region_average(oil)
 
-# Find countries without a nation average UNIQUE() WON'T WORK SHOES ALL COUNTRIES
-# plot_group_price(rice) #If average price is not calculated 
-show_no_nat_avg(oil)
+# Find countries without a nation average 
+# show_no_nat_avg(oil)
 
 # Calculate national average for these countries
 Algeria <- national_average_fun(filter(oil, country=="Algeria"))
