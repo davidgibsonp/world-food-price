@@ -49,28 +49,13 @@ plot_region_price(maize_avg_region)
 plot_region_inflation(maize_avg_region)
 plot_region_price_facet(maize_avg_region)
 
+# Import not avail
+
 # Plot price across countries
 plot_group_price(maize)
 plot_group_price_facet(maize)
 plot_group_inflation(maize)
 plot_group_inflation_by_country(maize)
-
-
-#------------------FLOUR ANALYSIS--------------------------------
-# Find world average price for rice and plot price and inflation
-plot_group_price(flour_world_avg)
-plot_group_inflation(flour_world_avg)
-
-# Calulate price across regions
-plot_region_price(flour_avg_region)
-plot_region_inflation(flour_avg_region)
-plot_region_price_facet(flour_avg_region)
-
-# Plot price across countries
-plot_group_price(flour)
-plot_group_price_facet(flour)
-plot_group_inflation(flour)
-plot_group_inflation_by_country(flour)
 
 
 #------------------SORGHUM ANALYSIS--------------------------------
@@ -82,6 +67,10 @@ plot_group_inflation(sorghum_world_avg)
 plot_region_price(sorghum_avg_region)
 plot_region_inflation(sorghum_avg_region)
 plot_region_price_facet(sorghum_avg_region)
+
+# Import not avail 
+plot_import_type_price(sorghum_import)
+plot_import_type_inflation(sorghum_import)
 
 # Plot price across countries
 plot_group_price(sorghum)
@@ -100,6 +89,10 @@ plot_region_price(beans_avg_region)
 plot_region_inflation(beans_avg_region)
 plot_region_price_facet(beans_avg_region)
 
+# Plot Import and not import 
+plot_import_type_price(beans_import)
+plot_import_type_inflation(beans_import)
+
 # Plot price across countries
 plot_group_price(beans)
 plot_group_price(filter(beans, country!="Nigeria"))
@@ -117,6 +110,10 @@ plot_region_price(millet_avg_region)
 plot_region_inflation(millet_avg_region)
 plot_region_price_facet(millet_avg_region)
 
+# Plot Import and not import 
+plot_import_type_price(millet_import)
+plot_import_type_inflation(millet_import)
+
 # Plot price across countries
 plot_group_price(millet)
 plot_group_price_facet(millet)
@@ -133,6 +130,8 @@ plot_group_inflation(oil_world_avg)
 plot_region_price(oil_avg_region)
 plot_region_inflation(oil_avg_region)
 plot_region_price_facet(oil_avg_region)
+
+# Import not avail 
 
 # Plot price across countries
 plot_group_price(oil)

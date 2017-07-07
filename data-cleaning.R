@@ -6,7 +6,7 @@ require(tidyr)
 require(tibble)
 require(ggplot2)
 # To Skip Cleaning Load
-# food <- read.csv("data/clean/food_data.csv")
+food <- read.csv("data/clean/food_data.csv")
 # CURENCY CLEANING-------------------------------------------
 codes <- read.csv("data/dirty/curency_codes.csv")
 
@@ -16,14 +16,14 @@ codes$MinorUnit <- NULL
 codes$WithdrawalDate <- NULL
 codes$Entity <- NULL
 
-# Remove unused rows MUST BE BETTER WAY 
+# Remove unused rows MUST BE BETTER WAY
 codes <- codes[codes$AlphabeticCode != "XXX", ]
 codes <- codes[codes$AlphabeticCode != "XTS", ]
 codes <- codes[codes$AlphabeticCode != "BUK", ]
 codes <- codes[codes$AlphabeticCode != "", ]
 
 # Remove duplicates in AlphabeticCode's
-codes <- 
+codes <-
   codes %>%
   group_by(Currency, AlphabeticCode) %>%
   count(AlphabeticCode)
@@ -40,16 +40,16 @@ rm(codes)
 # Retrieved from http://data.worldbank.org/indicator/PA.NUS.PPP?end=2008&start=2008&view=bar&year_low_desc=true
 ppp <- read.csv("data/dirty/ppp-data-last-update-5-26-17.csv", header = TRUE, na.strings = "")
 
-# Remove unused years 
+# Remove unused years
 ppp <- ppp[, -c(3:44)] # !!!ONLY RUN ONCE!!!
 
 ppp$X2016 <- NULL
 
-# Renaming  
+# Renaming
 ppp <- rename(ppp, c(Country.Name="country"))
 ppp <- rename(ppp, c(Country.Code="country_code"))
 
-# manually renamed "Egypt" "Yemen" "Lao People's Democratic Republic" "Tanzania" "Gambia" reb of congo to congo "Cape Verde"  "State of Palestine" & "Kyrgyzstan" 
+# manually renamed "Egypt" "Yemen" "Lao People's Democratic Republic" "Tanzania" "Gambia" reb of congo to congo "Cape Verde"  "State of Palestine" & "Kyrgyzstan"
 
 # Disable scientific notation
 options(scipen = 50)
@@ -60,7 +60,7 @@ write.csv(ppp, file = "data/clean/ppp_df.csv", row.names=FALSE)
 
 # FOOD DATA CLEANING-------------------------------------------
 
-# Load Data 
+# Load Data
 food <- read.csv("data/dirty/WFPVAM_FoodPrices_13-03-2017.csv")
 
 # Delete Unused Columns/Rows
@@ -108,17 +108,17 @@ food$currency[food$currency == "Somaliland Shilling"] <- "SOS"
 
 # Add country code with left join
 region <- read.csv("data/clean/country_region_code_incomegroup.csv")
-region$ppp_country_name <- NULL #delete ppp country name 
+region$ppp_country_name <- NULL #delete ppp country name
 region <- rename(region, c(code="country_code"))
 region <- rename(region, c(incomegroup="country_income_group"))
 region <- rename(region, c(food_country_name="country"))
 
-food <- left_join(food, region, by = c("country" = "country")) #The join 
+food <- left_join(food, region, by = c("country" = "country")) #The join
 rm(region)
 
 # Joing food groups data
 group <- read.csv("data/clean/food_groups.csv")
-food <- left_join(food, group, by = c("food_name" = "food_name")) #The join 
+food <- left_join(food, group, by = c("food_name" = "food_name")) #The join
 rm(group)
 
 # Delete rows that are not food BETTER WAY THAN MAKING THEM NA THEN ROMOVE NA
@@ -130,8 +130,8 @@ food <- food[complete.cases(food), ]
 
 
 
-# Add PPP and unfied price 
-# IMPROVE BY NEED TO EDIT FOR TO MATCH COUNTRY_CODE NOT COUNTRY 
+# Add PPP and unfied price
+# IMPROVE BY NEED TO EDIT FOR TO MATCH COUNTRY_CODE NOT COUNTRY
 ppp <- read.csv("data/clean/ppp_df.csv")
 
 get_ppp_factor <- function(country, year){
@@ -147,10 +147,10 @@ food$ppp_factor <- ppp_country_year
 rm(ppp_country_year)
 rm(ppp)
 
-# Calculates a unified price column 
+# Calculates a unified price column
 food$unified_price <- food$price/food$ppp_factor # u_price "unified price"
 
-# Unify units 
+# Unify units
 food$unit <- as.character(food$unit)
 
 food$unit[food$unit == "11.5 KG"] <- "11500 G"
@@ -189,7 +189,7 @@ food$unit[food$unit == "100 Tubers"] <- "100 Unit"
 food$unit[food$unit == "Marmite"] <- "1 Marmite"
 
 # Split the units it unit_type
-food <- 
+food <-
   food %>%
   separate(unit, c("unit", "unit_type"), " ")
 
@@ -201,9 +201,8 @@ food$price_per_one_unit <- food$unified_price/food$unit
 # HOW TO REMOVE ROWS WHERE A SPECIFIC COLUMN HAS NA
 # food <- food[complete.cases(food), ]
 
-# Find top foods 
+# Find top foods
 top <- as.data.frame(table(food$food_name))
-View(top)
 
 # Add import column
 import <- food[grep("import", food$food_name), ]
@@ -309,17 +308,17 @@ food$food_groups[food$food_name == "Oil (vegetable)"] <-"Oil"
 food$food_groups[food$food_name == "Oil (mixedimported)"] <-"Oil"
 food$food_groups[food$food_name == "Oil (vegetableimported)"] <-"Oil"
 
-# # Run this if you want to unifiy top 7 foods 
+# # Run this if you want to unifiy top 7 foods
 food <- food_groups
 rm(food_groups)
 
 # Disable scientific notation
 options(scipen = 50)
 View(food)
-# Reorder data for viewability 
+# Reorder data for viewability
 food <- food[c("country", "country_code", "country_income_group", "region", "city", "market", "date", "year", "month", "seller_type", "import", "food_group", "food_name", "price_per_one_unit", "unit_type","price", "unit", "currency", "unified_price", "ppp_factor")]
 
-# Export Cleaned Data 
+# Export Cleaned Data
 write.csv(food, file = "data/clean/food_data.csv", row.names=FALSE)
 
 
@@ -356,8 +355,11 @@ import_type_average <- function(grouped_food_df){
   }
   import_type
 }
-
+is.numeric()
 national_average_fun <- function(country_df_with_out_national_average){
+  stdv <- country_df_with_out_national_average$monthly_inflation
+  stdv <- stdv[is.numeric(stdv)]
+  stdv <- sd(stdv)
   national_average_df <- country_df_with_out_national_average[0,]
   for (x in unique(country_df_with_out_national_average$date)){
     df <- filter(country_df_with_out_national_average, date==x)
@@ -366,12 +368,29 @@ national_average_fun <- function(country_df_with_out_national_average){
     empty_df$unified_price <- mean(df$unified_price)
     empty_df$ppp_factor <- mean(df$ppp_factor)
     empty_df$price <- mean(df$price)
+    empty_df$stdv <- stdv
     empty_df$city <- ""
     empty_df$market <- "National Average"
     national_average_df <- rbind(empty_df, national_average_df)
   }
   national_average_df
 }
+
+# national_average_fun <- function(country_df_with_out_national_average){
+#   national_average_df <- country_df_with_out_national_average[0,]
+#   for (x in unique(country_df_with_out_national_average$date)){
+#     df <- filter(country_df_with_out_national_average, date==x)
+#     empty_df <- df[1,]
+#     empty_df$price_per_one_unit <- mean(df$price_per_one_unit)
+#     empty_df$unified_price <- mean(df$unified_price)
+#     empty_df$ppp_factor <- mean(df$ppp_factor)
+#     empty_df$price <- mean(df$price)
+#     empty_df$city <- ""
+#     empty_df$market <- "National Average"
+#     national_average_df <- rbind(empty_df, national_average_df)
+#   }
+#   national_average_df
+# }
 
 world_average <- function(grouped_food_df){
   world_average <- grouped_food_df[0,]
@@ -514,13 +533,13 @@ import_type_grouping <- function(grouped_food_df){
 
 df_country_food <- function(country_name, foodName){
   df <- filter(food, country==country_name, food_name==foodName)
+  
   if(dim(df)[1] < 10){
     return("No data for this country/food")
   }else{
     df$month <- sapply(df$month, convert_month)
     df$date <- as.Date(paste0(df$year,'-',df$month,'-01'))
     df$monthly_inflation <- 100*(df$price/lag(df$price) - 1)
-    df
   }
 }
 
@@ -547,6 +566,13 @@ food_group_by <- function(food_to_group){
 
 show_no_nat_avg <- function(grouped_food_df){
   no_nat_avg <- filter(grouped_food_df, market!="National Average")
+  no_nat_avg <- as.data.frame(table(no_nat_avg$country))
+  no_nat_avg[no_nat_avg$Freq != 0, ]
+}
+
+show_no_stdv <- function(grouped_food_df){
+  no_nat_avg <- filter(grouped_food_df, is.na(stdv))
+  no_nat_avg <- filter(no_nat_avg, is.na(monthly_inflation))
   no_nat_avg <- as.data.frame(table(no_nat_avg$country))
   no_nat_avg[no_nat_avg$Freq != 0, ]
 }
@@ -703,11 +729,12 @@ rice_avg_region <- grouping_by_region_average(rice)
 # View(rice_avg_seller)
 
 # Import type
+table(rice$import)
 rice_import <- import_type_grouping(rice)
 
 # Find countries without a nation average 
 # plot_group_price(rice) #If average price is not calculated 
-# show_no_nat_avg(rice)
+show_no_nat_avg(rice)
 
 # Calculate national average for these countries
 Afghanistan <- national_average_fun(filter(rice, country=="Afghanistan"))
@@ -767,9 +794,15 @@ rm(Afghanistan, Algeria, Armenia, Bangladesh, Benin, Bolivia, Burkina_Faso, Came
 # Filter out the countries without national averge
 rice <- filter(rice, market=="National Average")
 
-# rbind rice and rice2
+# Add stdv column 
+rice$stdv <- NA
+
+# rbind maize and maize2
 rice <- rbind(rice, rice2)
 rm(rice2)
+
+# Show countries without standard dev
+# show_no_stdv(rice)
 
 # Cleaning for Maize Analysis---------------------------------
 maize <- food_group_by("Maize")
@@ -779,6 +812,10 @@ maize_world_avg <- world_average(maize)
 
 # Calulate price across regions NOT WORKING
 maize_avg_region <- grouping_by_region_average(maize)
+
+# Import type No import avail
+# table(maize$import)
+# maize_import <- import_type_grouping(maize)
 
 # Find countries without a nation average 
 # plot_group_price(rice) #If average price is not calculated
@@ -829,9 +866,15 @@ rm(Benin, Burkina_Faso, Burundi, Cameroon, Central_African_Republic, Chad, Colom
 # Filter out the countries without national averge
 maize <- filter(maize, market=="National Average")
 
+# Add stdv column 
+maize$stdv <- NA
+
 # rbind maize and maize2
 maize <- rbind(maize, maize2)
 rm(maize2)
+
+# Show countries without standard dev
+# show_no_stdv(maize)
 
 
 # Cleaning for Sorghum Analysis---------------------------------
@@ -842,6 +885,10 @@ sorghum_world_avg <- world_average(sorghum)
 
 # Calulate price across regions
 sorghum_avg_region <- grouping_by_region_average(sorghum)
+
+# No import types avail
+# table(sorghum$import)
+# sorghum_import <- import_type_grouping(sorghum)
 
 # Find countries without a nation average 
 # show_no_nat_avg(sorghum)
@@ -876,9 +923,15 @@ rm(Benin, Burkina_Faso , Cameroon, Chad, Djibouti, Ethiopia , Gambia , Guinea_Bi
 # Filter out the countries without national averge
 sorghum <- filter(sorghum, market=="National Average")
 
+# Add stdv column 
+sorghum$stdv <- NA
+
 # rbind sorghum and sorghum2
 sorghum <- rbind(sorghum, sorghum2)
 rm(sorghum2)
+
+# Show countries without standard dev
+# show_no_stdv(sorghum)
 
 
 # Cleaning for Beans Analysis---------------------------------
@@ -889,6 +942,10 @@ beans_world_avg <- world_average(beans)
 
 # Calulate price across regions
 beans_avg_region <- grouping_by_region_average(beans)
+
+# Import typer
+# table(beans$import)
+beans_import <- import_type_grouping(beans)
 
 # Find countries without a nation average 
 # show_no_nat_avg(beans)
@@ -936,9 +993,16 @@ rm(Algeria, Benin, Burkina_Faso, Burundi, Cameroon, Colombia, Congo, Democratic_
 # Filter out the countries without national averge
 beans <- filter(beans, market=="National Average")
 
+
+# Add stdv column 
+beans$stdv <- NA
+
 # rbind beans and beans2
 beans <- rbind(beans, beans2)
 rm(beans2)
+
+# Show countries without standard dev aslong as they are 1 its ok
+# show_no_stdv(beans)
 
 
 # Cleaning for Millet Analysis---------------------------------
@@ -949,6 +1013,10 @@ millet_world_avg <- world_average(millet)
 
 # Calulate price across regions
 millet_avg_region <- grouping_by_region_average(millet)
+
+# Import typer not avail
+# table(millet$import)
+# millet_import <- import_type_grouping(millet)
 
 # Find countries without a nation average 
 # show_no_nat_avg(millet)
@@ -977,9 +1045,16 @@ rm(Benin, Burkina_Faso, Central_African_Republic, Chad, Djibouti, Gambia, Guinea
 # Filter out the countries without national averge
 millet <- filter(millet, market=="National Average")
 
+# Add stdv column 
+millet$stdv <- NA
+
 # rbind millet and millet2
 millet <- rbind(millet, millet2)
 rm(millet2)
+
+# Show countries without standard dev
+show_no_stdv(millet)
+
 
 # Cleaning for Oil Analysis---------------------------------
 oil <- food_group_by("Oil")
@@ -989,6 +1064,11 @@ oil_world_avg <- world_average(oil)
 
 # Calulate price across regions
 oil_avg_region <- grouping_by_region_average(oil)
+
+# Import typer not avail
+# table(oil$import)
+# oil_import <- import_type_grouping(oil)
+
 
 # Find countries without a nation average 
 # show_no_nat_avg(oil)
@@ -1037,6 +1117,13 @@ rm(Algeria, Armenia, Bangladesh, Cambodia, Central_African_Republic, Colombia, C
 # Filter out the countries without national averge
 oil <- filter(oil, market=="National Average")
 
+# Add stdv column 
+oil$stdv <- NA
+
 # rbind oil and oil2
 oil <- rbind(oil, oil2)
 rm(oil2)
+
+# Show countries without standard dev
+show_no_stdv(oil)
+
