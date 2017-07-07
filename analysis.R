@@ -39,6 +39,11 @@ plot_group_price_facet(rice)
 plot_group_inflation(rice)
 plot_group_inflation_by_country(rice)
 
+# # box plot infaltion
+plot_region_box(rice_avg_region)
+plot_world_box(rice_world_avg)
+
+
 #------------------Maize ANALYSIS--------------------------------
 # Find world average price for rice and plot price and inflation
 plot_group_price(maize_world_avg)
@@ -56,6 +61,11 @@ plot_group_price(maize)
 plot_group_price_facet(maize)
 plot_group_inflation(maize)
 plot_group_inflation_by_country(maize)
+
+# # box plot infaltion
+# plot_region_box(maize_avg_region)
+# plot_all_box(maize)
+# plot_world_box(maize_world_avg)
 
 
 #------------------SORGHUM ANALYSIS--------------------------------
