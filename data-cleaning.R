@@ -1,4 +1,3 @@
-# grouping_by_region_average fun broken
 require(dplyr)
 require(readr)
 require(data.table)
@@ -6,7 +5,8 @@ require(reshape)
 require(tidyr)
 require(tibble)
 require(ggplot2)
-
+# To Skip Cleaning Load
+# food <- read.csv("data/clean/food_data.csv")
 # CURENCY CLEANING-------------------------------------------
 codes <- read.csv("data/dirty/curency_codes.csv")
 
@@ -102,6 +102,7 @@ convert_month <- function(number){
 food$month <- sapply(food$month, convert_month)
 food$date <- as.Date(paste0(food$year,'-',food$month,'-01'))
 
+
 # Replace "Somaliland Shilling" with "SOS"
 food$currency[food$currency == "Somaliland Shilling"] <- "SOS"
 
@@ -126,6 +127,8 @@ food <- food[food$food_group != "Loaf", ]
 food <- food[food$food_group != "Sack", ]
 food <- food[food$food_group != "Bunch", ]
 food <- food[complete.cases(food), ]
+
+
 
 # Add PPP and unfied price 
 # IMPROVE BY NEED TO EDIT FOR TO MATCH COUNTRY_CODE NOT COUNTRY 
@@ -199,125 +202,122 @@ food$price_per_one_unit <- food$unified_price/food$unit
 # food <- food[complete.cases(food), ]
 
 # Find top foods 
-# top <- as.data.frame(table(food$food_name))
-# View(top)
+top <- as.data.frame(table(food$food_name))
+View(top)
+
+# Add import column
+import <- food[grep("import", food$food_name), ]
+not_import <- food[!grepl("import", food$food_name), ]
+
+import$import <- "Import"
+not_import$import <- "Not Import"
+
+food <- rbind(import, not_import)
+rm(import, not_import)
 
 # Unify top 7 foods
-food_group <- food
-food_group$food_name <- as.character(food_group$food_name)
+food_groups <- food
+food_groups$food_name <- as.character(food_group$food_name)
+food$food_groups[food$food_name == "Maize"] <-"Maize"
+food$food_groups[food$food_name == "Maize (local)"] <-"Maize"
+food$food_groups[food$food_name == "Maize (white)"] <-"Maize"
+food$food_groups[food$food_name == "Maize (yellow)"] <-"Maize"
+food$food_groups[food$food_name == "Maize meal"] <-"Maize"
+food$food_groups[food$food_name == "Maize meal (local)"] <-"Maize"
+food$food_groups[food$food_name == "Maize meal (whitebreakfast)"] <-"Maize"
+food$food_groups[food$food_name == "Maize meal (whitefirst grade)"] <-"Maize"
+food$food_groups[food$food_name == "Maize meal (whiteroller)"] <-"Maize"
+food$food_groups[food$food_name == "Maize meal (whitewith bran)"] <-"Maize"
+food$food_groups[food$food_name == "Maize meal (whitewithout bran)"] <-"Maize"
+food$food_groups[food$food_name == "Maize (imported)"] <-"Maize"
 
-food_group$food_name[food_group$food_name =="Maize"] <-"Maize"
-food_group$food_name[food_group$food_name =="Maize (imported)"] <-"Maize"
-food_group$food_name[food_group$food_name =="Maize (local)"] <-"Maize"
-food_group$food_name[food_group$food_name =="Maize (white)"] <-"Maize"
-food_group$food_name[food_group$food_name =="Maize (yellow)"] <-"Maize"
-food_group$food_name[food_group$food_name =="Maize meal"] <-"Maize"
-food_group$food_name[food_group$food_name =="Maize meal (local)"] <-"Maize"
-food_group$food_name[food_group$food_name =="Maize meal (whitebreakfast)"] <-"Maize"
-food_group$food_name[food_group$food_name =="Maize meal (whitefirst grade)"] <-"Maize"
-food_group$food_name[food_group$food_name =="Maize meal (whiteroller)"] <-"Maize"
-food_group$food_name[food_group$food_name =="Maize meal (whitewith bran)"] <-"Maize"
-food_group$food_name[food_group$food_name =="Maize meal (whitewithout bran)"] <-"Maize"
+food$food_groups[food$food_name == "Rice"] <-"Rice"
+food$food_groups[food$food_name == "Rice (basmatibroken)"] <-"Rice"
+food$food_groups[food$food_name == "Rice (coarse)"] <-"Rice"
+food$food_groups[food$food_name == "Rice (estaquilla)"] <-"Rice"
+food$food_groups[food$food_name == "Rice (glutinousfirst quality)"] <-"Rice"
+food$food_groups[food$food_name == "Rice (glutinoussecond quality)"] <-"Rice"
+food$food_groups[food$food_name == "Rice (glutinousunmilled)"] <-"Rice"
+food$food_groups[food$food_name == "Rice (good quality)"] <-"Rice"
+food$food_groups[food$food_name == "Rice (high qualitylocal)"] <-"Rice"
+food$food_groups[food$food_name == "Rice (high quality)"] <-"Rice"
+food$food_groups[food$food_name == "Rice (local)"] <-"Rice"
+food$food_groups[food$food_name == "Rice (long grain)"] <-"Rice"
+food$food_groups[food$food_name == "Rice (low qualitylocal)"] <-"Rice"
+food$food_groups[food$food_name == "Rice (low quality)"] <-"Rice"
+food$food_groups[food$food_name == "Rice (white)"] <-"Rice"
+food$food_groups[food$food_name == "Rice (tchako)"] <-"Rice"
+food$food_groups[food$food_name == "Rice (medium grain)"] <-"Rice"
+food$food_groups[food$food_name == "Rice (mixedlow quality)"] <-"Rice"
+food$food_groups[food$food_name == "Rice (ordinaryfirst quality)"] <-"Rice"
+food$food_groups[food$food_name == "Rice (ordinarysecond quality)"] <-"Rice"
+food$food_groups[food$food_name == "Rice (ordinaryunmilled)"] <-"Rice"
+food$food_groups[food$food_name == "Rice (paddylong grainlocal)"] <-"Rice"
+food$food_groups[food$food_name == "Rice (paddy)"] <-"Rice"
+food$food_groups[food$food_name == "Rice (red nadu)"] <-"Rice"
+food$food_groups[food$food_name == "Rice (regularmilled)"] <-"Rice"
+food$food_groups[food$food_name == "Rice (small grainimported)"] <-"Rice"
+food$food_groups[food$food_name == "Rice (whiteimported)"] <-"Rice"
+food$food_groups[food$food_name == "Rice (denikassiaimported)"] <-"Rice"
+food$food_groups[food$food_name == "Rice (medium grainimported)"] <-"Rice"
+food$food_groups[food$food_name == "Rice (long grainimported)"] <-"Rice"
+food$food_groups[food$food_name == "Rice (importedEgyptian)"] <-"Rice"
+food$food_groups[food$food_name == "Rice (importedIndian)"] <-"Rice"
+food$food_groups[food$food_name == "Rice (importedTanzanian)"] <-"Rice"
+food$food_groups[food$food_name == "Rice (imported)"] <-"Rice"
 
-food_group$food_name[food_group$food_name =="Rice"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (basmatibroken)"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (coarse)"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (denikassiaimported)"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (estaquilla)"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (glutinousfirst quality)"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (glutinoussecond quality)"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (glutinousunmilled)"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (good quality)"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (high qualitylocal)"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (high quality)"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (importedEgyptian)"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (importedIndian)"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (importedTanzanian)"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (imported)"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (local)"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (long grainimported)"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (long grain)"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (low qualitylocal)"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (low quality)"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (medium grainimported)"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (medium grain)"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (mixedlow quality)"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (ordinaryfirst quality)"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (ordinarysecond quality)"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (ordinaryunmilled)"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (paddylong grainlocal)"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (paddy)"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (red nadu)"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (regularmilled)"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (small grainimported)"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (tchako)"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (whiteimported)"] <-"Rice"
-food_group$food_name[food_group$food_name =="Rice (white)"] <-"Rice"
+food$food_groups[food$food_name == "Beans"] <-"Beans"
+food$food_groups[food$food_name == "Beans (black)"] <-"Beans"
+food$food_groups[food$food_name == "Beans (butter)"] <-"Beans"
+food$food_groups[food$food_name == "Beans (catarino)"] <-"Beans"
+food$food_groups[food$food_name == "Beans (dry)"] <-"Beans"
+food$food_groups[food$food_name == "Beans (favadry)"] <-"Beans"
+food$food_groups[food$food_name == "Beans (greenfresh)"] <-"Beans"
+food$food_groups[food$food_name == "Beans (kidney red)"] <-"Beans"
+food$food_groups[food$food_name == "Beans (kidney white)"] <-"Beans"
+food$food_groups[food$food_name == "Beans (kidney)"] <-"Beans"
+food$food_groups[food$food_name == "Beans (magnum)"] <-"Beans"
+food$food_groups[food$food_name == "Beans (mung)"] <-"Beans"
+food$food_groups[food$food_name == "Beans (niebe)"] <-"Beans"
+food$food_groups[food$food_name == "Beans (redfresh)"] <-"Beans"
+food$food_groups[food$food_name == "Beans (red)"] <-"Beans"
+food$food_groups[food$food_name == "Beans (silk red)"] <-"Beans"
+food$food_groups[food$food_name == "Beans (string)"] <-"Beans"
+food$food_groups[food$food_name == "Beans (sugar-red)"] <-"Beans"
+food$food_groups[food$food_name == "Beans (sugar)"] <-"Beans"
+food$food_groups[food$food_name == "Beans (white)"] <-"Beans"
+food$food_groups[food$food_name == "Beans(mash)"] <-"Beans"
 
-food_group$food_name[food_group$food_name =="Beans"] <-"Beans"
-food_group$food_name[food_group$food_name =="Beans (black)"] <-"Beans"
-food_group$food_name[food_group$food_name =="Beans (butter)"] <-"Beans"
-food_group$food_name[food_group$food_name =="Beans (catarino)"] <-"Beans"
-food_group$food_name[food_group$food_name =="Beans (dry)"] <-"Beans"
-food_group$food_name[food_group$food_name =="Beans (favadry)"] <-"Beans"
-food_group$food_name[food_group$food_name =="Beans (greenfresh)"] <-"Beans"
-food_group$food_name[food_group$food_name =="Beans (kidney red)"] <-"Beans"
-food_group$food_name[food_group$food_name =="Beans (kidney white)"] <-"Beans"
-food_group$food_name[food_group$food_name =="Beans (kidney)"] <-"Beans"
-food_group$food_name[food_group$food_name =="Beans (magnum)"] <-"Beans"
-food_group$food_name[food_group$food_name =="Beans (mung)"] <-"Beans"
-food_group$food_name[food_group$food_name =="Beans (niebe)"] <-"Beans"
-food_group$food_name[food_group$food_name =="Beans (redfresh)"] <-"Beans"
-food_group$food_name[food_group$food_name =="Beans (red)"] <-"Beans"
-food_group$food_name[food_group$food_name =="Beans (silk red)"] <-"Beans"
-food_group$food_name[food_group$food_name =="Beans (string)"] <-"Beans"
-food_group$food_name[food_group$food_name =="Beans (sugar-red)"] <-"Beans"
-food_group$food_name[food_group$food_name =="Beans (sugar)"] <-"Beans"
-food_group$food_name[food_group$food_name =="Beans (white)"] <-"Beans"
-food_group$food_name[food_group$food_name =="Beans(mash)"] <-"Beans"
+food$food_groups[food$food_name == "Sorghum"] <-"Sorghum"
+food$food_groups[food$food_name == "Sorghum (food aid)"] <-"Sorghum"
+food$food_groups[food$food_name == "Sorghum (red)"] <-"Sorghum"
+food$food_groups[food$food_name == "Sorghum (taghalit)"] <-"Sorghum"
+food$food_groups[food$food_name == "Sorghum (white)"] <-"Sorghum"
 
-food_group$food_name[food_group$food_name =="Sorghum"] <-"Sorghum"
-food_group$food_name[food_group$food_name =="Sorghum (food aid)"] <-"Sorghum"
-food_group$food_name[food_group$food_name =="Sorghum (red)"] <-"Sorghum"
-food_group$food_name[food_group$food_name =="Sorghum (taghalit)"] <-"Sorghum"
-food_group$food_name[food_group$food_name =="Sorghum (white)"] <-"Sorghum"
+food$food_groups[food$food_name == "Oil"] <-"Oil"
+food$food_groups[food$food_name == "Oil (cooking)"] <-"Oil"
+food$food_groups[food$food_name == "Oil (cotton)"] <-"Oil"
+food$food_groups[food$food_name == "Oil (groundnut)"] <-"Oil"
+food$food_groups[food$food_name == "Oil (maize)"] <-"Oil"
+food$food_groups[food$food_name == "Oil (mustard)"] <-"Oil"
+food$food_groups[food$food_name == "Oil (olive)"] <-"Oil"
+food$food_groups[food$food_name == "Oil (palm)"] <-"Oil"
+food$food_groups[food$food_name == "Oil (soybean)"] <-"Oil"
+food$food_groups[food$food_name == "Oil (sunflower)"] <-"Oil"
+food$food_groups[food$food_name == "Oil (vegetablelocal)"] <-"Oil"
+food$food_groups[food$food_name == "Oil (vegetable)"] <-"Oil"
+food$food_groups[food$food_name == "Oil (mixedimported)"] <-"Oil"
+food$food_groups[food$food_name == "Oil (vegetableimported)"] <-"Oil"
 
-food_group$food_name[food_group$food_name =="Sorghum flour"] <-"Flour"
-food_group$food_name[food_group$food_name =="Cassava flour"] <-"Flour"
-food_group$food_name[food_group$food_name =="Maize flour"] <-"Flour"
-food_group$food_name[food_group$food_name =="Maize flour (imported)"] <-"Flour"
-food_group$food_name[food_group$food_name =="Maize flour (white)"] <-"Flour"
-food_group$food_name[food_group$food_name =="Wheat flour"] <-"Flour"
-food_group$food_name[food_group$food_name =="Wheat flour (first grade)"] <-"Flour"
-food_group$food_name[food_group$food_name =="Wheat flour (high quality)"] <-"Flour"
-food_group$food_name[food_group$food_name =="Wheat flour (imported)"] <-"Flour"
-food_group$food_name[food_group$food_name =="Wheat flour (local)"] <-"Flour"
-food_group$food_name[food_group$food_name =="Wheat flour (locally processed)"] <-"Flour"
-
-food_group$food_name[food_group$food_name =="Oil"] <-"Oil"
-food_group$food_name[food_group$food_name =="Oil (cooking)"] <-"Oil"
-food_group$food_name[food_group$food_name =="Oil (cotton)"] <-"Oil"
-food_group$food_name[food_group$food_name =="Oil (groundnut)"] <-"Oil"
-food_group$food_name[food_group$food_name =="Oil (maize)"] <-"Oil"
-food_group$food_name[food_group$food_name =="Oil (mixedimported)"] <-"Oil"
-food_group$food_name[food_group$food_name =="Oil (mustard)"] <-"Oil"
-food_group$food_name[food_group$food_name =="Oil (olive)"] <-"Oil"
-food_group$food_name[food_group$food_name =="Oil (palm)"] <-"Oil"
-food_group$food_name[food_group$food_name =="Oil (soybean)"] <-"Oil"
-food_group$food_name[food_group$food_name =="Oil (sunflower)"] <-"Oil"
-food_group$food_name[food_group$food_name =="Oil (vegetableimported)"] <-"Oil"
-food_group$food_name[food_group$food_name =="Oil (vegetablelocal)"] <-"Oil"
-food_group$food_name[food_group$food_name =="Oil (vegetable)"] <-"Oil"
-
-# Run this if you want to unifiy top 7 foods 
-food <- food_group
-rm(food_group)
+# # Run this if you want to unifiy top 7 foods 
+food <- food_groups
+rm(food_groups)
 
 # Disable scientific notation
 options(scipen = 50)
-
+View(food)
 # Reorder data for viewability 
-food <- food[c("country", "country_code", "country_income_group", "region", "city", "market", "date", "year", "month", "seller_type", "food_group", "food_name", "price_per_one_unit", "unit_type","price", "unit", "currency", "unified_price", "ppp_factor")]
+food <- food[c("country", "country_code", "country_income_group", "region", "city", "market", "date", "year", "month", "seller_type", "import", "food_group", "food_name", "price_per_one_unit", "unit_type","price", "unit", "currency", "unified_price", "ppp_factor")]
 
 # Export Cleaned Data 
 write.csv(food, file = "data/clean/food_data.csv", row.names=FALSE)
@@ -335,38 +335,26 @@ convert_month <- function(number){
   return(out)
 }
 
-# Grouping functions
-df_country_food <- function(country_name, foodName){
-  df <- filter(food, country==country_name, food_name==foodName)
-  if(dim(df)[1] < 10){
-    return("No data for this country/food")
-  }else{
-    df$month <- sapply(df$month, convert_month)
-    df$date <- as.Date(paste0(df$year,'-',df$month,'-01'))
-    df$monthly_inflation <- 100*(df$price/lag(df$price) - 1)
-    df
+# Average functions
+import_type_average <- function(grouped_food_df){
+  import_type <- grouped_food_df[0,]
+  for (x in unique(grouped_food_df$date)){
+    df <- filter(grouped_food_df, date==x)
+    empty_df <- df[1,]
+    empty_df$price_per_one_unit <- mean(df$price_per_one_unit)
+    empty_df$unified_price <- mean(df$unified_price)
+    empty_df$ppp_factor <- mean(df$ppp_factor)
+    empty_df$price <- mean(df$price)
+    empty_df$city <- NULL
+    empty_df$country_income_group <- NULL
+    empty_df$country_code <- NULL
+    empty_df$curency <- NULL
+    empty_df$seller_type <- NULL
+    empty_df$market <- NULL
+    empty_df$region <- NULL
+    import_type <- rbind(empty_df, import_type)
   }
-}
-
-food_group_by <- function(food_to_group){
-  grouping <- data.frame(matrix(ncol = 20, nrow = 0))
-  df_single_country_food <- function(country_name, foodName){
-    df <- filter(food, country==country_name, food_name==foodName)
-    if(dim(df)[1] < 10){
-      
-    }else{
-      df$month <- sapply(df$month, convert_month)
-      df$date <- as.Date(paste0(df$year,'-',df$month,'-01'))
-      df$monthly_inflation <- 100*(df$price/lag(df$price) - 1)
-      df
-    }
-  }
-  
-  for (i in unique(food$country)){
-    df <- df_single_country_food(i, food_to_group)
-    grouping <- rbind(df, grouping)
-  }
-  grouping
+  import_type
 }
 
 national_average_fun <- function(country_df_with_out_national_average){
@@ -427,6 +415,41 @@ region_average <- function(grouped_food_df){
   region_average
 }
 
+seller_type_average <- function(grouped_food_df){ 
+  Farm_Gate <- filter(grouped_food_df, seller_type=="Farm Gate")
+  Farm_Gate <- seller_type_average(Farm_Gate)
+  if (is.data.frame(Farm_Gate) && nrow(Farm_Gate)==0) { 
+  }else {  
+    Farm_Gate$seller_type <- "Farm Gate"
+  }
+  
+  Producer <- filter(grouped_food_df, seller_type=="Producer")
+  Producer <- seller_type_average(Producer)
+  if (is.data.frame(Producer) && nrow(Producer)==0) {
+    
+  }else {  
+    Producer$seller_type <- "Producer"
+  }
+  
+  Retail <- filter(grouped_food_df, seller_type=="Retail")
+  Retail <- seller_type_average(Retail)
+  if (is.data.frame(Retail) && nrow(Retail)==0) { 
+  }else {
+    Retail$seller_type <- "Retail"
+  }
+  
+  
+  Wholesale <- filter(grouped_food_df, seller_type=="Wholesale")
+  Wholesale <- seller_type_average(Wholesale)
+  if (is.data.frame(Wholesale) && nrow(Wholesale)==0) {
+  }else {
+    Wholesale$seller_type <- "Wholesale"
+  }
+  
+  grouped_food_df <- do.call("rbind", list(Farm_Gate, Producer, Retail, Wholesale ))
+  grouped_food_df
+}
+
 grouping_by_region_average <- function(grouped_food_df){ 
   East_Asia_Pacific <- filter(grouped_food_df, region=="East Asia & Pacific")
   East_Asia_Pacific <- region_average(East_Asia_Pacific)
@@ -474,6 +497,52 @@ grouping_by_region_average <- function(grouped_food_df){
   
   grouped_food_df <- do.call("rbind", list(East_Asia_Pacific, Europe_Central_Asia, Latin_America_Caribbean, Middle_East_North_Africa, South_Asia, Sub_Saharan_Africa))
   grouped_food_df
+}
+
+# Grouping functions
+import_type_grouping <- function(grouped_food_df){
+  not_import <- filter(grouped_food_df, import=="Not Import")
+  import <- filter(grouped_food_df, import=="Import")
+  
+  not_import <- import_type_average(not_import)
+  import <- import_type_average(import)
+  
+  grouped_food_df <- rbind(not_import, import)
+  grouped_food_df
+}
+
+
+df_country_food <- function(country_name, foodName){
+  df <- filter(food, country==country_name, food_name==foodName)
+  if(dim(df)[1] < 10){
+    return("No data for this country/food")
+  }else{
+    df$month <- sapply(df$month, convert_month)
+    df$date <- as.Date(paste0(df$year,'-',df$month,'-01'))
+    df$monthly_inflation <- 100*(df$price/lag(df$price) - 1)
+    df
+  }
+}
+
+food_group_by <- function(food_to_group){
+  grouping <- data.frame(matrix(ncol = 20, nrow = 0))
+  df_single_country_food <- function(country_name, foodName){
+    df <- filter(food, country==country_name, food_group==foodName)
+    if(dim(df)[1] < 10){
+      
+    }else{
+      df$month <- sapply(df$month, convert_month)
+      df$date <- as.Date(paste0(df$year,'-',df$month,'-01'))
+      df$monthly_inflation <- 100*(df$price/lag(df$price) - 1)
+      df
+    }
+  }
+  
+  for (i in unique(food$country)){
+    df <- df_single_country_food(i, food_to_group)
+    grouping <- rbind(df, grouping)
+  }
+  grouping
 }
 
 show_no_nat_avg <- function(grouped_food_df){
@@ -527,6 +596,20 @@ plot_region_inflation <- function(food_group_df){
     scale_x_date(date_breaks = "2 year", date_labels = "%m-%Y") +
     geom_smooth()
   # ggtitle(paste0(food_group_df,'World Wide Price'))
+}
+
+plot_seller_type_price <- function(food_group_df){
+  ggplot(food_group_df, aes(x=date, y=price_per_one_unit, col=seller_type)) +
+    geom_line(alpha = 0.5) + 
+    scale_x_date(date_breaks = "2 year", date_labels = "%m-%Y") +
+    geom_smooth()
+}
+
+plot_seller_type_inflation <- function(food_group_df){
+  ggplot(food_group_df, aes(x=date, y=monthly_inflation, col=seller_type)) +
+    geom_line(alpha = 0.5) + 
+    scale_x_date(date_breaks = "2 year", date_labels = "%m-%Y") +
+    geom_smooth()
 }
 
 plot_group_inflation <- function(food_group_df){
@@ -585,6 +668,26 @@ plot_group_price_facet <- function(food_group_df){
     scale_x_date(date_breaks = "2 year", date_labels = "%m-%Y") 
 }
 
+plot_import_type_price <- function(food_group_df){
+  ggplot(food_group_df, aes(x=date, y=price_per_one_unit, col=import)) +
+    geom_line() + 
+    scale_x_date(date_breaks = "2 year", date_labels = "%m-%Y") 
+  # ggtitle(paste0(food_group_df,'World Wide Price'))
+}
+
+plot_import_type_inflation <- function(food_group_df){
+  ggplot(food_group_df, aes(x=date, y=monthly_inflation, col=import)) +
+    geom_line() + 
+    scale_x_date(date_breaks = "2 year", date_labels = "%m-%Y") 
+  # ggtitle(paste0(food_group_df,'World Wide Price'))
+}
+
+
+# IDENTIFY OUTLIERS-------------------
+# Liberia extremely high rice/oil
+# food <- food[food$country != "Liberia", ]
+# South Sudan high flour/beans
+# Nigeria high sorghum/beans/millet
 
 # Cleaning for Rice Analysis---------------------------------
 rice <- food_group_by("Rice")
@@ -594,6 +697,13 @@ rice_world_avg <- world_average(rice)
 
 # Calulate price across regions
 rice_avg_region <- grouping_by_region_average(rice)
+
+# Finds average by seller
+# rice_avg_seller <- seller_type_average(rice)
+# View(rice_avg_seller)
+
+# Import type
+rice_import <- import_type_grouping(rice)
 
 # Find countries without a nation average 
 # plot_group_price(rice) #If average price is not calculated 
@@ -724,63 +834,6 @@ maize <- rbind(maize, maize2)
 rm(maize2)
 
 
-# Cleaning for Flour Analysis---------------------------------
-flour <- food_group_by("Flour")
-
-# Find world average price for rice and plot price and inflation
-flour_world_avg <- world_average(flour)
-
-# Calulate price across regions
-flour_avg_region <- grouping_by_region_average(flour)
-
-# Find countries without a nation average 
-# show_no_nat_avg(flour)
-
-# Calculate national average for these countries
-Armenia <- national_average_fun(filter(flour, country=="Armenia"))
-Bangladesh <- national_average_fun(filter(flour, country=="Bangladesh"))
-Burundi <- national_average_fun(filter(flour, country=="Burundi"))
-Cape_Verde <- national_average_fun(filter(flour, country=="Cape Verde"))
-Central_African_Republic <- national_average_fun(filter(flour, country=="Central African Republic"))
-Colombia <- national_average_fun(filter(flour, country=="Colombia"))
-Congo <- national_average_fun(filter(flour, country=="Congo"))
-Democratic_Republic_the_Congo <- national_average_fun(filter(flour, country=="Democratic Republic of the Congo"))
-Djibouti <- national_average_fun(filter(flour, country=="Djibouti"))
-Gambia <- national_average_fun(filter(flour, country=="Gambia"))
-Georgia <- national_average_fun(filter(flour, country=="Georgia"))
-Haiti <- national_average_fun(filter(flour, country=="Haiti"))
-India <- national_average_fun(filter(flour, country=="India"))
-Iraq <- national_average_fun(filter(flour, country=="Iraq"))
-Kyrgyzstan <- national_average_fun(filter(flour, country=="Kyrgyzstan"))
-Lebanon <- national_average_fun(filter(flour, country=="Lebanon"))
-Lesotho <- national_average_fun(filter(flour, country=="Lesotho"))
-Madagascar <- national_average_fun(filter(flour, country=="Madagascar"))
-Mozambique <- national_average_fun(filter(flour, country=="Mozambique"))
-Pakistan <- national_average_fun(filter(flour, country=="Pakistan"))
-Peru <- national_average_fun(filter(flour, country=="Peru"))
-Rwanda <- national_average_fun(filter(flour, country=="Rwanda"))
-Somalia <- national_average_fun(filter(flour, country=="Somalia"))
-South_Sudan <- national_average_fun(filter(flour, country=="South Sudan"))
-Sri_Lanka <- national_average_fun(filter(flour, country=="Sri Lanka"))
-State_Palestine <- national_average_fun(filter(flour, country=="State of Palestine"))
-Syrian_Arab_Republic <- national_average_fun(filter(flour, country=="Syrian Arab Republic"))
-Tajikistan <- national_average_fun(filter(flour, country=="Tajikistan"))
-Uganda <- national_average_fun(filter(flour, country=="Uganda"))
-Ukraine <- national_average_fun(filter(flour, country=="Ukraine"))
-Yemen <- national_average_fun(filter(flour, country=="Yemen"))
-
-# rbind the newly calculated national averages
-flour2 <- do.call("rbind", list(Armenia, Bangladesh, Burundi, Cape_Verde, Central_African_Republic, Colombia, Congo, Democratic_Republic_the_Congo, Djibouti, Gambia, Georgia, Haiti, India, Iraq, Kyrgyzstan, Lebanon, Lesotho, Madagascar, Mozambique, Pakistan, Peru, Rwanda, Somalia, South_Sudan, Sri_Lanka, State_Palestine, Syrian_Arab_Republic, Tajikistan, Uganda, Ukraine, Yemen))
-rm(Armenia, Bangladesh, Burundi, Cape_Verde, Central_African_Republic, Colombia, Congo, Democratic_Republic_the_Congo, Djibouti, Gambia, Georgia, Haiti, India, Iraq, Kyrgyzstan, Lebanon, Lesotho, Madagascar, Mozambique, Pakistan, Peru, Rwanda, Somalia, South_Sudan, Sri_Lanka, State_Palestine, Syrian_Arab_Republic, Tajikistan, Uganda, Ukraine, Yemen)
-
-# Filter out the countries without national averge
-flour <- filter(flour, market=="National Average")
-
-# rbind flour and flour2
-flour <- rbind(flour, flour2)
-rm(flour2)
-
-
 # Cleaning for Sorghum Analysis---------------------------------
 sorghum <- food_group_by("Sorghum")
 
@@ -838,7 +891,7 @@ beans_world_avg <- world_average(beans)
 beans_avg_region <- grouping_by_region_average(beans)
 
 # Find countries without a nation average 
-show_no_nat_avg(beans)
+# show_no_nat_avg(beans)
 
 # Calculate national average for these countries
 Algeria <- national_average_fun(filter(beans, country=="Algeria"))

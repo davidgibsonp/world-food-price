@@ -1,5 +1,6 @@
 # TO DO 
 # Create natioan average function to apply to everything in food
+food <- read.csv("dataclean/food_data.csv")
 
 # QUESTIONS TO ASK
 # 1 What is the viriation in the price across the globe 
@@ -23,6 +24,14 @@ plot_group_inflation(rice_world_avg)
 plot_region_price(rice_avg_region)
 plot_region_inflation(rice_avg_region)
 plot_region_price_facet(rice_avg_region)
+
+# Plot Import and not import 
+plot_import_type_price(rice_import)
+plot_import_type_inflation(rice_import)
+
+# Plot seller typer
+plot_seller_type_price(rice)
+plot_seller_type_inflation(rice)
 
 # Plot price across countries
 plot_group_price(rice)
@@ -76,6 +85,7 @@ plot_region_price_facet(sorghum_avg_region)
 
 # Plot price across countries
 plot_group_price(sorghum)
+plot_group_price(filter(sorghum, country!="Nigeria"))
 plot_group_price_facet(sorghum)
 plot_group_inflation(sorghum)
 plot_group_inflation_by_country(sorghum)
@@ -92,6 +102,7 @@ plot_region_price_facet(beans_avg_region)
 
 # Plot price across countries
 plot_group_price(beans)
+plot_group_price(filter(beans, country!="Nigeria"))
 plot_group_price_facet(beans)
 plot_group_inflation(beans)
 plot_group_inflation_by_country(beans)
@@ -128,6 +139,5 @@ plot_group_price(oil)
 plot_group_price_facet(oil)
 plot_group_inflation(oil)
 plot_group_inflation_by_country(oil)
-
 
 
