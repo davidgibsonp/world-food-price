@@ -3,4 +3,6 @@
 .RData
 .Ruserdata
 .DS_Store
+todo.txt
+world_food_price.Rproj
 data/**
