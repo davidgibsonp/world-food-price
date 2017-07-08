@@ -1,0 +1,106 @@
+---
+output:
+  html_document: default
+  pdf_document: default
+---
+------
+<center> <h3>July 2017</h3> </center>
+<center> <h1>World Food Prices</h1> </center>
+<center> <h2>David Gibson </h2>  </center>
+
+
+------
+<center>
+  <h4>Table of Contents</h4>
+</center>
+1. Introduction
+2. Exploretory Analysis and Data Cleaning
+3. Rice
+4. Maize
+5. Sorghum
+6. Beans
+7. Millet
+8. Oils
+
+
+------
+<center>
+  <h4>1. Introduction</h4>
+</center>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  The data for this analysis was collected by the United Nation's World Food Programme’s vulnerability analysis and is updated monthly. The dataset can be retrieved from [here](data.humdata.org/dataset/wfp-food-prices) 
+
+
+------
+<center>
+  <h4>2. Exploretory Analysis and Data Cleaning</h4>
+</center>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  After loading the dataset into R I immediatlty realized the magnitude of it all. 687,253 objects of 18 variables which included 74 countries 304 different types food, all with a price in one of 60 curencies. I also noticed with so many different objects that there would be a lot of cleaning that needed to be done before I even started my analysis. Since I did not know what I was going to find made sure to keep my cleaning phase as broad as possible by retaining as many objects as possible. 
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  I began by renaming columns to be easier to view by renaming columns and removes ones that would not be useful. I also orginaly had a year and a month column I wrote a function to merge the to to make a date colume but I retained bother year and month columns
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  To add some more information I country code column by downloading an exsiting data frame and performed a left join on the to so every country had its apropriete code. This also created a region and income group column. I Perfomed the same joing but this time to catorgorize food groups. Example fruits, meat and brea. This was when I found that some entries where not food such as fuel and manual labor. I left them in but grouped them as "Not Food"
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  The hardest part of the cleaning was trying to unify all the price because I had 60 unique curencies over the last 2 decades. So not only was exchange rate a factor so was inflation and deflation. To over come this I downloaded a data set of PPP factors from the World Bank. This would account for both inflation and exchange rate. Once I had the PPP data set a wrote a function to to match every country and year with its apropriete PPP factor. Once I had a column with PPP factor I then could calculate a unifed price  column by dividing the original price by the new PPP facto column. Unfortunatly the PPP data set did not have a PPP factor for every country and every year so these entries were deleted.
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  After this I thought my analysis could begin but I quickly realized that I would have to unify the unit column as well. I had some foods in KG, G, Pounds, Gallon, ML, L and even Marmite and Cuartilla. So I converted everything to G L or Units. From here I divided my unified price by units to calculate a price per one unit column.
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  To finally narow my focus I took a look at they most common foods. This revealed that the top 10 most common foods in order were Maize, Millet, Sorghum, Rice (imported), Rice, Maize (white), Rice (local), Wheat, Sugar and Wheat flour. I had a substantial amout of entries but I wanted to unify all types of the same food. So I regrouped the foods to be more specific and was lift with substantialy more values to analysing. This left me with a much more values in my top 10 and I decide to only focuse of foods with over 25,000 entries so this left me with Rice, Maize, Sorghum, Beans, Millet and oil Oil. I did not rename them because I wanted to be able to distinguishe between local and imported foods.
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Now it was finally time to start my analsis. Atleast I thought. I grrouped the top 6 foods into 6 data frames and the first thing I tried to do was plot a line chart and noticed something strange. It was not a traditional line graph so I investigated my data and realized that for some countries I only had the national average and others I had multiple markets meaning I had multiple prices for the same day which would not graph properly. So back to cleaning. I wrote a function that would group calculate the national averge for each of the in the top 6 food group data frams. One thing to note is that this is not a true representation of a national average because I assumed that all the markets are weighted equally which in reality is not true. I additionaly wrote function to calculate import vs local, region and global averages.
+
+
+------
+<center>
+  <h4>3. Rice </h4>
+</center>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  I started the analysis if the the food with the most amount of entries which was easily rice with 67,003
+
+Lets take a look at how the price of rice has changed over they last 10 years.
+# ```{r}
+# plot_group_price(rice_world_avg)
+# ```
+As you can see the price has overall increased. Notice how there is a spike in the the price from 2006 - 2007 
+
+To look at the overall inflation of rice I plotted monthley inflation as a histong gram
+# ```{r}
+# plot_group_inflation_hist(rice_world_avg)
+# ```
+Looks like there is a a reletively normal ditrobution but there is a bin way over in 100 That is Liberia which has an extremely high inflation rate
+
+Lets narrow our analysis slightly by looking at rice in different regions of the world. First by ploting them all on the same line chart.
+# ```{r}
+# plot_region_price(rice_avg_region)
+# ```
+You can see that from 2001 - 2007 Sub-Saharan African rice prices fluctuated quite a bit. Unfortunanlty you can see that we do not have a complete time series for all regions. 
+
+But lets take a closer looking by faceting each region.
+# ```{r}
+# plot_region_price_facet(rice_avg_region)
+# # Remove legend
+# ```
+After faceting you can really see how speratic Sub-Saharan Africa is. This region was probably the reason for those spike from 2001 - 2007. In East Asia & Pacific we see price drop for a few years but then start to pick up again. (find why). This looks the same for Middle East & North Africa but we really do not have enough data to see if this was a trend . Then for South Asia you can see that it has the most controlled price which makes since becuase (insert how much rice comes from here)
+
+To investigate the inflation of rice across regions we can create a dot plot.
+# ```{r}
+# plot_region_box(rice_avg_region)
+# ```
+No surprise that Sub-Saharan Africa has the most significant outliers. (this is because of). Interstingly Latin America & Caribbean  has the smallest qurtile range which means it is one of the most stable regions for rice price.
+
+So far we have found that from 2006 to 2007 there was a spike in rice food prices worldwide. We also know that Sub-Saharan Africa hase the most expensive and incosistent prices. This is the same fore inflation where we see that Sub-Saharan Africa is the least stable and Latin America & Caribbean is the most stable.
+
+To further investigate these findings we will analys the price of rice in every country available. 
+
+
+
+

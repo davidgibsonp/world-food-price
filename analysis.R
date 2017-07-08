@@ -1,6 +1,6 @@
 # TO DO 
 # Create natioan average function to apply to everything in food
-food <- read.csv("dataclean/food_data.csv")
+food <- read.csv("data/clean/food_data.csv")
 
 # QUESTIONS TO ASK
 # 1 What is the viriation in the price across the globe 
@@ -18,12 +18,19 @@ food <- read.csv("dataclean/food_data.csv")
 #------------------RICE ANALYSIS--------------------------------
 # Find world average price for rice and plot price and inflation
 plot_group_price(rice_world_avg)
+plot_group_price(rice_world_avg_no_lib)
+
 plot_group_inflation(rice_world_avg)
+plot_group_inflation_hist(rice_world_avg)
 
 # Calulate price across regions
 plot_region_price(rice_avg_region)
 plot_region_inflation(rice_avg_region)
 plot_region_price_facet(rice_avg_region)
+
+plot_region_price(rice_avg_region_no_lib)
+plot_region_inflation(rice_avg_region_no_lib)
+plot_region_price_facet(rice_avg_region_no_lib)
 
 # Plot Import and not import 
 plot_import_type_price(rice_import)
@@ -42,7 +49,7 @@ plot_group_inflation_by_country(rice)
 # # box plot infaltion
 plot_region_box(rice_avg_region)
 plot_world_box(rice_world_avg)
-
+View(rice)
 
 #------------------Maize ANALYSIS--------------------------------
 # Find world average price for rice and plot price and inflation

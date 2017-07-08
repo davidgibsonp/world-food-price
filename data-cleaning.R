@@ -1,4 +1,3 @@
-st <- Sys.time()
 require(dplyr)
 require(readr)
 require(data.table)
@@ -6,8 +5,9 @@ require(reshape)
 require(tidyr)
 require(tibble)
 require(ggplot2)
+
 # To Skip Cleaning Load
-# food <- read.csv("data/clean/food_data.csv")
+food <- read.csv("data/clean/food_data.csv")
 
 # CURENCY CLEANING-------------------------------------------
 codes <- read.csv("data/dirty/curency_codes.csv")
@@ -63,8 +63,8 @@ write.csv(ppp, file = "data/clean/ppp_df.csv", row.names=FALSE)
 # FOOD DATA CLEANING-------------------------------------------
 
 # Load Data
-food <- read.csv("data/dirty/WFPVAM_FoodPrices_13-03-2017.csv")
-
+# food <- read.csv("data/dirty/WFPVAM_FoodPrices_13-03-2017.csv")
+# og_food <- read.csv("data/dirty/WFPVAM_FoodPrices_13-03-2017.csv")
 # Delete Unused Columns/Rows
 food$mp_commoditysource <- NULL
 food$adm0_id <- NULL
@@ -323,8 +323,7 @@ View(food)
 food <- food[c("country", "country_code", "country_income_group", "region", "city", "market", "date", "year", "month", "seller_type", "import", "food_group", "food_name", "price_per_one_unit", "unit_type","price", "unit", "currency", "unified_price", "ppp_factor")]
 
 # Export Cleaned Data
-# write.csv(food, file = "data/clean/food_data.csv", row.names=FALSE)
-
+write.csv(food, file = "data/clean/food_data.csv", row.names=FALSE)
 
 # Load Functions For Analysis-------------------------------------------
 
@@ -639,6 +638,8 @@ plot_group_inflation_by_country <- function(food_group_df){
   # ggtitle(paste0(food_group_df,'World Wide Price'))
 }
 
+
+
 plot_region_price <- function(food_group_df){
   ggplot(food_group_df, aes(x=date, y=price_per_one_unit, col=region)) +
     geom_line(alpha = 0.5) + 
@@ -677,11 +678,17 @@ plot_group_inflation <- function(food_group_df){
   # ggtitle(paste0(food_group_df,'World Wide Price'))
 }
 
+plot_group_inflation_hist <- function(food_group_df){
+  ggplot(food_group_df, aes(x=monthly_inflation)) +
+    geom_histogram(bins = 25, color='black', fill='white') 
+}
+
 plot_region_price_facet <- function(food_group_df){
   ggplot(food_group_df, aes(x=date, y=price_per_one_unit, col=region)) +
     geom_line(alpha = 0.5) +
     facet_grid(. ~ region) +
-    scale_x_date(date_breaks = "2 year", date_labels = "%m-%Y") 
+    theme(legend.position="none") +
+     scale_x_date(date_breaks = "2 year", date_labels = "%m-%Y") 
 }
 
 plot_group_seller_type_by_price <- function(food_group_df){
@@ -717,6 +724,7 @@ plot_inflation_hist <- function(country_name, foodName){
     })
   }
 }
+plot_inflation_hist("Guatemala", "Bread")
 
 plot_group_price_facet <- function(food_group_df){
   ggplot(food_group_df, aes(x=date, y=price_per_one_unit, col=country)) +
@@ -775,20 +783,26 @@ plot_all_box <- function(food_group_df){
 
 # Cleaning for Rice Analysis---------------------------------
 rice <- food_group_by("Rice")
+rice_no_lib <- filter(rice, country!="Liberia")
 
 # Find world average price for rice and plot price and inflation
 rice_world_avg <- world_average(rice)
+rice_world_avg_no_lib <- world_average(rice)
 
 # Calulate price across regions
 rice_avg_region <- grouping_by_region_average(rice)
+rice_avg_region_no_lib <- grouping_by_region_average(rice_no_lib)
 
 # Finds average by seller
 # rice_avg_seller <- seller_type_average(rice)
 # View(rice_avg_seller)
 
 # Import type
-table(rice$import)
+# table(rice$import)
 rice_import <- import_type_grouping(rice)
+
+# Facet by region
+
 
 # Find countries without a nation average 
 # plot_group_price(rice) #If average price is not calculated 
@@ -846,6 +860,7 @@ Yemen <- national_average_fun(filter(rice, country=="Yemen"))
 Zambia <- national_average_fun(filter(rice, country=="Zambia  "))
 
 # rbind the newly calculated national averages
+rice_list <- list(Afghanistan, Algeria, Armenia, Bangladesh, Benin, Bolivia, Burkina_Faso, Cameroon, Cape_Verde, Central_African_Republic, Chad, Colombia, Cote_dIvoire, Democratic_Republic_Congo, Djibouti, El_Salvador, Ethiopia, Ghana, Guinea, Guinea_Bissau, Haiti, India, Iran, Iraq, Kyrgyzstan, Liberia, Madagascar, Malawi, Mali, Mauritania, Mozambique, Myanmar, Nepal, Niger, Nigeria, Pakistan, Peru, Philippines, Rwanda, Senegal, Somalia, Sri_Lanka, Syrian_Arab_Republic, Tajikistan, Timor_Leste, Ukraine, United_Republic_Tanzania, Yemen, Zambia)
 rice2 <- do.call("rbind", list(Afghanistan, Algeria, Armenia, Bangladesh, Benin, Bolivia, Burkina_Faso, Cameroon, Cape_Verde, Central_African_Republic, Chad, Colombia, Cote_dIvoire, Democratic_Republic_Congo, Djibouti, El_Salvador, Ethiopia, Ghana, Guinea, Guinea_Bissau, Haiti, India, Iran, Iraq, Kyrgyzstan, Liberia, Madagascar, Malawi, Mali, Mauritania, Mozambique, Myanmar, Nepal, Niger, Nigeria, Pakistan, Peru, Philippines, Rwanda, Senegal, Somalia, Sri_Lanka, Syrian_Arab_Republic, Tajikistan, Timor_Leste, Ukraine, United_Republic_Tanzania, Yemen, Zambia))
 rm(Afghanistan, Algeria, Armenia, Bangladesh, Benin, Bolivia, Burkina_Faso, Cameroon, Cape_Verde, Central_African_Republic, Chad, Colombia, Cote_dIvoire, Democratic_Republic_Congo, Djibouti, El_Salvador, Ethiopia, Ghana, Guinea, Guinea_Bissau, Haiti, India, Iran, Iraq, Kyrgyzstan, Liberia, Madagascar, Malawi, Mali, Mauritania, Mozambique, Myanmar, Nepal, Niger, Nigeria, Pakistan, Peru, Philippines, Rwanda, Senegal, Somalia, Sri_Lanka, Syrian_Arab_Republic, Tajikistan, Timor_Leste, Ukraine, United_Republic_Tanzania, Yemen, Zambia)
 
@@ -1183,10 +1198,20 @@ oil <- rbind(oil, oil2)
 rm(oil2)
 
 # Show countries without standard dev
-show_no_stdv(oil)
+# show_no_stdv(oil)
 
 # Top 6
 # top_6_world <- do.call("rbind", list(rice_world_avg, maize_world_avg, sorghum_world_avg, beans_world_avg, sorghum_world_avg, millet_world_avg, oil_world_avg))
 # top_6_region <- do.call("rbind", list(rice_avg_region, maize_avg_region, sorghum_avg_region, beans_avg_region, sorghum_avg_region, millet_avg_region, oil_avg_region))
-top_6 <- do.call("rbind", list(rice, maize, sorghum, beans, millet, oil))
-write.csv(top_6, file = "data/clean/top_6.csv", row.names=FALSE)
+# top_6 <- do.call("rbind", list(rice, maize, sorghum, beans, millet, oil))
+# write.csv(top_6, file = "data/clean/top_6.csv", row.names=FALSE)
+
+
+
+
+View(as.data.frame(table(og_food$cm_name)))
+View(as.data.frame(table(food$food_group)))
+
+                                                                                                          plot_tile_country_price(rice2)
+
+  
