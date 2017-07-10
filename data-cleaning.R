@@ -1459,12 +1459,3 @@ rm(oil2)
 # top_6 <- do.call("rbind", list(rice, maize, sorghum, beans, millet, oil))
 # write.csv(top_6, file = "data/clean/top_6.csv", row.names=FALSE)
 
-
-
-
-
-
-maize
-Haiti
-Peru
-Gambia

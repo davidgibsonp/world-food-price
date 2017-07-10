@@ -125,7 +125,7 @@ facet_inflation_county_by_Middle_East_North_Africa(rice)
 facet_inflation_county_by_Sub_Saharan_Africa(rice) #to many so I split the facet into 2 graphs
 facet_inflation_county_by_Sub_Saharan_Africa_A(rice)
 facet_inflation_county_by_Sub_Saharan_Africa_B(rice)
-
+ 
 need better way to plot all these countries
 #```
 
