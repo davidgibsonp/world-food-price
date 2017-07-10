@@ -27,6 +27,8 @@ plot_group_inflation_hist(rice_world_avg)
 plot_region_price(rice_avg_region)
 plot_region_inflation(rice_avg_region)
 plot_region_price_facet(rice_avg_region)
+plot_region_price_facet_B(rice_avg_region)
+plot_region_price_facet_A(rice_avg_region)
 
 plot_region_price(rice_avg_region_no_lib)
 plot_region_inflation(rice_avg_region_no_lib)
@@ -49,7 +51,30 @@ plot_group_inflation_by_country(rice)
 # # box plot infaltion
 plot_region_box(rice_avg_region)
 plot_world_box(rice_world_avg)
-View(rice)
+plot_country_box(rice)
+plot_country_box(rice_box) # Filteres out outliers Armenia Rwanda Syrian Arab Republic Timor-Leste Bolivia Liberia
+
+# Plot price by different regions faceted
+facet_price_county_by_East_Asia_Pacific(rice)
+facet_price_county_by_Latin_America_Caribbean(rice)
+facet_price_county_by_South_Asia(rice)
+facet_price_county_by_Europe_Central_Asia(rice)
+facet_price_county_by_Sub_Saharan_Africa(rice) # -Liberia and -nigeria 
+facet_price_county_by_Sub_Saharan_Africa_lib_nig(rice)
+
+# Plot inmflation histo by different regions faceted
+facet_inflation_county_by_East_Asia_Pacific(rice)
+facet_inflation_county_by_Latin_America_Caribbean(rice)
+facet_inflation_county_by_South_Asia(rice)
+facet_inflation_county_by_Europe_Central_Asia(rice)
+facet_inflation_county_by_Middle_East_North_Africa(rice)
+
+facet_inflation_county_by_Sub_Saharan_Africa(rice) #to many so I split the facet into 2 graphs
+facet_inflation_county_by_Sub_Saharan_Africa_A(rice)
+facet_inflation_county_by_Sub_Saharan_Africa_B(rice)
+
+# plot_import_countries_price faceted
+plot_import_countries_price(rice_countries_and_imports)
 
 #------------------Maize ANALYSIS--------------------------------
 # Find world average price for rice and plot price and inflation
@@ -73,7 +98,6 @@ plot_group_inflation_by_country(maize)
 # plot_region_box(maize_avg_region)
 # plot_all_box(maize)
 # plot_world_box(maize_world_avg)
-
 
 #------------------SORGHUM ANALYSIS--------------------------------
 # Find world average price for rice and plot price and inflation

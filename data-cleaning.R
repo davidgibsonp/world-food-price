@@ -5,10 +5,11 @@ require(reshape)
 require(tidyr)
 require(tibble)
 require(ggplot2)
+require(rmarkdown)
 
 # To Skip Cleaning Load
 food <- read.csv("data/clean/food_data.csv")
-
+# 
 # CURENCY CLEANING-------------------------------------------
 codes <- read.csv("data/dirty/curency_codes.csv")
 
@@ -63,7 +64,7 @@ write.csv(ppp, file = "data/clean/ppp_df.csv", row.names=FALSE)
 # FOOD DATA CLEANING-------------------------------------------
 
 # Load Data
-# food <- read.csv("data/dirty/WFPVAM_FoodPrices_13-03-2017.csv")
+food <- read.csv("data/dirty/WFPVAM_FoodPrices_13-03-2017.csv")
 # og_food <- read.csv("data/dirty/WFPVAM_FoodPrices_13-03-2017.csv")
 # Delete Unused Columns/Rows
 food$mp_commoditysource <- NULL
@@ -204,17 +205,19 @@ food$price_per_one_unit <- food$unified_price/food$unit
 # food <- food[complete.cases(food), ]
 
 # Find top foods
-top <- as.data.frame(table(food$food_name))
+# top <- as.data.frame(table(food$food_name))
 
 # Add import column
 import <- food[grep("import", food$food_name), ]
 not_import <- food[!grepl("import", food$food_name), ]
+local <- food[grepl("local", food$food_name), ]
 
+local$import <- "Local"
 import$import <- "Import"
 not_import$import <- "Not Import"
 
-food <- rbind(import, not_import)
-rm(import, not_import)
+food <- do.call("rbind", list(import, not_import, local))
+rm(import, not_import, local)
 
 # Unify top 7 foods
 food_groups <- food
@@ -358,7 +361,7 @@ import_type_average <- function(grouped_food_df){
   }
   import_type
 }
-is.numeric()
+
 national_average_fun <- function(country_df_with_out_national_average){
   stdv <- country_df_with_out_national_average$monthly_inflation
   stdv <- stdv[is.numeric(stdv)]
@@ -525,11 +528,13 @@ grouping_by_region_average <- function(grouped_food_df){
 import_type_grouping <- function(grouped_food_df){
   not_import <- filter(grouped_food_df, import=="Not Import")
   import <- filter(grouped_food_df, import=="Import")
-  
+  local <- filter(grouped_food_df, import=="Local")
+    
   not_import <- import_type_average(not_import)
   import <- import_type_average(import)
+  local <- import_type_average(local)
   
-  grouped_food_df <- rbind(not_import, import)
+  grouped_food_df <- do.call("rbind", list(not_import, import, local))
   grouped_food_df
 }
 
@@ -691,6 +696,45 @@ plot_region_price_facet <- function(food_group_df){
      scale_x_date(date_breaks = "2 year", date_labels = "%m-%Y") 
 }
 
+plot_region_price_facet_A <- function(food_group_df){
+  food_group_df <- filter(food_group_df, region!="Middle East & North Africa")
+  food_group_df <- filter(food_group_df, region!="Sub-Saharan Africa")
+  food_group_df <- filter(food_group_df, region!="Latin America & Caribbean")
+  ggplot(food_group_df, aes(x=date, y=price_per_one_unit, col=region)) +
+    geom_line(alpha = 0.5) +
+    facet_grid(. ~ region) +
+    theme(legend.position="none") +
+    scale_x_date(date_breaks = "2 year", date_labels = "%m-%Y") 
+}
+
+plot_region_price_facet_B <- function(food_group_df){
+  food_group_df <- filter(food_group_df, region!="East Asia & Pacific")
+  food_group_df <- filter(food_group_df, region!="South Asia")
+  food_group_df <- filter(food_group_df, region!="Europe & Central Asia")
+  ggplot(food_group_df, aes(x=date, y=price_per_one_unit, col=region)) +
+    geom_line(alpha = 0.5) +
+    facet_grid(. ~ region) +
+    theme(legend.position="none") +
+    scale_x_date(date_breaks = "2 year", date_labels = "%m-%Y") 
+}
+
+plot_import_countries_price <- function(countries_and_imports_df){
+  ggplot(countries_and_imports_df, aes(x=date, y=price_per_one_unit, col=import)) +
+    geom_line(alpha = 0.5) + 
+    facet_grid(.~country) +
+    scale_x_date(date_breaks = "2 year", date_labels = "%m-%Y") 
+}
+
+plot_import_countries_inflation <- function(countries_and_imports_df){
+  plot <-
+    ggplot(countries_and_imports_df, aes(x=country, y= monthly_inflation, col=import)) +
+    geom_boxplot() 
+  # facet_grid(.~country)
+  plot
+  plot + coord_flip()
+}
+plot_import_countries_inflation(rice_countries_and_imports)
+
 plot_group_seller_type_by_price <- function(food_group_df){
   ggplot(food_group_df, aes(x=date, y=price_per_one_unit, col=seller_type)) +
     geom_line() + 
@@ -724,7 +768,6 @@ plot_inflation_hist <- function(country_name, foodName){
     })
   }
 }
-plot_inflation_hist("Guatemala", "Bread")
 
 plot_group_price_facet <- function(food_group_df){
   ggplot(food_group_df, aes(x=date, y=price_per_one_unit, col=country)) +
@@ -749,8 +792,8 @@ plot_import_type_inflation <- function(food_group_df){
 
 plot_country_box <- function(food_group_df){
   plot <-
-    ggplot(food_group_df, aes(x = country, y = monthly_inflation)) +
-    geom_boxplot()
+    ggplot(food_group_df, aes(x = country, y = monthly_inflation, col=region)) +
+    geom_boxplot() 
   plot + coord_flip()
 }
 
@@ -775,6 +818,166 @@ plot_all_box <- function(food_group_df){
   plot + coord_flip()
 } 
 
+facet_price_county_by_East_Asia_Pacific <- function(grouped_df){
+  East_Asia_Pacific <- filter(grouped_df, region=="East Asia & Pacific")
+  ggplot(East_Asia_Pacific, aes(x=date, y=price_per_one_unit, col=country)) +
+    geom_line() +
+    facet_grid(. ~ country) +
+    theme(legend.position="none") +
+    scale_x_date(date_breaks = "2 year", date_labels = "%m-%Y") +
+    ggtitle('East Asia & Pacific')
+}
+
+facet_price_county_by_Latin_America_Caribbean <- function(grouped_df){
+  facet_county_by_Latin_America_Caribbean <- filter(grouped_df, region=="Latin America & Caribbean")
+  ggplot(facet_county_by_Latin_America_Caribbean, aes(x=date, y=price_per_one_unit, col=country)) +
+    geom_line() +
+    facet_grid(. ~ country) +
+    theme(legend.position="none") +
+    scale_x_date(date_breaks = "2 year", date_labels = "%m-%Y") +
+    ggtitle('Latin America & Caribbean')
+}
+
+facet_price_county_by_South_Asia <- function(grouped_df){
+  South_Asia <- filter(grouped_df, region=="South Asia")
+  ggplot(South_Asia, aes(x=date, y=price_per_one_unit, col=country)) +
+    geom_line() +
+    facet_grid(. ~ country) +
+    theme(legend.position="none") +
+    scale_x_date(date_breaks = "2 year", date_labels = "%m-%Y") +
+    ggtitle('South Asia')
+}
+
+facet_price_county_by_Europe_Central_Asia <- function(grouped_df){
+  Europe_Central_Asia <- filter(grouped_df, region=="Europe & Central Asia")
+  ggplot(Europe_Central_Asia, aes(x=date, y=price_per_one_unit, col=country)) +
+    geom_line() +
+    facet_grid(. ~ country) +
+    theme(legend.position="none") +
+    scale_x_date(date_breaks = "2 year", date_labels = "%m-%Y") +
+    ggtitle('Europe & Central Asia')
+}
+
+facet_price_county_by_Middle_East_North_Africa <- function(grouped_df){
+  Middle_East_North_Africa <- filter(grouped_df, region=="Middle East & North Africa")
+  ggplot(Middle_East_North_Africa, aes(x=date, y=price_per_one_unit, col=country)) +
+    geom_line() +
+    facet_grid(. ~ country) +
+    theme(legend.position="none") +
+    scale_x_date(date_breaks = "2 year", date_labels = "%m-%Y") +
+    ggtitle('Middle East & North Africa')
+}
+
+facet_price_county_by_Sub_Saharan_Africa <- function(grouped_df){
+  Sub_Saharan_Africa <- filter(grouped_df, region=="Sub-Saharan Africa")
+  Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Liberia")
+  Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Nigeria")
+  ggplot(Sub_Saharan_Africa, aes(x=date, y=price_per_one_unit, col=country)) +
+    geom_line() +
+    facet_grid(. ~ country) +
+    theme(legend.position="none") +
+    scale_x_date(date_breaks = "2 year", date_labels = "%m-%Y") +
+    ggtitle('Sub-Saharan Africa')
+}
+
+facet_price_county_by_Sub_Saharan_Africa_lib_nig <- function(grouped_df){
+  lib <- filter(grouped_df, country=="Liberia")
+  nig <- filter(grouped_df, country=="Nigeria")
+  df <- rbind(lib, nig)
+  ggplot(df, aes(x=date, y=price_per_one_unit, col=country)) +
+    geom_line() +
+    facet_grid(. ~ country) +
+    theme(legend.position="none") +
+    scale_x_date(date_breaks = "2 year", date_labels = "%m-%Y") +
+    ggtitle('Sub-Saharan Africa Liberia and Nigeria')
+}
+
+facet_inflation_county_by_East_Asia_Pacific <- function(grouped_df){
+  East_Asia_Pacific <- filter(grouped_df, region=="East Asia & Pacific")
+  ggplot(East_Asia_Pacific, aes(x=monthly_inflation, col=country)) +
+    geom_histogram(bins = 25, color='black', fill='white') +
+    facet_grid(. ~ country) +
+    theme(legend.position="none") +
+    ggtitle('East Asia & Pacific')
+}
+
+facet_inflation_county_by_Latin_America_Caribbean <- function(grouped_df){
+  facet_county_by_Latin_America_Caribbean <- filter(grouped_df, region=="Latin America & Caribbean")
+  ggplot(facet_county_by_Latin_America_Caribbean, aes(x=monthly_inflation, col=country)) +
+    geom_histogram(bins = 25, color='black', fill='white') +
+    facet_grid(. ~ country) +
+    theme(legend.position="none") +
+    ggtitle('Latin America & Caribbean')
+}
+
+facet_inflation_county_by_South_Asia <- function(grouped_df){
+  South_Asia <- filter(grouped_df, region=="South Asia")
+  ggplot(South_Asia, aes(x=monthly_inflation, col=country)) +
+    geom_histogram(bins = 25, color='black', fill='white') +
+    facet_grid(. ~ country) +
+    theme(legend.position="none") +
+    ggtitle('South Asia')
+}
+
+facet_inflation_county_by_Europe_Central_Asia <- function(grouped_df){
+  Europe_Central_Asia <- filter(grouped_df, region=="Europe & Central Asia")
+  ggplot(Europe_Central_Asia, aes(x=monthly_inflation, col=country)) +
+    geom_histogram(bins = 25, color='black', fill='white') +
+    facet_grid(. ~ country) +
+    theme(legend.position="none") +
+    ggtitle('Europe & Central Asia')
+}
+
+facet_inflation_county_by_Middle_East_North_Africa <- function(grouped_df){
+  Middle_East_North_Africa <- filter(grouped_df, region=="Middle East & North Africa")
+  ggplot(Middle_East_North_Africa, aes(x=monthly_inflation, col=country)) +
+    geom_histogram(bins = 25, color='black', fill='white') +
+    facet_grid(. ~ country) +
+    theme(legend.position="none") +
+    ggtitle('Middle East & North Africa')
+}
+
+facet_inflation_county_by_Sub_Saharan_Africa <- function(grouped_df){
+  Sub_Saharan_Africa <- filter(grouped_df, region=="Sub-Saharan Africa")
+  ggplot(Sub_Saharan_Africa, aes(x=monthly_inflation, col=country)) +
+    geom_histogram(bins = 25, color='black', fill='white') +
+    facet_grid(. ~ country) +
+    theme(legend.position="none") +
+    ggtitle('Sub-Saharan Africa')
+}
+
+facet_inflation_county_by_Sub_Saharan_Africa_B <- function(grouped_df){
+  Sub_Saharan_Africa <- filter(grouped_df, region=="Sub-Saharan Africa")
+  Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Nigeria")
+  Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Senegal")
+  Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Benin")
+  Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Cote d'Ivoire")
+  Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="United Republic of Tanzania")
+  
+  ggplot(Sub_Saharan_Africa, aes(x=monthly_inflation, col=country)) +
+    geom_histogram(bins = 25, color='black', fill='white') +
+    facet_grid(. ~ country) +
+    theme(legend.position="none") +
+    ggtitle('Sub-Saharan Africa')
+  
+}       
+
+facet_inflation_county_by_Sub_Saharan_Africa_A <- function(grouped_df){
+  Sub_Saharan_Africa <- filter(grouped_df, region=="Sub-Saharan Africa")
+  Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Ghana")
+  Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Liberia")
+  Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Somalia")
+  Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Guinea-Bissau")
+  Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Cote d'Ivori")
+  Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Swaziland")
+  ggplot(Sub_Saharan_Africa, aes(x=monthly_inflation, col=country)) +
+    geom_histogram(bins = 25, color='black', fill='white') +
+    facet_grid(. ~ country) +
+    theme(legend.position="none") +
+    ggtitle('Sub-Saharan Africa')
+}
+
+
 # IDENTIFY OUTLIERS-------------------
 # Liberia extremely high rice/oil
 # food <- food[food$country != "Liberia", ]
@@ -783,6 +986,7 @@ plot_all_box <- function(food_group_df){
 
 # Cleaning for Rice Analysis---------------------------------
 rice <- food_group_by("Rice")
+# Remove outlier
 rice_no_lib <- filter(rice, country!="Liberia")
 
 # Find world average price for rice and plot price and inflation
@@ -793,6 +997,16 @@ rice_world_avg_no_lib <- world_average(rice)
 rice_avg_region <- grouping_by_region_average(rice)
 rice_avg_region_no_lib <- grouping_by_region_average(rice_no_lib)
 
+# Boxplot withouth outlers
+# Filteres out outliers Armenia Rwanda Syrian Arab Republic Timor-Leste Bolivia Liberia
+rice_box <- rice 
+rice_box <- filter(rice_box, country!="Liberia")
+rice_box <- filter(rice_box, country!="Armenia")
+rice_box <- filter(rice_box, country!="Rwanda")
+rice_box <- filter(rice_box, country!="Syrian Arab Republic")
+rice_box <- filter(rice_box, country!="Timor-Leste")
+rice_box <- filter(rice_box, country!="Bolivia")
+
 # Finds average by seller
 # rice_avg_seller <- seller_type_average(rice)
 # View(rice_avg_seller)
@@ -801,7 +1015,46 @@ rice_avg_region_no_lib <- grouping_by_region_average(rice_no_lib)
 # table(rice$import)
 rice_import <- import_type_grouping(rice)
 
-# Facet by region
+# Group import type and find averege for local and import countries 
+# identify countries with local entries
+local <- rice[grepl("local", rice$food_name), ]
+# View(as.data.frame(table(local$country)))
+
+Mali <- national_average_fun(filter(local, country=="Mali"))
+Guinea <- national_average_fun(filter(local, country=="Guinea"))
+Chad <- national_average_fun(filter(local, country=="Chad"))
+
+local <- do.call("rbind", list(Mali, Guinea, Chad))
+local$import <- "Local"
+rm(Mali, Guinea, Chad)
+
+import <- rice[grepl("import", rice$food_name), ]
+
+Mali <- national_average_fun(filter(import, country=="Mali"))
+Guinea <- national_average_fun(filter(import, country=="Guinea"))
+Chad <- national_average_fun(filter(import, country=="Chad"))
+
+import <- do.call("rbind", list(Mali, Guinea, Chad))
+import$import <- "Import"
+rm(Mali, Guinea, Chad)
+
+not_local <- rice[!grepl("local", rice$food_name), ]
+not_import <- rice[!grepl("import", rice$food_name), ]
+
+neither <- rbind(not_local, not_import)
+rm(not_import, not_local)
+
+Mali <- national_average_fun(filter(neither, country=="Mali"))
+Guinea <- national_average_fun(filter(neither, country=="Guinea"))
+Chad <- national_average_fun(filter(neither, country=="Chad"))
+
+neither <- do.call("rbind", list(Mali, Guinea, Chad))
+neither$import <- "Not Listed"
+rm(Mali, Chad, Guinea)
+
+rice_countries_and_imports <- do.call("rbind", list(neither, import, local))
+rm(neither, import, local)
+
 
 
 # Find countries without a nation average 
@@ -860,7 +1113,7 @@ Yemen <- national_average_fun(filter(rice, country=="Yemen"))
 Zambia <- national_average_fun(filter(rice, country=="Zambia  "))
 
 # rbind the newly calculated national averages
-rice_list <- list(Afghanistan, Algeria, Armenia, Bangladesh, Benin, Bolivia, Burkina_Faso, Cameroon, Cape_Verde, Central_African_Republic, Chad, Colombia, Cote_dIvoire, Democratic_Republic_Congo, Djibouti, El_Salvador, Ethiopia, Ghana, Guinea, Guinea_Bissau, Haiti, India, Iran, Iraq, Kyrgyzstan, Liberia, Madagascar, Malawi, Mali, Mauritania, Mozambique, Myanmar, Nepal, Niger, Nigeria, Pakistan, Peru, Philippines, Rwanda, Senegal, Somalia, Sri_Lanka, Syrian_Arab_Republic, Tajikistan, Timor_Leste, Ukraine, United_Republic_Tanzania, Yemen, Zambia)
+# rice_list <- list(Afghanistan, Algeria, Armenia, Bangladesh, Benin, Bolivia, Burkina_Faso, Cameroon, Cape_Verde, Central_African_Republic, Chad, Colombia, Cote_dIvoire, Democratic_Republic_Congo, Djibouti, El_Salvador, Ethiopia, Ghana, Guinea, Guinea_Bissau, Haiti, India, Iran, Iraq, Kyrgyzstan, Liberia, Madagascar, Malawi, Mali, Mauritania, Mozambique, Myanmar, Nepal, Niger, Nigeria, Pakistan, Peru, Philippines, Rwanda, Senegal, Somalia, Sri_Lanka, Syrian_Arab_Republic, Tajikistan, Timor_Leste, Ukraine, United_Republic_Tanzania, Yemen, Zambia)
 rice2 <- do.call("rbind", list(Afghanistan, Algeria, Armenia, Bangladesh, Benin, Bolivia, Burkina_Faso, Cameroon, Cape_Verde, Central_African_Republic, Chad, Colombia, Cote_dIvoire, Democratic_Republic_Congo, Djibouti, El_Salvador, Ethiopia, Ghana, Guinea, Guinea_Bissau, Haiti, India, Iran, Iraq, Kyrgyzstan, Liberia, Madagascar, Malawi, Mali, Mauritania, Mozambique, Myanmar, Nepal, Niger, Nigeria, Pakistan, Peru, Philippines, Rwanda, Senegal, Somalia, Sri_Lanka, Syrian_Arab_Republic, Tajikistan, Timor_Leste, Ukraine, United_Republic_Tanzania, Yemen, Zambia))
 rm(Afghanistan, Algeria, Armenia, Bangladesh, Benin, Bolivia, Burkina_Faso, Cameroon, Cape_Verde, Central_African_Republic, Chad, Colombia, Cote_dIvoire, Democratic_Republic_Congo, Djibouti, El_Salvador, Ethiopia, Ghana, Guinea, Guinea_Bissau, Haiti, India, Iran, Iraq, Kyrgyzstan, Liberia, Madagascar, Malawi, Mali, Mauritania, Mozambique, Myanmar, Nepal, Niger, Nigeria, Pakistan, Peru, Philippines, Rwanda, Senegal, Somalia, Sri_Lanka, Syrian_Arab_Republic, Tajikistan, Timor_Leste, Ukraine, United_Republic_Tanzania, Yemen, Zambia)
 
@@ -991,7 +1244,7 @@ Zimbabwe <- national_average_fun(filter(sorghum, country=="Zimbabwe"))
 
 # rbind the newly calculated national averages
 sorghum2 <- do.call("rbind", list(Benin, Burkina_Faso , Cameroon, Chad, Djibouti, Ethiopia , Gambia , Guinea_Bissau , Kenya, Mali , Mauritania, Niger , Nigeria, Rwanda , Senegal , Somalia, South_Sudan, Sudan , Uganda, Zambia, Zimbabwe ))
-# rm(Benin, Burkina_Faso , Cameroon, Chad, Djibouti, Ethiopia , Gambia , Guinea_Bissau , Kenya, Mali , Mauritania, Niger , Nigeria, Rwanda , Senegal , Somalia, South_Sudan, Sudan , Uganda, Zambia, Zimbabwe )
+rm(Benin, Burkina_Faso , Cameroon, Chad, Djibouti, Ethiopia , Gambia , Guinea_Bissau , Kenya, Mali , Mauritania, Niger , Nigeria, Rwanda , Senegal , Somalia, South_Sudan, Sudan , Uganda, Zambia, Zimbabwe )
 
 # Filter out the countries without national averge
 sorghum <- filter(sorghum, market=="National Average")
@@ -1126,7 +1379,7 @@ millet <- rbind(millet, millet2)
 rm(millet2)
 
 # Show countries without standard dev
-show_no_stdv(millet)
+# show_no_stdv(millet)
 
 
 # Cleaning for Oil Analysis---------------------------------
@@ -1209,9 +1462,9 @@ rm(oil2)
 
 
 
-View(as.data.frame(table(og_food$cm_name)))
-View(as.data.frame(table(food$food_group)))
 
-                                                                                                          plot_tile_country_price(rice2)
 
-  
+maize
+Haiti
+Peru
+Gambia

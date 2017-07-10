@@ -5,4 +5,6 @@
 .DS_Store
 todo.txt
 world_food_price.Rproj
+Report.html
+Report.pdf
 data/**
