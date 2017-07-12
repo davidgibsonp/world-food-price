@@ -329,7 +329,6 @@ food <- food[c("country", "country_code", "country_income_group", "region", "cit
 write.csv(food, file = "data/clean/food_data.csv", row.names=FALSE)
 
 # Load Functions For Analysis-------------------------------------------
-
 convert_month <- function(number){
   #Converts month to the mm format
   if(number %in% 1:9){
@@ -524,7 +523,7 @@ grouping_by_region_average <- function(grouped_food_df){
   grouped_food_df
 }
 
-price_to_survive_rice <- function(grouped_df){
+price_to_survive_rice_year_avg <- function(grouped_df){
   # 769.23076923g of rice per day have 1,000 caloires a day
   grouped_df$price_to_survive <- 769.23076923 * grouped_df$price_per_one_unit
   # Creat vectors
@@ -537,7 +536,9 @@ price_to_survive_rice <- function(grouped_df){
     for (x in years){
       df <- filter(grouped_df, country==i)
       df <- filter(df, year==x)
-      thisyear <- sum(df$price_to_survive)
+      mean <- mean(df$price_to_survive)
+      thisyear <- mean
+      # thisyear <- sum(df$price_to_survive)
       price_vector <- append(price_vector, thisyear)
       country_vector <- append(country_vector, i)
       year_vector <- append(year_vector, x)
@@ -546,8 +547,12 @@ price_to_survive_rice <- function(grouped_df){
   price_to_survive_df <- data.frame(country=country_vector, year=year_vector, price_to_survive=price_vector)
   price_to_survive_df <- price_to_survive_df[price_to_survive_df$price_to_survive != 0, ]
   price_to_survive_df <- price_to_survive_df[complete.cases(price_to_survive_df), ]
+  price_to_survive_df$price_to_survive <- price_to_survive_df$price_to_survive * 365
   price_to_survive_df
 }
+
+avg <- price_to_survive_rice_year_avg(rice)
+avg2 <- price_to_survive_rice_year_avg(rice)
 
 # Grouping functions
 import_type_grouping <- function(grouped_food_df){
@@ -668,8 +673,6 @@ plot_group_inflation_by_country <- function(food_group_df){
   # ggtitle(paste0(food_group_df,'World Wide Price'))
 }
 
-
-
 plot_region_price <- function(food_group_df){
   ggplot(food_group_df, aes(x=date, y=price_per_one_unit, col=region)) +
     geom_line(alpha = 0.5) + 
@@ -687,9 +690,9 @@ plot_region_inflation <- function(food_group_df){
 }
 
 price_to_survive_plot_bar <- function(price_to_survive_df){
-  price_to_survive_df <- filter(price_to_survive_df, country!="Liberia")
-  price_to_survive_df <- filter(price_to_survive_df, country!="Nigeria")
-  
+  # price_to_survive_df <- filter(price_to_survive_df, country!="Liberia")
+  # price_to_survive_df <- filter(price_to_survive_df, country!="Nigeria")
+  # 
   plot <- 
     ggplot(price_to_survive_df) +
     geom_bar(aes(x=country,y=price_to_survive, col=country),stat="identity") +
@@ -699,8 +702,8 @@ price_to_survive_plot_bar <- function(price_to_survive_df){
 }
 
 price_to_survive_plot_line <- function(price_to_survive_df){
-  price_to_survive_df <- filter(price_to_survive_df, country!="Liberia")
-  price_to_survive_df <- filter(price_to_survive_df, country!="Nigeria")
+  # price_to_survive_df <- filter(price_to_survive_df, country!="Liberia")
+  # price_to_survive_df <- filter(price_to_survive_df, country!="Nigeria")
   ggplot(price_to_survive_df, aes(x=year, y=price_to_survive, col=country)) +
     geom_line() 
 }
@@ -1171,8 +1174,11 @@ rice$stdv <- NA
 rice <- rbind(rice, rice2)
 rm(rice2)
 
-# Create price to survive for a year
-rice_price_to_survive <- price_to_survive_rice(rice)
+# Create price to survive for a yea 1000 calories worth of rice a day
+rice_price_to_survive <- price_to_survive_rice_year_avg(rice)
+
+rice_price_to_survive_no_lib_nig <- filter(rice_price_to_survive, country!="Nigeria")
+rice_price_to_survive_no_lib_nig <- filter(rice_price_to_survive_no_lib_nig, country!="Liberia")
 # Show countries without standard dev
 # show_no_stdv(rice)
 

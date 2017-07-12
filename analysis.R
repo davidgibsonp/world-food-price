@@ -77,6 +77,8 @@ facet_inflation_county_by_Sub_Saharan_Africa_B(rice)
 plot_import_countries_price(rice_countries_and_imports)
 
 # Plot rice price for a years supply 
+rice_price_to_survive <- price_to_survive_rice_year_avg(rice)
+
 price_to_survive_plot_line(rice_price_to_survive)
 price_to_survive_plot_bar(rice_price_to_survive)  
 
