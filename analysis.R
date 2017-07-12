@@ -76,6 +76,10 @@ facet_inflation_county_by_Sub_Saharan_Africa_B(rice)
 # plot_import_countries_price faceted
 plot_import_countries_price(rice_countries_and_imports)
 
+# Plot rice price for a years supply 
+price_to_survive_plot_line(rice_price_to_survive)
+price_to_survive_plot_bar(rice_price_to_survive)  
+
 #------------------Maize ANALYSIS--------------------------------
 # Find world average price for rice and plot price and inflation
 plot_group_price(maize_world_avg)
