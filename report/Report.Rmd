@@ -1,20 +1,20 @@
----rmarkdown
+---RMarkdown
 output:
   html_document: default
-  pdf_document: default
+pdf_document: default
 ---
-
-------header
+  
+------Header
 <center> <h3>July 2017</h3> </center>
-<center> <h1>World Food Prices</h1> </center>
-<center> <h2>David Gibson </h2>  </center>
-
+  <center> <h1>World Food Prices</h1> </center>
+  <center> <h2>David Gibson </h2>  </center>
+  
 
 ------Table of Contents
 <center>
   <h4>Table of Contents</h4>
-</center>
-1. Introduction
+  </center>
+  1. Introduction
 2. Exploratory Analysis and Data Cleaning
 3. Rice
 4. Maize
@@ -22,41 +22,43 @@ output:
 6. Beans
 7. Millet
 8. Oils
+9. Conclusion
+
 
 
 ------Intro
 <center>
   <h4>1. Introduction</h4>
-</center>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </center>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   The data for this analysis was collected by the United Nation's World Food Programme’s vulnerability analysis and is updated monthly. The dataset can be retrieved from [here](data.humdata.org/dataset/wfp-food-prices) 
 
 
 ------Exploretory Analysis and Data Cleaning
 <center>
-  <h4>2. Exploretory Analysis and Data Cleaning</h4>
+<h4>2. Exploretory Analysis and Data Cleaning</h4>
 </center>
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  After loading the dataset into R I immediately realized the magnitude of it all. 687,253 objects of 18 variables which included 74 countries 304 different types food, all with a price in one of 60 currencies. I also noticed with so many different objects that there would be a lot of cleaning that needed to be done before I even started my analysis. Since I did not know what I was going to find I made sure to keep my cleaning phase as broad as possible by retaining as many objects as possible. 
+After loading the dataset into R I immediately realized the magnitude of it all. 687,253 objects of 18 variables which included 74 countries 304 different types food, all with a price in one of 60 currencies. I also noticed with so many different objects that there would be a lot of cleaning that needed to be done before I even started my analysis. Since I did not know what I was going to find I made sure to keep my cleaning phase as broad as possible by retaining as many objects as possible. 
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  I began by renaming columns to be easier to view by renaming columns and removes ones that would not be useful. I also originally had a year and a month column I wrote a function to merge the to make a date column, but I retained bother year and month columns
+I began by renaming columns to be easier to view by renaming columns and removes ones that would not be useful. I also originally had a year and a month column I wrote a function to merge the to make a date column, but I retained bother year and month columns
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  To add some more information I country code column by downloading an existing data frame and performed a left join on the to so every country had its appropriate code. This also created a region and income group column. I Performed the same join but this time to categorize food groups. Example fruits, meat, and bread. This was when I found that some entries were not food such as fuel and manual labor. I left them in but grouped them as "Not Food."
+To add some more information I country code column by downloading an existing data frame and performed a left join on the to so every country had its appropriate code. This also created a region and income group column. I Performed the same join but this time to categorize food groups. Example fruits, meat, and bread. This was when I found that some entries were not food such as fuel and manual labor. I left them in but grouped them as "Not Food."
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  The hardest part of the cleaning was trying to unify all the price because I had 60 unique currencies over the last two decades. So not only was exchange rate a factor so was inflation and deflation. To overcome this I downloaded a data set of PPP factors from the World Bank. This would account for both inflation and exchange rate. Once I had the PPP data set a wrote a function to match every country and year with its appropriate PPP factor. Once I had a column with PPP factor, I then could calculate a unified price column by dividing the original price by the new PPP facto column. Unfortunately the PPP data set did not have a PPP factor for every country and every year, so these entries were deleted.
+The hardest part of the cleaning was trying to unify all the price because I had 60 unique currencies over the last two decades. So not only was exchange rate a factor so was inflation and deflation. To overcome this I downloaded a data set of PPP factors from the World Bank. This would account for both inflation and exchange rate. Once I had the PPP data set a wrote a function to match every country and year with its appropriate PPP factor. Once I had a column with PPP factor, I then could calculate a unified price column by dividing the original price by the new PPP facto column. Unfortunately the PPP data set did not have a PPP factor for every country and every year, so these entries were deleted.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  After this, I thought my analysis could begin, but I quickly realized that I would have to unify the unit column as well. I had some foods in KG, G, Pounds, Gallon, ML, L and even Marmite and Cuartilla. So I converted everything to G L or Units. From here I divided my unified price by units to calculate a price per one unit column.
+After this, I thought my analysis could begin, but I quickly realized that I would have to unify the unit column as well. I had some foods in KG, G, Pounds, Gallon, ML, L and even Marmite and Cuartilla. So I converted everything to G L or Units. From here I divided my unified price by units to calculate a price per one unit column.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  To finally narrow my focus I took a look at them most common foods. This revealed that the top 10 most common foods in order were Maize, Millet, Sorghum, Rice (imported), Rice, Maize (white), Rice (local), Wheat, Sugar and Wheat flour. I had a substantial amount of entries, but I wanted to unify all types of the same food. So I regrouped the foods to be more specific and was lift with substantially more values to analyzing. This left me with much more values in my top 10, and I decide to only focus of foods with over 25,000 entries, so this left me with Rice, Maize, Sorghum, Beans, Millet and oil Oil. I did not rename them because I wanted to be able to distinguish between local and imported foods.
+To finally narrow my focus I took a look at them most common foods. This revealed that the top 10 most common foods in order were Maize, Millet, Sorghum, Rice (imported), Rice, Maize (white), Rice (local), Wheat, Sugar and Wheat flour. I had a substantial amount of entries, but I wanted to unify all types of the same food. So I regrouped the foods to be more specific and was lift with substantially more values to analyzing. This left me with much more values in my top 10, and I decide to only focus of foods with over 25,000 entries, so this left me with Rice, Maize, Sorghum, Beans, Millet and oil Oil. I did not rename them because I wanted to be able to distinguish between local and imported foods.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  Now it was finally time to start my analysis. At least I thought. I grouped the top 6 foods into 6 data frames, and the first thing I tried to do was plot a line chart and noticed something strange. It was not a traditional line graph so I investigated my data and realized that for some countries I only had the national average and others I had multiple markets meaning I had multiple prices for the same day which would not graph properly. So back to cleaning. I wrote a function that would group calculate the national average for each of the in the top 6 food group data frames. One thing to note is that this is not a true representation of a national average because I assumed that all the markets are weighted equally which in reality is not true. I additionally wrote a function to calculate import vs. local, regional and global averages.
+Now it was finally time to start my analysis. At least I thought. I grouped the top 6 foods into 6 data frames, and the first thing I tried to do was plot a line chart and noticed something strange. It was not a traditional line graph so I investigated my data and realized that for some countries I only had the national average and others I had multiple markets meaning I had multiple prices for the same day which would not graph properly. So back to cleaning. I wrote a function that would group calculate the national average for each of the in the top 6 food group data frames. One thing to note is that this is not a true representation of a national average because I assumed that all the markets are weighted equally which in reality is not true. I additionally wrote a function to calculate import vs. local, regional and global averages.
 
 
 ------Rice
@@ -65,31 +67,31 @@ output:
 </center>
   
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    I started the analysis with the food that had the most entries which was rice with 67,003 entries. With each food I started the analysis with a worldwide view and then narrowed it down to a six regioins and then narroed it further to specific countries.
+  I started the analysis with the food that had the most entries which was rice with 67,003 entries. With each food I started the analysis with a worldwide view and then narrowed it down to a six regioins and then narroed it further to specific countries.
   
   Lets take a look at how the price of rice has changed over they last ten years by taking the average price for each day and plotting a line chart.
   # ```{r}
-  # plot_group_price(rice_world_avg)
+  plot_group_price(rice_world_avg)
   # ```
   As you can see the price has overall increased. in the last decade Notice how there is a spike in the price from 2006 - 2007 
   
   To look at the overall inflation of rice, I plotted monthly inflation as a histogram
   # ```{r}
-  # plot_group_inflation_hist(rice_world_avg)
+  plot_group_inflation_hist(rice_world_avg)
   # ```
   It looks like there is a reletively normal distribution, but there are a few ouliers. The bin way over in 100  is Liberia, which has an extremely high inflation rate.
   
   Lets narrow our analysis slightly by looking at rice in different regions of the world. First by plotting them all on the same line chart.
   # ```{r}
-  # plot_region_price(rice_avg_region)
+  plot_region_price(rice_avg_region)
   # ```
   You can see that a  East Asia & Pacific, South Asia,  Latin America & Caribbean and finallu Middle East & North Africa all seem to have a similary trend. While Europe & Central Asia has a slighty higher price. Most notably is Sub-Saharan Africa which has multiple spikes in price. Unfortunately you can see that we do not have a complete time series for all regions. 
   
   But lets take a closer look at all the regions by faceting each chart.
   # ```{r}
-  # #plot_region_price_facet(rice_avg_region)
-  #plot_region_price_facet_B(rice_avg_region)
-  #plot_region_price_facet_A(rice_avg_region)
+  plot_region_price_facet(rice_avg_region)
+  plot_region_price_facet_B(rice_avg_region)
+  plot_region_price_facet_A(rice_avg_region)
   # ```
   After faceting, you can see how sporadic Sub-Saharan Africa is. This region was probably the reason for those spike from 2001 - 2007 when all regions were plotted together. This makes since because Africa is prone to food price fluctuation due to shortages, poverty and local conflict. 
   In East Asia & Pacific we see the price drop for a few years but then start to pick up again. (find why was this during a good growing season). This looks the same for the Middle East & North Africa, but we do not have enough data to see if this was a trend. 
@@ -97,7 +99,7 @@ output:
   
   Price only tells half of the story. Looking at inflation for each region will show which regions stable and unstable. To do this I created a box plot.
   #```{r}
-  #plot_region_box(rice_avg_region)
+  plot_region_box(rice_avg_region)
   #```
   No surprise that Sub-Saharan Africa looks like the most unstable region with the most significant outliers. After investigating the data I found that these outliers are cause by Liberia in 2006 and Rwanda in 2015.
   You can also see Latin America & Caribbean has the smallest quartile range which means it is one of the most stable regions for rice price. (find why)
@@ -107,6 +109,7 @@ output:
   To further investigate these findings we will analyse the price of rice in every country available. (once I know I have the correct graphs I will investigate the countries)
   #```{r}
   #Need to use GGally but cant figure it out without make an plot for every region and the plotting them by ggmatrix()
+  facet_price_county_by_Middle_East_North_Africa(rice)
   facet_price_county_by_East_Asia_Pacific(rice)
   facet_price_county_by_Latin_America_Caribbean(rice)
   facet_price_county_by_South_Asia(rice)
@@ -127,7 +130,7 @@ output:
   facet_inflation_county_by_Sub_Saharan_Africa(rice) #to many countries so I split the facet into 2 graphs
   facet_inflation_county_by_Sub_Saharan_Africa_A(rice)
   facet_inflation_county_by_Sub_Saharan_Africa_B(rice)
-   
+  
   need better way to plot all these countries
   #```
   
@@ -153,9 +156,367 @@ output:
   price_to_survive_plot_line(rice_price_to_survive)
   price_to_survive_plot_bar(rice_price_to_survive)  
   
-  #Took out nigeria and liberia
-  price_to_survive_plot_line(rice_price_to_survive_no_lib_nig)
+  
+  price_to_survive_plot_line(rice_price_to_survive_no_lib_nig)#Took out nigeria and liberia
+  price_to_survive_plot_bar(rice_price_to_survive_no_lib_nig)
+  #```
+
+------Maize
+<center>
+  <h4>4. Maize </h4>
+</center>
+  
+  price for each day and plotting a line chart.
+  # ```{r}
+  plot_group_price(maize_world_avg)
+  # ```
+  
+  
+  overall inflation of rice,  histogram
+  # ```{r}
+  plot_group_inflation_hist(maize_world_avg)
+  # ```
+  
+  
+  different regions of the world same line chart.
+  # ```{r}
+  plot_region_price(maize_avg_region)
+  # ```
+  
+  regions by faceting each chart.
+  # ```{r}
+  plot_region_price_facet(maize_avg_region) #all four regions
+  plot_region_price_facet_A(maize_avg_region)
+  plot_region_price_facet_B(maize_avg_region)
+  # ```
+  
+  inflation for each region box plot.
+  #```{r}
+  plot_region_box(maize_avg_region)
+  #```
+  
+  MID SUMMARY
+  
+  price in every country 
+  #```{r}
+  facet_price_county(maize) #all countries
+  facet_price_county_by_Middle_East_North_Africa(maize)
+  facet_price_county_by_East_Asia_Pacific(maize) #2 countries
+  facet_price_county_by_Latin_America_Caribbean(maize) #8 countries
+  facet_price_county_by_Europe_Central_Asia(maize) #2 countries
+  facet_price_county_by_Sub_Saharan_Africa(maize) #26 countries
+  facet_price_county_by_Sub_Saharan_Africa_lib_nig(maize) #Took out liberia and nigeria 
+  #```
+  
+  inflation vaires from country to country.
+  #```{r}
+  
+  facet_inflation_county_by_East_Asia_Pacific(maize) 
+  facet_inflation_county_by_Latin_America_Caribbean(maize)
+  facet_inflation_county_by_Europe_Central_Asia(maize)
+  
+  facet_inflation_county_by_Sub_Saharan_Africa(maize) #to many countries so I split the facet into 2 graphs
+  facet_inflation_county_by_Sub_Saharan_Africa_A(maize)
+  facet_inflation_county_by_Sub_Saharan_Africa_B(maize)
+  #```
+  
+  countries inflation box plot 
+  #```{r}
+  plot_country_box(maize) #outlier in Ethiopia
+  #```
+  
+  
+  price to survive. NEED TO CALC 
+  #```{r}
+  price_to_survive_plot_line(rice_price_to_survive)
+  price_to_survive_plot_bar(rice_price_to_survive)  
+  
+  
+  price_to_survive_plot_line(rice_price_to_survive_no_lib_nig)#Took out nigeria and liberia
+  price_to_survive_plot_bar(rice_price_to_survive_no_lib_nig)
+  #```
+
+
+------Sorghum
+<center>
+  <h4>5. Sorghum </h4>
+</center>
+
+  price for each day and plotting a line chart.
+  # ```{r}
+  plot_group_price(sorghum_world_avg)
+  # ```
+  
+  
+  overall inflation of rice,  histogram
+  # ```{r}
+  plot_group_inflation_hist(sorghum_world_avg)
+  # ```
+  
+  
+  different regions of the world same line chart.
+  # ```{r}
+  plot_region_price(sorghum_avg_region)
+  # ```
+  
+  regions by faceting each chart.
+  # ```{r}
+  plot_region_price_facet(sorghum_avg_region)
+  # ```
+  
+  inflation for each region box plot.
+  #```{r}
+  plot_region_box(sorghum_avg_region)
+  #```
+  
+  MID SUMMARY
+  
+  price in every country 
+  #```{r}
+  facet_price_county_by_Middle_East_North_Africa(sorghum) #only 1 country
+  facet_price_county_by_Latin_America_Caribbean(sorghum) #only 1 country
+  facet_price_county_by_Sub_Saharan_Africa(sorghum) #19 countries
+  facet_price_county_by_Sub_Saharan_Africa_lib_nig(sorghum) #Took out liberia and nigeria 
+  #```
+  
+  inflation vaires from country to country.
+  #```{r}
+  facet_inflation_county_by_Latin_America_Caribbean(sorghum)
+  facet_inflation_county_by_Middle_East_North_Africa(sorghum)
+  facet_inflation_county_by_Sub_Saharan_Africa(sorghum) #to many countries so I split the facet into 2 graphs
+  facet_inflation_county_by_Sub_Saharan_Africa_A(sorghum)
+  facet_inflation_county_by_Sub_Saharan_Africa_B(sorghum)
+  #```
+  
+  countries inflation box plot. Outlier in Ethiopia
+  #```{r}
+  plot_country_box(sorghum)
+  #```
+  
+  
+  price to survive.  create
+  #```{r}
+  price_to_survive_plot_line(rice_price_to_survive)
+  price_to_survive_plot_bar(rice_price_to_survive)  
+  
+  
+  price_to_survive_plot_line(rice_price_to_survive_no_lib_nig) #Took out nigeria and liberia
   price_to_survive_plot_bar(rice_price_to_survive_no_lib_nig)
   #```
   
-------Maize
+
+------Beans
+<center>
+  <h4>6. Beans </h4>
+</center>
+
+  price for each day and plotting a line chart.
+  # ```{r}
+  plot_group_price(beans_world_avg)
+  # ```
+  
+  
+  overall inflation of rice,  histogram
+  # ```{r}
+  plot_group_inflation_hist(beans_world_avg)
+  # ```
+  
+  
+  different regions of the world same line chart.
+  # ```{r}
+  plot_region_price(beans_avg_region)
+  # ```
+  
+  regions by faceting each chart.
+  # ```{r}
+  plot_region_price_facet(beans_avg_region) #all 5 
+  plot_region_price_facet_B(beans_avg_region) # first 3
+  plot_region_price_facet_A(beans_avg_region) # second 2
+  # ```
+  
+  inflation for each region box plot.
+  #```{r}
+  plot_region_box(beans_avg_region)
+  #```
+  
+  MID SUMMARY
+  
+  price in every country 
+  #```{r}
+  facet_price_county_by_East_Asia_Pacific(beans) #2 countries
+  facet_price_county_by_Middle_East_North_Africa(beans) #5 countries
+  facet_price_county_by_Latin_America_Caribbean(beans) #6 countries
+  facet_price_county_by_South_Asia(beans) #1 countries
+  facet_price_county_by_Europe_Central_Asia(beans) #2 countries
+  facet_price_county_by_Sub_Saharan_Africa(beans) #20 countries
+  #```
+  
+  inflation vaires from country to country.
+  #```{r}
+  facet_inflation_county_by_East_Asia_Pacific(beans)
+  facet_inflation_county_by_Latin_America_Caribbean(beans)
+  facet_inflation_county_by_South_Asia(beans)
+  facet_inflation_county_by_Europe_Central_Asia(beans)
+  facet_inflation_county_by_Middle_East_North_Africa(beans)
+  facet_inflation_county_by_Sub_Saharan_Africa(beans) #to many countries so I split the facet into 2 graphs
+  facet_inflation_county_by_Sub_Saharan_Africa_A(beans)
+  facet_inflation_county_by_Sub_Saharan_Africa_B(beans)
+  
+  #```
+  
+  countries inflation box plot 
+  #```{r}
+  plot_country_box(beans)
+  #```
+  
+  
+  price to survive.  calc
+  #```{r}
+  price_to_survive_plot_line(rice_price_to_survive)
+  price_to_survive_plot_bar(rice_price_to_survive)  
+  
+  
+  price_to_survive_plot_line(rice_price_to_survive_no_lib_nig) #Took out nigeria and liberia
+  price_to_survive_plot_bar(rice_price_to_survive_no_lib_nig)
+  #```
+  
+
+------Millet
+<center>
+  <h4>7. Millet </h4>
+</center>
+  
+  price for each day and plotting a line chart.
+  # ```{r}
+  plot_group_price(millet_world_avg)
+  # ```
+  
+  overall inflation of rice,  histogram
+  # ```{r}
+  plot_group_inflation_hist(millet_world_avg)
+  # ```
+  
+  different regions of the world same line chart.
+  # ```{r}
+  plot_region_price(millet_avg_region)
+  # ```
+  
+  regions by faceting each chart.
+  # ```{r}
+  plot_region_price_facet(millet_avg_region)
+  # ```
+  
+  inflation for each region box plot.
+  #```{r}
+  plot_region_box(millet_avg_region)
+  #```
+  
+  MID SUMMARY
+  
+  price in every country 
+  #```{r}
+  facet_price_county_by_Middle_East_North_Africa(millet) #1 country
+  facet_price_county_by_Sub_Saharan_Africa(millet) #12
+  #```
+  
+  inflation vaires from country to country.
+  #```{r}
+  facet_inflation_county_by_Middle_East_North_Africa(millet)
+  facet_inflation_county_by_Sub_Saharan_Africa(millet) #to many countries so I split the facet into 2 graphs
+  facet_inflation_county_by_Sub_Saharan_Africa_A(millet)
+  facet_inflation_county_by_Sub_Saharan_Africa_B(millet)
+  #```
+  
+  countries inflation box plot 
+  #```{r}
+  plot_country_box(millet)
+  #```
+  
+  price to survive. need to calc
+  #```{r}
+  price_to_survive_plot_line(rice_price_to_survive)
+  price_to_survive_plot_bar(rice_price_to_survive)  
+  
+  price_to_survive_plot_line(rice_price_to_survive_no_lib_nig) #Took out nigeria and liberia
+  price_to_survive_plot_bar(rice_price_to_survive_no_lib_nig)
+  #```
+  
+
+------Oil
+<center>
+  <h4>8. Oil </h4>
+</center>
+  
+  price for each day and plotting a line chart.
+  # ```{r}
+  plot_group_price(oil_world_avg)
+  # ```
+  
+  
+  overall inflation of rice,  histogram
+  # ```{r}
+  plot_group_inflation_hist(oil_world_avg)
+  # ```
+  
+  
+  different regions of the world same line chart.
+  # ```{r}
+  plot_region_price(oil_avg_region)
+  # ```
+  
+  regions by faceting each chart.
+  # ```{r}
+  plot_region_price_facet(oil_avg_region)
+  plot_region_price_facet_B(oil_avg_region)
+  plot_region_price_facet_A(oil_avg_region)
+  # ```
+  
+  inflation for each region box plot.
+  #```{r}
+  plot_region_box(oil_avg_region)
+  #```
+  
+  MID SUMMARY
+  
+  price in every country 
+  #```{r}
+  facet_price_county_by_East_Asia_Pacific(oil)
+  facet_price_county_by_Middle_East_North_Africa(maize)
+  facet_price_county_by_Latin_America_Caribbean(oil)
+  facet_price_county_by_South_Asia(oil)
+  facet_price_county_by_Europe_Central_Asia(oil)
+  facet_price_county_by_Sub_Saharan_Africa(oil)
+  facet_price_county_by_Sub_Saharan_Africa_lib_nig(oil) #Took out liberia and nigeria 
+  #```
+  
+  inflation vaires from country to country.
+  #```{r}
+  
+  facet_inflation_county_by_East_Asia_Pacific(oil)
+  facet_inflation_county_by_Latin_America_Caribbean(oil)
+  facet_inflation_county_by_South_Asia(oil)
+  facet_inflation_county_by_Europe_Central_Asia(oil)
+  facet_inflation_county_by_Middle_East_North_Africa(oil)
+  
+  facet_inflation_county_by_Sub_Saharan_Africa(oil) #to many countries so I split the facet into 2 graphs
+  facet_inflation_county_by_Sub_Saharan_Africa_A(oil)
+  facet_inflation_county_by_Sub_Saharan_Africa_B(oil)
+  
+  #```
+  
+  countries inflation box plot 
+  #```{r}
+  plot_country_box(oil)
+  #```
+  
+  
+  price to survive.  
+  #```{r}
+  price_to_survive_plot_line(rice_price_to_survive)
+  price_to_survive_plot_bar(rice_price_to_survive)  
+  
+  
+  price_to_survive_plot_line(rice_price_to_survive_no_lib_nig) #Took out nigeria and liberia
+  price_to_survive_plot_bar(rice_price_to_survive_no_lib_nig)
+  #```
+  

@@ -840,28 +840,33 @@ plot_import_type_inflation <- function(food_group_df){
 plot_country_box <- function(food_group_df){
   plot <-
     ggplot(food_group_df, aes(x = country, y = monthly_inflation, col=region)) +
-    geom_boxplot() 
+    geom_boxplot() +
+    theme(legend.position="none")
   plot + coord_flip()
 }
 
 plot_world_box <- function(food_group_df){
   plot <-
     ggplot(food_group_df, aes(x = country, y = monthly_inflation)) +
-    geom_boxplot()
+    geom_boxplot() +
+    theme(legend.position="none") 
   plot + coord_flip()
 }
 
 plot_region_box <- function(food_group_df){
   plot <-
-    ggplot(food_group_df, aes(x = region, y = monthly_inflation)) +
-    geom_boxplot()
+    ggplot(food_group_df, aes(x = region, y = monthly_inflation, col=region)) +
+    geom_boxplot() +
+    theme(legend.position="none") 
   plot + coord_flip()
 }
 
 plot_all_box <- function(food_group_df){
   plot <-
     ggplot(food_group_df, aes(x = food_group, y = monthly_inflation)) +
-    geom_boxplot()
+    geom_boxplot() +
+    theme(legend.position="none")
+  
   plot + coord_flip()
 } 
 
@@ -917,8 +922,6 @@ facet_price_county_by_Middle_East_North_Africa <- function(grouped_df){
 
 facet_price_county_by_Sub_Saharan_Africa <- function(grouped_df){
   Sub_Saharan_Africa <- filter(grouped_df, region=="Sub-Saharan Africa")
-  Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Liberia")
-  Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Nigeria")
   ggplot(Sub_Saharan_Africa, aes(x=date, y=price_per_one_unit, col=country)) +
     geom_line() +
     facet_grid(. ~ country) +
@@ -937,6 +940,14 @@ facet_price_county_by_Sub_Saharan_Africa_lib_nig <- function(grouped_df){
     theme(legend.position="none") +
     scale_x_date(date_breaks = "2 year", date_labels = "%m-%Y") +
     ggtitle('Sub-Saharan Africa Liberia and Nigeria')
+}
+
+facet_price_county <- function(grouped_df){
+  ggplot(grouped_df, aes(x=date, y=price_per_one_unit, col=country)) +
+    geom_line() +
+    facet_grid(. ~ country) +
+    theme(legend.position="none") +
+    scale_x_date(date_breaks = "2 year", date_labels = "%m-%Y") 
 }
 
 facet_inflation_county_by_East_Asia_Pacific <- function(grouped_df){
