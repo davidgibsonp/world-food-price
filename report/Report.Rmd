@@ -1,16 +1,25 @@
----RMarkdown
+---
+output:
+  html_document: default
+  pdf_document: default
+---
+---
 output:
   html_document: default
 pdf_document: default
 ---
-  
-------Header
+```{r include = FALSE}
+require(ggplot2)
+require(GGally)
+
+load(file="objects_for_analysis.RData")
+```
+
+------
 <center> <h3>July 2017</h3> </center>
   <center> <h1>World Food Prices</h1> </center>
   <center> <h2>David Gibson </h2>  </center>
-  
-
-------Table of Contents
+------
 <center>
   <h4>Table of Contents</h4>
   </center>
@@ -23,18 +32,13 @@ pdf_document: default
 7. Millet
 8. Oils
 9. Conclusion
-
-
-
-------Intro
+------
 <center>
   <h4>1. Introduction</h4>
   </center>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   The data for this analysis was collected by the United Nation's World Food Programme’s vulnerability analysis and is updated monthly. The dataset can be retrieved from [here](data.humdata.org/dataset/wfp-food-prices) 
-
-
-------Exploretory Analysis and Data Cleaning
+------
 <center>
 <h4>2. Exploretory Analysis and Data Cleaning</h4>
 </center>
@@ -61,63 +65,80 @@ To finally narrow my focus I took a look at them most common foods. This reveale
 Now it was finally time to start my analysis. At least I thought. I grouped the top 6 foods into 6 data frames, and the first thing I tried to do was plot a line chart and noticed something strange. It was not a traditional line graph so I investigated my data and realized that for some countries I only had the national average and others I had multiple markets meaning I had multiple prices for the same day which would not graph properly. So back to cleaning. I wrote a function that would group calculate the national average for each of the in the top 6 food group data frames. One thing to note is that this is not a true representation of a national average because I assumed that all the markets are weighted equally which in reality is not true. I additionally wrote a function to calculate import vs. local, regional and global averages.
 
 
-------Rice
+------
 <center>
   <h4>3. Rice </h4>
 </center>
   
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   I started the analysis with the food that had the most entries which was rice with 67,003 entries. With each food I started the analysis with a worldwide view and then narrowed it down to a six regioins and then narroed it further to specific countries.
-  
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
   Lets take a look at how the price of rice has changed over they last ten years by taking the average price for each day and plotting a line chart.
-  # ```{r}
-  plot_group_price(rice_world_avg)
-  # ```
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+plot_group_price(rice_world_avg)
+```
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
   As you can see the price has overall increased. in the last decade Notice how there is a spike in the price from 2006 - 2007 
   
   To look at the overall inflation of rice, I plotted monthly inflation as a histogram
-  # ```{r}
-  plot_group_inflation_hist(rice_world_avg)
-  # ```
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+plot_group_inflation_hist(rice_world_avg)
+```
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   It looks like there is a reletively normal distribution, but there are a few ouliers. The bin way over in 100  is Liberia, which has an extremely high inflation rate.
   
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Lets narrow our analysis slightly by looking at rice in different regions of the world. First by plotting them all on the same line chart.
-  # ```{r}
-  plot_region_price(rice_avg_region)
-  # ```
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+plot_region_price(rice_avg_region)
+```
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   You can see that a  East Asia & Pacific, South Asia,  Latin America & Caribbean and finallu Middle East & North Africa all seem to have a similary trend. While Europe & Central Asia has a slighty higher price. Most notably is Sub-Saharan Africa which has multiple spikes in price. Unfortunately you can see that we do not have a complete time series for all regions. 
   
   But lets take a closer look at all the regions by faceting each chart.
-  # ```{r}
-  rice_region_price_matrix
-  # ```
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+rice_region_price_matrix
+```
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   After faceting, you can see how sporadic Sub-Saharan Africa is. This region was probably the reason for those spike from 2001 - 2007 when all regions were plotted together. This makes since because Africa is prone to food price fluctuation due to shortages, poverty and local conflict. 
   In East Asia & Pacific we see the price drop for a few years but then start to pick up again. (find why was this during a good growing season). This looks the same for the Middle East & North Africa, but we do not have enough data to see if this was a trend. 
   Then for South Asia, you can see that it has the most controlled price which makes sense because over 90 percent of the world’s rice is produced and consumed in the Asia-Pacific Region which would lead to cheaper prices for locals. (http://www.fao.org/docrep/003/x6905e/x6905e04.htm)
-  
+
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Price only tells half of the story. Looking at inflation for each region will show which regions stable and unstable. To do this I created a box plot.
-  #```{r}
-  plot_region_box(rice_avg_region)
-  #```
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+plot_region_box(rice_avg_region)
+```
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   No surprise that Sub-Saharan Africa looks like the most unstable region with the most significant outliers. After investigating the data I found that these outliers are cause by Liberia in 2006 and Rwanda in 2015.
   You can also see Latin America & Caribbean has the smallest quartile range which means it is one of the most stable regions for rice price. (find why)
   
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   So far we have found that from 2006 to 2007 there was a spike in rice food prices worldwide. We also know that Sub-Saharan Africa has the most high and inconsistent prices. This is the same for inflation where we see that Sub-Saharan Africa is the least stable and Latin America & Caribbean is the most stable.
-  
+
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   To further investigate these findings we will analyse the price of rice in every country available. (once I know I have the correct graphs I will investigate the countries)
-  #```{r}
-  #Need to use GGally but cant figure it out without make an plot for every region and the plotting them by ggmatrix()
-  facet_price_county_by_Middle_East_North_Africa(rice)
-  facet_price_county_by_East_Asia_Pacific(rice)
-  facet_price_county_by_Latin_America_Caribbean(rice)
-  facet_price_county_by_South_Asia(rice)
-  facet_price_county_by_Europe_Central_Asia(rice)
-  facet_price_county_by_Sub_Saharan_Africa(rice)
+  ```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+# facet_price_county_by_Middle_East_North_Africa(rice)
+# facet_price_county_by_East_Asia_Pacific(rice)
+# facet_price_county_by_Latin_America_Caribbean(rice)
+# facet_price_county_by_South_Asia(rice)
+# facet_price_county_by_Europe_Central_Asia(rice)
+# facet_price_county_by_Sub_Saharan_Africa(rice)
   
-  #```
+Middle_East_North_Africa_price_matrix
+East_Asia_Pacific_price_matrix
+Europe_Central_Asia_price_matrix
+South_Asia_price_matrix
+Latin_America_Caribbean_price_matrix
+East_Asia_Pacific_price_matrix
+Sub_Saharan_Africa_price_matrix
+  
+  ```
   
   Next lets take a look at how inflation vaires from country to country. (are histo grams the best to do this, like price once I have the correct graphs I will investigate the countris)
-  #```{r}
+  #```{r, echo=FALSE, message=FALSE, warning=FALSE}
   #once again i want to use ggally here 
   facet_inflation_county_by_East_Asia_Pacific(rice)
   facet_inflation_county_by_Latin_America_Caribbean(rice)
@@ -133,24 +154,24 @@ Now it was finally time to start my analysis. At least I thought. I grouped the 
   #```
   
   To see all the compare all the countries inflation we can plot them on a box plot once again.
-  #```{r}
+  #```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_country_box(rice)
   #```
   
   Since rice has so many values, we have enough rice classified as import and local. This allows us to compare the price of local and imported rice to see if there is a correlation between the two.
-  #```{r}
+  #```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_import_countries_price(rice_countries_and_imports)
   #```
   As you can see in every country imported local and not listed follow the same trend with just a slight increase or decrease in price. Or can even see see were they have the exact same price where the purple line is. 
   
   But lets see if inflation for import and export has a significant difference. 
-  #```{r}
+  #```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_import_countries_inflation(rice_countries_and_imports)
   #```
   It looks like Chad and Mali have an identical distrobution for both Import and Not Listed which leads me to believe that rice that I catorgized as not listed may be imported rice. Additionally for both these countries Local rice has a much less stable price which makes since because of seasonal crops. Mali has three growing seasons, Main Oct-Dec, Off Dec-Jan and Deepwater rice May-Jul (http://ricepedia.org/mali). Then Chad has two season, main season Oct - Dec and off seasson June - July. (http://www.fao.org/docrep/005/Y4347E/y4347e0f.htm)  Off season rice has to be grown in well irrigated areas. 
   
   The last analysis I will do for rice is the price to survive. Which is a price for a years worth of rice which is equiliveny to 1000 calories of rice a day. The calculated that 1000 calories of rice is about 769.23076923 G. 
-  #```{r}
+  #```{r, echo=FALSE, message=FALSE, warning=FALSE}
   price_to_survive_plot_line(rice_price_to_survive)
   price_to_survive_plot_bar(rice_price_to_survive)  
   
@@ -165,38 +186,38 @@ Now it was finally time to start my analysis. At least I thought. I grouped the 
 </center>
   
   price for each day and plotting a line chart.
-  # ```{r}
+  # ```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_group_price(maize_world_avg)
   # ```
   
   
   overall inflation of rice,  histogram
-  # ```{r}
+  # ```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_group_inflation_hist(maize_world_avg)
   # ```
   
   
   different regions of the world same line chart.
-  # ```{r}
+  # ```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_region_price(maize_avg_region)
   # ```
   
   regions by faceting each chart.
-  # ```{r}
+  # ```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_region_price_facet(maize_avg_region) #all four regions
   plot_region_price_facet_A(maize_avg_region)
   plot_region_price_facet_B(maize_avg_region)
   # ```
   
   inflation for each region box plot.
-  #```{r}
+  #```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_region_box(maize_avg_region)
   #```
   
   MID SUMMARY
   
   price in every country 
-  #```{r}
+  #```{r, echo=FALSE, message=FALSE, warning=FALSE}
   facet_price_county(maize) #all countries
   facet_price_county_by_Middle_East_North_Africa(maize)
   facet_price_county_by_East_Asia_Pacific(maize) #2 countries
@@ -207,7 +228,7 @@ Now it was finally time to start my analysis. At least I thought. I grouped the 
   #```
   
   inflation vaires from country to country.
-  #```{r}
+  #```{r, echo=FALSE, message=FALSE, warning=FALSE}
   
   facet_inflation_county_by_East_Asia_Pacific(maize) 
   facet_inflation_county_by_Latin_America_Caribbean(maize)
@@ -219,13 +240,13 @@ Now it was finally time to start my analysis. At least I thought. I grouped the 
   #```
   
   countries inflation box plot 
-  #```{r}
+  #```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_country_box(maize) #outlier in Ethiopia
   #```
   
   
   price to survive. NEED TO CALC 
-  #```{r}
+  #```{r, echo=FALSE, message=FALSE, warning=FALSE}
   price_to_survive_plot_line(rice_price_to_survive)
   price_to_survive_plot_bar(rice_price_to_survive)  
   
@@ -241,36 +262,36 @@ Now it was finally time to start my analysis. At least I thought. I grouped the 
 </center>
 
   price for each day and plotting a line chart.
-  # ```{r}
+  # ```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_group_price(sorghum_world_avg)
   # ```
   
   
   overall inflation of rice,  histogram
-  # ```{r}
+  # ```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_group_inflation_hist(sorghum_world_avg)
   # ```
   
   
   different regions of the world same line chart.
-  # ```{r}
+  # ```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_region_price(sorghum_avg_region)
   # ```
   
   regions by faceting each chart.
-  # ```{r}
+  # ```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_region_price_facet(sorghum_avg_region)
   # ```
   
   inflation for each region box plot.
-  #```{r}
+  #```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_region_box(sorghum_avg_region)
   #```
   
   MID SUMMARY
   
   price in every country 
-  #```{r}
+  #```{r, echo=FALSE, message=FALSE, warning=FALSE}
   facet_price_county_by_Middle_East_North_Africa(sorghum) #only 1 country
   facet_price_county_by_Latin_America_Caribbean(sorghum) #only 1 country
   facet_price_county_by_Sub_Saharan_Africa(sorghum) #19 countries
@@ -278,7 +299,7 @@ Now it was finally time to start my analysis. At least I thought. I grouped the 
   #```
   
   inflation vaires from country to country.
-  #```{r}
+  #```{r, echo=FALSE, message=FALSE, warning=FALSE}
   facet_inflation_county_by_Latin_America_Caribbean(sorghum)
   facet_inflation_county_by_Middle_East_North_Africa(sorghum)
   facet_inflation_county_by_Sub_Saharan_Africa(sorghum) #to many countries so I split the facet into 2 graphs
@@ -287,13 +308,13 @@ Now it was finally time to start my analysis. At least I thought. I grouped the 
   #```
   
   countries inflation box plot. Outlier in Ethiopia
-  #```{r}
+  #```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_country_box(sorghum)
   #```
   
   
   price to survive.  create
-  #```{r}
+  #```{r, echo=FALSE, message=FALSE, warning=FALSE}
   price_to_survive_plot_line(rice_price_to_survive)
   price_to_survive_plot_bar(rice_price_to_survive)  
   
@@ -309,38 +330,38 @@ Now it was finally time to start my analysis. At least I thought. I grouped the 
 </center>
 
   price for each day and plotting a line chart.
-  # ```{r}
+  # ```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_group_price(beans_world_avg)
   # ```
   
   
   overall inflation of rice,  histogram
-  # ```{r}
+  # ```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_group_inflation_hist(beans_world_avg)
   # ```
   
   
   different regions of the world same line chart.
-  # ```{r}
+  # ```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_region_price(beans_avg_region)
   # ```
   
   regions by faceting each chart.
-  # ```{r}
+  # ```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_region_price_facet(beans_avg_region) #all 5 
   plot_region_price_facet_B(beans_avg_region) # first 3
   plot_region_price_facet_A(beans_avg_region) # second 2
   # ```
   
   inflation for each region box plot.
-  #```{r}
+  #```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_region_box(beans_avg_region)
   #```
   
   MID SUMMARY
   
   price in every country 
-  #```{r}
+  #```{r, echo=FALSE, message=FALSE, warning=FALSE}
   facet_price_county_by_East_Asia_Pacific(beans) #2 countries
   facet_price_county_by_Middle_East_North_Africa(beans) #5 countries
   facet_price_county_by_Latin_America_Caribbean(beans) #6 countries
@@ -350,7 +371,7 @@ Now it was finally time to start my analysis. At least I thought. I grouped the 
   #```
   
   inflation vaires from country to country.
-  #```{r}
+  #```{r, echo=FALSE, message=FALSE, warning=FALSE}
   facet_inflation_county_by_East_Asia_Pacific(beans)
   facet_inflation_county_by_Latin_America_Caribbean(beans)
   facet_inflation_county_by_South_Asia(beans)
@@ -363,13 +384,13 @@ Now it was finally time to start my analysis. At least I thought. I grouped the 
   #```
   
   countries inflation box plot 
-  #```{r}
+  #```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_country_box(beans)
   #```
   
   
   price to survive.  calc
-  #```{r}
+  #```{r, echo=FALSE, message=FALSE, warning=FALSE}
   price_to_survive_plot_line(rice_price_to_survive)
   price_to_survive_plot_bar(rice_price_to_survive)  
   
@@ -385,40 +406,40 @@ Now it was finally time to start my analysis. At least I thought. I grouped the 
 </center>
   
   price for each day and plotting a line chart.
-  # ```{r}
+  # ```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_group_price(millet_world_avg)
   # ```
   
   overall inflation of rice,  histogram
-  # ```{r}
+  # ```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_group_inflation_hist(millet_world_avg)
   # ```
   
   different regions of the world same line chart.
-  # ```{r}
+  # ```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_region_price(millet_avg_region)
   # ```
   
   regions by faceting each chart.
-  # ```{r}
+  # ```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_region_price_facet(millet_avg_region)
   # ```
   
   inflation for each region box plot.
-  #```{r}
+  #```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_region_box(millet_avg_region)
   #```
   
   MID SUMMARY
   
   price in every country 
-  #```{r}
+  #```{r, echo=FALSE, message=FALSE, warning=FALSE}
   facet_price_county_by_Middle_East_North_Africa(millet) #1 country
   facet_price_county_by_Sub_Saharan_Africa(millet) #12
   #```
   
   inflation vaires from country to country.
-  #```{r}
+  #```{r, echo=FALSE, message=FALSE, warning=FALSE}
   facet_inflation_county_by_Middle_East_North_Africa(millet)
   facet_inflation_county_by_Sub_Saharan_Africa(millet) #to many countries so I split the facet into 2 graphs
   facet_inflation_county_by_Sub_Saharan_Africa_A(millet)
@@ -426,12 +447,12 @@ Now it was finally time to start my analysis. At least I thought. I grouped the 
   #```
   
   countries inflation box plot 
-  #```{r}
+  #```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_country_box(millet)
   #```
   
   price to survive. need to calc
-  #```{r}
+  #```{r, echo=FALSE, message=FALSE, warning=FALSE}
   price_to_survive_plot_line(rice_price_to_survive)
   price_to_survive_plot_bar(rice_price_to_survive)  
   
@@ -446,38 +467,38 @@ Now it was finally time to start my analysis. At least I thought. I grouped the 
 </center>
   
   price for each day and plotting a line chart.
-  # ```{r}
+  # ```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_group_price(oil_world_avg)
   # ```
   
   
   overall inflation of rice,  histogram
-  # ```{r}
+  # ```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_group_inflation_hist(oil_world_avg)
   # ```
   
   
   different regions of the world same line chart.
-  # ```{r}
+  # ```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_region_price(oil_avg_region)
   # ```
   
   regions by faceting each chart.
-  # ```{r}
+  # ```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_region_price_facet(oil_avg_region)
   plot_region_price_facet_B(oil_avg_region)
   plot_region_price_facet_A(oil_avg_region)
   # ```
   
   inflation for each region box plot.
-  #```{r}
+  #```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_region_box(oil_avg_region)
   #```
   
   MID SUMMARY
   
   price in every country 
-  #```{r}
+  #```{r, echo=FALSE, message=FALSE, warning=FALSE}
   facet_price_county_by_East_Asia_Pacific(oil)
   facet_price_county_by_Middle_East_North_Africa(maize)
   facet_price_county_by_Latin_America_Caribbean(oil)
@@ -488,7 +509,7 @@ Now it was finally time to start my analysis. At least I thought. I grouped the 
   #```
   
   inflation vaires from country to country.
-  #```{r}
+  #```{r, echo=FALSE, message=FALSE, warning=FALSE}
   
   facet_inflation_county_by_East_Asia_Pacific(oil)
   facet_inflation_county_by_Latin_America_Caribbean(oil)
@@ -503,13 +524,13 @@ Now it was finally time to start my analysis. At least I thought. I grouped the 
   #```
   
   countries inflation box plot 
-  #```{r}
+  #```{r, echo=FALSE, message=FALSE, warning=FALSE}
   plot_country_box(oil)
   #```
   
   
   price to survive.  
-  #```{r}
+  #```{r, echo=FALSE, message=FALSE, warning=FALSE}
   price_to_survive_plot_line(rice_price_to_survive)
   price_to_survive_plot_bar(rice_price_to_survive)  
   
