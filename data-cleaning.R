@@ -5,11 +5,12 @@ require(reshape)
 require(tidyr)
 require(tibble)
 require(ggplot2)
+require(GGally)
 require(rmarkdown)
 
 # To Skip Cleaning Load
 food <- read.csv("data/clean/food_data.csv")
-# 
+
 # CURENCY CLEANING-------------------------------------------
 codes <- read.csv("data/dirty/curency_codes.csv")
 
@@ -1035,6 +1036,81 @@ facet_inflation_county_by_Sub_Saharan_Africa_A <- function(grouped_df){
     ggtitle('Sub-Saharan Africa')
 }
 
+region_price_line <- function(food_avg_region) {
+  ggplot(food_avg_region, aes(x=date, y=price_per_one_unit)) +
+    geom_line(alpha = 0.5) +
+    theme(legend.position="none") +
+    scale_x_date(date_breaks = "2 year", date_labels = "%m-%Y") +
+    ggtitle(paste0(food_avg_region$region))
+  
+}
+
+region_price_list_fun <- function(food_avg_region) {
+  Middle_East_North_Africa <- filter(food_avg_region, region=="Middle East & North Africa")
+  if (is.data.frame(Middle_East_North_Africa) && nrow(Middle_East_North_Africa)==0) { 
+    }else {  
+    Middle_East_North_Africa_plot <- region_price_line(Middle_East_North_Africa)
+  }
+  
+  Europe_Central_Asia <- filter(rice_avg_region, region=="Europe & Central Asia")
+  if (is.data.frame(Middle_East_North_Africa) && nrow(Middle_East_North_Africa)==0) { 
+    }else {  
+    Europe_Central_Asia_plot <- region_price_line(Europe_Central_Asia)
+  }
+  
+  South_Asia <- filter(food_avg_region, region=="South Asia")
+  if (is.data.frame(South_Asia) && nrow(South_Asia)==0) { 
+    }else {  
+    South_Asia_plot_plot <- region_price_line(South_Asia)
+  }
+  
+  East_Asia_Pacific <- filter(food_avg_region, region=="East Asia & Pacific")
+  if (is.data.frame(East_Asia_Pacific) && nrow(East_Asia_Pacific)==0) { 
+    }else {  
+    East_Asia_Pacific_plot <- region_price_line(East_Asia_Pacific)
+  }
+  
+  Latin_America_Caribbean <- filter(food_avg_region, region=="Latin America & Caribbean")
+  if (is.data.frame(Latin_America_Caribbean) && nrow(Latin_America_Caribbean)==0) {
+    }else {  
+    Latin_America_Caribbean_plot <- region_price_line(Latin_America_Caribbean)
+  }
+  
+  Sub_Saharan_Africa <- filter(food_avg_region, region=="Sub-Saharan Africa")
+  if (is.data.frame(Sub_Saharan_Africa) && nrow(Sub_Saharan_Africa)==0) { 
+    }else {  
+    Sub_Saharan_Africa_plot <- region_price_line(Sub_Saharan_Africa)
+  }
+  
+  region_list <- list(if (exists("Sub_Saharan_Africa_plot")) Sub_Saharan_Africa_plot, if (exists("Sub_Saharan_Africa_plot")) Latin_America_Caribbean_plot, if (exists("East_Asia_Pacific_plot")) East_Asia_Pacific_plot, if (exists("South_Asia_plot")) South_Asia_plot, if (exists("Europe_Central_Asia_plot")) Europe_Central_Asia_plot, if (exists("Middle_East_North_Africa_plot")) Middle_East_North_Africa_plot)
+}
+
+plot_price <- function(grouped_df, country_name, foodName){
+  ggplot(grouped_df, aes(x=date, y=price_per_one_unit)) +
+    geom_line() + 
+    scale_x_date(date_breaks = "2 year", date_labels = "%m-%Y") +
+    ggtitle(paste0(country_name,', ', foodName))
+}
+
+region_price_list_fun <- function(grouped_df, foodName, regionNeeded) {
+  grouped_df <- filter(grouped_df, region==regionNeeded)
+  table <- table(grouped_df$country)
+  countries <- names(table)
+  
+  list <- list()
+  
+  for(i in countries) {
+    df <- filter(grouped_df, country==i)
+    plot <- plot_price(df, paste(i), foodName)
+    if (is.data.frame(df) && nrow(df)==0) {
+      
+    } else {
+      list[[paste(i)]] <- plot
+    }
+  }
+  list
+}
+
 
 # IDENTIFY OUTLIERS-------------------
 # Liberia extremely high rice/oil
@@ -1522,9 +1598,41 @@ rm(oil2)
 # top_6 <- do.call("rbind", list(rice, maize, sorghum, beans, millet, oil))
 # write.csv(top_6, file = "data/clean/top_6.csv", row.names=FALSE)
 
+# take 1 product group by region for every country creat viz loop for outputs list 
+# fun group by region 
+
+
+# Load Plots For Report-------------------------------------------
+
+rice_region_list <- region_price_list_fun(rice_avg_region)
+
+rice_region_price_matrix <- ggmatrix(
+  rice_region_list, 6, 1,
+  yAxisLabels = c("A", "B", "C", "D", "E", "F"),
+  title = "Matrix Title"
+  )
+
+maize_region_list <- region_price_list_fun(maize_avg_region)
+
+rice_region_price_matrix <- ggmatrix(
+  maize_region_list, 6, 1,
+  yAxisLabels = c("A", "B", "C"),
+  title = "Maize Regions"
+)
+
+rice_region_price_matrix
+
+# NEXT NEED TO DO THE SAME FOR EVERY COUNTRY PRICE THEN INFLATION
 
 
 
 
 
-  
+
+Middle_East_North_Africa_price_list <- region_price_list_fun(rice, "Rice", "Middle East & North Africa")
+Middle_East_North_Africa <- region_price_list_fun(rice, "Rice", "Middle East & North Africa")
+Europe_Central_Asia <- region_price_list_fun(rice, "Rice", "Europe & Central Asia")
+South_Asia <- region_price_list_fun(rice, "Rice", "South Asia")
+East_Asia_Pacific <- region_price_list_fun(rice, "Rice", "East Asia & Pacific")
+Latin_America_Caribbean <- region_price_list_fun(rice, "Rice", "Latin America & Caribbean")
+Sub_Saharan_Africa <- region_price_list_fun(rice, "Rice", "Sub-Saharan Africa")

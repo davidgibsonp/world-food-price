@@ -89,9 +89,7 @@ Now it was finally time to start my analysis. At least I thought. I grouped the 
   
   But lets take a closer look at all the regions by faceting each chart.
   # ```{r}
-  plot_region_price_facet(rice_avg_region)
-  plot_region_price_facet_B(rice_avg_region)
-  plot_region_price_facet_A(rice_avg_region)
+  rice_region_price_matrix
   # ```
   After faceting, you can see how sporadic Sub-Saharan Africa is. This region was probably the reason for those spike from 2001 - 2007 when all regions were plotted together. This makes since because Africa is prone to food price fluctuation due to shortages, poverty and local conflict. 
   In East Asia & Pacific we see the price drop for a few years but then start to pick up again. (find why was this during a good growing season). This looks the same for the Middle East & North Africa, but we do not have enough data to see if this was a trend. 
@@ -115,7 +113,7 @@ Now it was finally time to start my analysis. At least I thought. I grouped the 
   facet_price_county_by_South_Asia(rice)
   facet_price_county_by_Europe_Central_Asia(rice)
   facet_price_county_by_Sub_Saharan_Africa(rice)
-  facet_price_county_by_Sub_Saharan_Africa_lib_nig(rice) #Took out liberia and nigeria 
+  
   #```
   
   Next lets take a look at how inflation vaires from country to country. (are histo grams the best to do this, like price once I have the correct graphs I will investigate the countris)
