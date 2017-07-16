@@ -14,7 +14,7 @@ require(GGally)
 
 load(file="objects_for_analysis.RData")
 ```
-
+<!-- For every plot in a matrix a fiheight of 2 -->
 ------
 <center> <h3>July 2017</h3> </center>
   <center> <h1>World Food Prices</h1> </center>
@@ -24,14 +24,14 @@ load(file="objects_for_analysis.RData")
   <h4>Table of Contents</h4>
   </center>
   1. Introduction
-2. Exploratory Analysis and Data Cleaning
-3. Rice
-4. Maize
-5. Sorghum
-6. Beans
-7. Millet
-8. Oils
-9. Conclusion
+  2. Exploratory Analysis and Data Cleaning
+  3. Rice
+  4. Maize
+  5. Sorghum
+  6. Beans
+  7. Millet
+  8. Oils
+  9. Conclusion
 ------
 <center>
   <h4>1. Introduction</h4>
@@ -74,7 +74,7 @@ Now it was finally time to start my analysis. At least I thought. I grouped the 
   I started the analysis with the food that had the most entries which was rice with 67,003 entries. With each food I started the analysis with a worldwide view and then narrowed it down to a six regioins and then narroed it further to specific countries.
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
   Lets take a look at how the price of rice has changed over they last ten years by taking the average price for each day and plotting a line chart.
-```{r, fig.width=14, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, fig.width=14, echo=FALSE, fig.height=8, message=FALSE, warning=FALSE}
 plot_group_price(rice_world_avg)
 ```
  
@@ -93,7 +93,7 @@ plot_group_inflation_hist(rice_world_avg)
   
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Lets narrow our analysis slightly by looking at rice in different regions of the world. First by plotting them all on the same line chart.
-```{r, fig.width=14,echo=FALSE, message=FALSE, warning=FALSE}
+```{r, fig.width=14,echo=FALSE, fig.height=8, message=FALSE, warning=FALSE}
 plot_region_price(rice_avg_region)
 ```
   
@@ -114,7 +114,7 @@ rice_region_price_matrix
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Price only tells half of the story. Looking at inflation for each region will show which regions stable and unstable. To do this I created a box plot.
   
-```{r, fig.width=14, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, fig.width=14, echo=FALSE, fig.height=8, message=FALSE, warning=FALSE}
 plot_region_box(rice_avg_region)
 ```
   
@@ -127,26 +127,42 @@ plot_region_box(rice_avg_region)
 
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   To further investigate these findings we will analyse the price of rice in every country available. (once I know I have the correct graphs I will investigate the countries)
-  ```{r, echo=FALSE,fig.width=14, message=FALSE, warning=FALSE}
+   ```{r, echo=FALSE,fig.width=14, fig.height=6, message=FALSE, warning=FALSE}
 Middle_East_North_Africa_rice_price_matrix
+  ```
+  ```{r, echo=FALSE,fig.width=14, fig.height=8, message=FALSE, warning=FALSE}
 East_Asia_Pacific_rice_price_matrix
+  ```
+  ```{r, echo=FALSE,fig.width=14, fig.height=6, message=FALSE, warning=FALSE}
 Europe_Central_Asia_rice_price_matrix
+  ```
+  ```{r, echo=FALSE,fig.width=14, fig.height=10, message=FALSE, warning=FALSE}
 South_Asia_rice_price_matrix
+  ```
+  ```{r, echo=FALSE,fig.width=14, fig.height=6, message=FALSE, warning=FALSE}
 Latin_America_Caribbean_rice_price_matrix
   ```
-  ```{r, echo=FALSE,fig.width=14, fig.height=16,message=FALSE, warning=FALSE}
+  ```{r, echo=FALSE,fig.width=14, fig.height=22,message=FALSE, warning=FALSE}
 Sub_Saharan_Africa_rice_price_matrix
   ```
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   Next lets take a look at how inflation vaires from country to country. (are histo grams the best to do this, like price once I have the correct graphs I will investigate the countris)
-  ```{r, echo=FALSE,fig.width=14, message=FALSE, warning=FALSE}
+   ```{r, echo=FALSE,fig.width=14, fig.height=6, message=FALSE, warning=FALSE}
 Middle_East_North_Africa_rice_inflation_matrix
+  ```
+  ```{r, echo=FALSE,fig.width=14, fig.height=8, message=FALSE, warning=FALSE}
 East_Asia_Pacific_rice_inflation_matrix
-Europe_Central_Asia_rice_inflation_matrix
+  ```
+  ```{r, echo=FALSE,fig.width=14, fig.height=6, message=FALSE, warning=FALSE}
 South_Asia_rice_inflation_matrix
+  ```
+  ```{r, echo=FALSE,fig.width=14, fig.height=10, message=FALSE, warning=FALSE}
+Europe_Central_Asia_rice_inflation_matrix
+  ```
+  ```{r, echo=FALSE,fig.width=14, fig.height=6, message=FALSE, warning=FALSE}
 Latin_America_Caribbean_rice_inflation_matrix
   ```
-  ```{r, echo=FALSE, fig.width=14, fig.height=16,message=FALSE, warning=FALSE}
+  ```{r, echo=FALSE,fig.width=14, fig.height=22,message=FALSE, warning=FALSE}
 Sub_Saharan_Africa_rice_inflation_matrix
   ```
   
@@ -168,7 +184,7 @@ Sub_Saharan_Africa_rice_inflation_matrix
   
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   But lets see if inflation for import and export has a significant difference. 
-  ```{r, echo=FALSE, fig.width=14, message=FALSE, warning=FALSE}
+  ```{r, echo=FALSE, fig.width=14, fig.height=8,  message=FALSE, warning=FALSE}
   plot_import_countries_inflation(rice_countries_and_imports)
   ```
   
@@ -192,7 +208,7 @@ Sub_Saharan_Africa_rice_inflation_matrix
 </center>
 
 World Price
-```{r, fig.width=14, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, fig.width=14, echo=FALSE,  fig.height=8,message=FALSE, warning=FALSE}
 plot_group_price(maize_world_avg)
 ```
 
@@ -202,41 +218,45 @@ plot_group_inflation_hist(maize_world_avg)
 ```
 
 Regional Price line
-```{r, fig.width=14,echo=FALSE, message=FALSE, warning=FALSE}
+```{r, fig.width=14,echo=FALSE,  fig.height=8,message=FALSE, warning=FALSE}
 plot_region_price(maize_avg_region)
 ```
 
 
 Regional Price Matrix
-```{r, fig.width=14,  fig.height=9 ,echo=FALSE, message=FALSE, warning=FALSE}
-rice_region_price_matrix
+```{r, fig.width=14, fig.height=12, echo=FALSE, message=FALSE, warning=FALSE}
+maize_region_price_matrix
 ```
 
 Regional Inflation
-```{r, fig.width=14, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, fig.width=14, echo=FALSE,  fig.height=8,message=FALSE, warning=FALSE}
 plot_region_box(maize_avg_region)
 ```
 
 Short summary 
 
 Countr Price Matrixs
-```{r, echo=FALSE,fig.width=14, message=FALSE, warning=FALSE}
+```{r, echo=FALSE, fig.width=14, fig.height=4, echo=FALSE, message=FALSE, warning=FALSE}
 East_Asia_Pacific_maize_price_matrix
 Europe_Central_Asia_maize_price_matrix
+```
+```{r, echo=FALSE, fig.width=14, fig.height=16, echo=FALSE, message=FALSE, warning=FALSE}
 Latin_America_Caribbean_maize_price_matrix
 ```
-```{r, echo=FALSE,fig.width=14, fig.height=16,message=FALSE, warning=FALSE}
+```{r, echo=FALSE, fig.width=14, fig.height=56, echo=FALSE, message=FALSE, warning=FALSE}
 Sub_Saharan_Africa_maize_price_matrix
 ```
 
 
 Countr Inflation Matrixs
-```{r, echo=FALSE,fig.width=14, message=FALSE, warning=FALSE}
+```{r, echo=FALSE, fig.width=14, fig.height=8, echo=FALSE, message=FALSE, warning=FALSE}
 East_Asia_Pacific_maize_inflation_matrix
 Europe_Central_Asia_maize_inflation_matrix
+```
+```{r, echo=FALSE, fig.width=14, fig.height=2, echo=FALSE, message=FALSE, warning=FALSE}
 Latin_America_Caribbean_maize_inflation_matrix
 ```
-```{r, echo=FALSE, fig.width=14, fig.height=16,message=FALSE, warning=FALSE}
+```{r, echo=FALSE, fig.width=14, fig.height=56, message=FALSE, warning=FALSE}
 Sub_Saharan_Africa_maize_inflation_matrix
 ```
 
@@ -248,11 +268,11 @@ plot_country_box(maize)
 
 ------
 <center>
-<h4>5. sorghum </h4>
+<h4>5. Sorghum </h4>
 </center>
 
 World Price
-```{r, fig.width=14, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, fig.width=14, echo=FALSE,  fig.height=8,message=FALSE, warning=FALSE}
 plot_group_price(sorghum_world_avg)
 ```
 
@@ -262,39 +282,43 @@ plot_group_inflation_hist(sorghum_world_avg)
 ```
 
 Regional Price line
-```{r, fig.width=14,echo=FALSE, message=FALSE, warning=FALSE}
+```{r, fig.width=14,echo=FALSE,  fig.height=8,message=FALSE, warning=FALSE}
 plot_region_price(sorghum_avg_region)
 ```
 
 
 Regional Price Matrix
-```{r, fig.width=14,  fig.height=9 ,echo=FALSE, message=FALSE, warning=FALSE}
-rice_region_price_matrix
+```{r, fig.width=14, fig.height=12, echo=FALSE, message=FALSE, warning=FALSE}
+sorghum_region_price_matrix
 ```
 
 Regional Inflation
-```{r, fig.width=14, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, fig.width=14, echo=FALSE,  fig.height=8,message=FALSE, warning=FALSE}
 plot_region_box(sorghum_avg_region)
 ```
 
 Short summary 
 
 Countr Price Matrixs
-```{r, echo=FALSE,fig.width=14, message=FALSE, warning=FALSE}
-#Middle_East_North_Africa_sorghum_price_matrix
+```{r, echo=FALSE,fig.width=14, fig.height=2, message=FALSE, warning=FALSE}
+Middle_East_North_sorghum_Africa_price_matrix
+```
+```{r, echo=FALSE,fig.width=14, fig.height=2, message=FALSE, warning=FALSE}
 Latin_America_Caribbean_sorghum_price_matrix
 ```
-```{r, echo=FALSE,fig.width=14, fig.height=16,message=FALSE, warning=FALSE}
+```{r, echo=FALSE,fig.width=14, fig.height=40, message=FALSE, warning=FALSE}
 Sub_Saharan_Africa_sorghum_price_matrix
 ```
 
 
 Countr Inflation Matrixs
-```{r, echo=FALSE,fig.width=14, message=FALSE, warning=FALSE}
+```{r, echo=FALSE,fig.width=14, fig.height=2, message=FALSE, warning=FALSE}
 Middle_East_North_Africa_sorghum_inflation_matrix
+```
+```{r, echo=FALSE,fig.width=14, fig.height=2, message=FALSE, warning=FALSE}
 Latin_America_Caribbean_sorghum_inflation_matrix
 ```
-```{r, echo=FALSE, fig.width=14, fig.height=16,message=FALSE, warning=FALSE}
+```{r, echo=FALSE,fig.width=14, fig.height=40, message=FALSE, warning=FALSE}
 Sub_Saharan_Africa_sorghum_inflation_matrix
 ```
 
@@ -306,11 +330,11 @@ plot_country_box(sorghum)
 
 ------
 <center>
-<h4>6. beans </h4>
+<h4>6. Beans </h4>
 </center>
 
 World Price
-```{r, fig.width=14, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, fig.width=14, echo=FALSE,  fig.height=8,message=FALSE, warning=FALSE}
 plot_group_price(beans_world_avg)
 ```
 
@@ -320,45 +344,61 @@ plot_group_inflation_hist(beans_world_avg)
 ```
 
 Regional Price line
-```{r, fig.width=14,echo=FALSE, message=FALSE, warning=FALSE}
+```{r, fig.width=14,echo=FALSE,  fig.height=8,message=FALSE, warning=FALSE}
 plot_region_price(beans_avg_region)
 ```
 
 
 Regional Price Matrix
-```{r, fig.width=14,  fig.height=9 ,echo=FALSE, message=FALSE, warning=FALSE}
+```{r, fig.width=14,  fig.height=12, echo=FALSE, message=FALSE, warning=FALSE}
 rice_region_price_matrix
 ```
 
 Regional Inflation
-```{r, fig.width=14, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, fig.width=14, echo=FALSE,  fig.height=8,message=FALSE, warning=FALSE}
 plot_region_box(beans_avg_region)
 ```
 
 Short summary 
 
 Countr Price Matrixs
-```{r, echo=FALSE,fig.width=14, message=FALSE, warning=FALSE}
+```{r, fig.width=14,fig.height=10, echo=FALSE, message=FALSE, warning=FALSE}
 Middle_East_North_Africa_beans_price_matrix
+```
+```{r, fig.width=14,  fig.height=3, echo=FALSE, message=FALSE, warning=FALSE}
 East_Asia_Pacific_beans_price_matrix
+```
+```{r, fig.width=14,  fig.height=3, echo=FALSE, message=FALSE, warning=FALSE}
 Europe_Central_Asia_beans_price_matrix
+```
+```{r, fig.width=14,  fig.height=2, echo=FALSE, message=FALSE, warning=FALSE}
 South_Asia_beans_price_matrix
+```
+```{r, fig.width=14,  fig.height=12, echo=FALSE, message=FALSE, warning=FALSE}
 Latin_America_Caribbean_beans_price_matrix
 ```
-```{r, echo=FALSE,fig.width=14, fig.height=16,message=FALSE, warning=FALSE}
+```{r, fig.width=14,  fig.height=42, echo=FALSE, message=FALSE, warning=FALSE}
 Sub_Saharan_Africa_beans_price_matrix
 ```
 
 
 Countr Inflation Matrixs
-```{r, echo=FALSE,fig.width=14, message=FALSE, warning=FALSE}
+```{r, fig.width=14,fig.height=10, echo=FALSE, message=FALSE, warning=FALSE}
 Middle_East_North_Africa_beans_inflation_matrix
+```
+```{r, fig.width=14,  fig.height=4, echo=FALSE, message=FALSE, warning=FALSE}
 East_Asia_Pacific_beans_inflation_matrix
+```
+```{r, fig.width=14,  fig.height=4, echo=FALSE, message=FALSE, warning=FALSE}
 Europe_Central_Asia_beans_inflation_matrix
+```
+```{r, fig.width=14,  fig.height=2, echo=FALSE, message=FALSE, warning=FALSE}
 South_Asia_beans_inflation_matrix
+```
+```{r, fig.width=14,  fig.height=12, echo=FALSE, message=FALSE, warning=FALSE}
 Latin_America_Caribbean_beans_inflation_matrix
 ```
-```{r, echo=FALSE, fig.width=14, fig.height=16,message=FALSE, warning=FALSE}
+```{r, echo=FALSE, fig.width=42, fig.height=16,message=FALSE, warning=FALSE}
 Sub_Saharan_Africa_beans_inflation_matrix
 ```
 
@@ -369,11 +409,11 @@ plot_country_box(beans)
 
 ------
 <center>
-<h4>7. millet </h4>
+<h4>7. Millet </h4>
 </center>
 
 World Price
-```{r, fig.width=14, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, fig.width=14, echo=FALSE,  fig.height=8,message=FALSE, warning=FALSE}
 plot_group_price(millet_world_avg)
 ```
 
@@ -383,7 +423,7 @@ plot_group_inflation_hist(millet_world_avg)
 ```
 
 Regional Price line
-```{r, fig.width=14,echo=FALSE, message=FALSE, warning=FALSE}
+```{r, fig.width=14,echo=FALSE,  fig.height=8,message=FALSE, warning=FALSE}
 plot_region_price(millet_avg_region)
 ```
 
@@ -394,22 +434,26 @@ rice_region_price_matrix
 ```
 
 Regional Inflation
-```{r, fig.width=14, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, fig.width=14, echo=FALSE,  fig.height=8,message=FALSE, warning=FALSE}
 plot_region_box(millet_avg_region)
 ```
 
 Short summary 
 
 Countr Price Matrixs
-```{r, echo=FALSE,fig.width=14, message=FALSE, warning=FALSE}
+```{r, fig.width=14,  fig.height=1, echo=FALSE, message=FALSE, warning=FALSE}
 Middle_East_North_Africa_millet_price_matrix
+```
+```{r, fig.width=14,  fig.height=38, echo=FALSE, message=FALSE, warning=FALSE}
 Sub_Saharan_Africa_millet_price_matrix
 ```
 
 
 Countr Inflation Matrixs
-```{r, echo=FALSE,fig.width=14, message=FALSE, warning=FALSE}
+```{r, fig.width=14,  fig.height=2, echo=FALSE, message=FALSE, warning=FALSE}
 Middle_East_North_Africa_millet_inflation_matrix
+```
+```{r, fig.width=14,  fig.height=26, echo=FALSE, message=FALSE, warning=FALSE}
 Sub_Saharan_Africa_millet_inflation_matrix
 ```
 
@@ -420,11 +464,11 @@ plot_country_box(millet)
 
 ------
 <center>
-<h4>8. oil </h4>
+<h4>8. Oil </h4>
 </center>
 
 World Price
-```{r, fig.width=14, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, fig.width=14, echo=FALSE,  fig.height=8,message=FALSE, warning=FALSE}
 plot_group_price(oil_world_avg)
 ```
 
@@ -434,45 +478,62 @@ plot_group_inflation_hist(oil_world_avg)
 ```
 
 Regional Price line
-```{r, fig.width=14,echo=FALSE, message=FALSE, warning=FALSE}
+```{r, fig.width=14, fig.height=8,echo=FALSE, message=FALSE, warning=FALSE}
 plot_region_price(oil_avg_region)
 ```
 
 
 Regional Price Matrix
-```{r, fig.width=14,  fig.height=9 ,echo=FALSE, message=FALSE, warning=FALSE}
+```{r, fig.width=14,  fig.height=12 ,echo=FALSE, message=FALSE, warning=FALSE}
 rice_region_price_matrix
 ```
 
 Regional Inflation
-```{r, fig.width=14, echo=FALSE, message=FALSE, warning=FALSE}
+```{r, fig.width=14,  fig.height=8,echo=FALSE, message=FALSE, warning=FALSE}
 plot_region_box(oil_avg_region)
 ```
 
 Short summary 
 
 Countr Price Matrixs
-```{r, echo=FALSE,fig.width=14, message=FALSE, warning=FALSE}
+
+```{r, fig.width=14,  fig.height=8, echo=FALSE, message=FALSE, warning=FALSE}
 Middle_East_North_Africa_oil_price_matrix
+```
+```{r, fig.width=14,  fig.height=18, echo=FALSE, message=FALSE, warning=FALSE}
 East_Asia_Pacific_oil_price_matrix
+```
+```{r, fig.width=14,  fig.height=10, echo=FALSE, message=FALSE, warning=FALSE}
 Europe_Central_Asia_oil_price_matrix
+```
+```{r, fig.width=14,  fig.height=6, echo=FALSE, message=FALSE, warning=FALSE}
 South_Asia_oil_price_matrix
+```
+```{r, fig.width=14,  fig.height=6, echo=FALSE, message=FALSE, warning=FALSE}
 Latin_America_Caribbean_oil_price_matrix
 ```
-```{r, echo=FALSE,fig.width=14, fig.height=16,message=FALSE, warning=FALSE}
+```{r, echo=FALSE,fig.width=14, fig.height=20, message=FALSE, warning=FALSE}
 Sub_Saharan_Africa_oil_price_matrix
 ```
 
 
 Countr Inflation Matrixs
-```{r, echo=FALSE,fig.width=14, message=FALSE, warning=FALSE}
+```{r, fig.width=14,  fig.height=8, echo=FALSE, message=FALSE, warning=FALSE}
 Middle_East_North_Africa_oil_inflation_matrix
+```
+```{r, fig.width=14,  fig.height=18, echo=FALSE, message=FALSE, warning=FALSE}
 East_Asia_Pacific_oil_inflation_matrix
+```
+```{r, fig.width=14,  fig.height=10, echo=FALSE, message=FALSE, warning=FALSE}
 Europe_Central_Asia_oil_inflation_matrix
+```
+```{r, fig.width=14,  fig.height=6, echo=FALSE, message=FALSE, warning=FALSE}
 South_Asia_oil_inflation_matrix
+```
+```{r, fig.width=14,  fig.height=6, echo=FALSE, message=FALSE, warning=FALSE}
 Latin_America_Caribbean_oil_inflation_matrix
 ```
-```{r, echo=FALSE, fig.width=14, fig.height=16,message=FALSE, warning=FALSE}
+```{r, echo=FALSE, fig.width=14, fig.height=20,message=FALSE, warning=FALSE}
 Sub_Saharan_Africa_oil_inflation_matrix
 ```
 

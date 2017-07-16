@@ -744,6 +744,7 @@ plot_group_inflation <- function(food_group_df){
 }
 
 plot_group_inflation_hist <- function(food_group_df){
+  title <- as.character(head(food_group_df$food_name, 1))
   ggplot(food_group_df, aes(x=monthly_inflation)) +
     geom_histogram(bins = 25, color='black', fill="#F8766D") +
     ggtitle(paste0(title,', World Wide Inflation')) +
@@ -2201,3 +2202,12 @@ Sub_Saharan_Africa_oil_inflation_matrix <- ggmatrix(
 
 save.image("report/objects_for_analysis.RData")
 
+install.packages("dplyr")
+install.packages("readr")
+install.packages("data.table")
+install.packages("reshape")
+install.packages("tidyr")
+install.packages("tibble")
+install.packages("ggplot2")
+install.packages("GGally")
+install.packages("rmarkdown")
