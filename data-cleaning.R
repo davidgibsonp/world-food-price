@@ -1,3 +1,5 @@
+library(rgdal)
+library(maptools)
 require(dplyr)
 require(readr)
 require(data.table)
@@ -10,7 +12,7 @@ require(rmarkdown)
 
 # To Skip Cleaning Load
 food <- read.csv("data/clean/food_data.csv")
-# load(file="report/objects_for_analysis.RData")
+load(file="report/objects_for_analysis.RData")
 
 # CURENCY CLEANING-------------------------------------------
 codes <- read.csv("data/dirty/curency_codes.csv")
@@ -226,95 +228,95 @@ food_groups <- food
 food_groups$food_name <- as.character(food_groups$food_name)
 food_groups$food_group <- as.character(food_groups$food_name)
 
-food_groups$food_group[food_groups$food_name ==   "Rice"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (basmatibroken)"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (coarse)"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (estaquilla)"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (glutinousfirst quality)"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (glutinoussecond quality)"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (glutinousunmilled)"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (good quality)"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (high qualitylocal)"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (high quality)"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (local)"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (long grain)"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (low qualitylocal)"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (low quality)"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (white)"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (tchako)"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (medium grain)"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (mixedlow quality)"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (ordinaryfirst quality)"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (ordinarysecond quality)"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (ordinaryunmilled)"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (paddylong grainlocal)"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (paddy)"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (red nadu)"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (regularmilled)"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (small grainimported)"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (whiteimported)"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (denikassiaimported)"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (medium grainimported)"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (long grainimported)"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (importedEgyptian)"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (importedIndian)"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (importedTanzanian)"] <-"Rice"
-food_groups$food_group[food_groups$food_name ==   "Rice (imported)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (basmatibroken)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (coarse)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (estaquilla)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (glutinousfirst quality)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (glutinoussecond quality)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (glutinousunmilled)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (good quality)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (high qualitylocal)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (high quality)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (local)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (long grain)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (low qualitylocal)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (low quality)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (white)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (tchako)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (medium grain)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (mixedlow quality)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (ordinaryfirst quality)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (ordinarysecond quality)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (ordinaryunmilled)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (paddylong grainlocal)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (paddy)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (red nadu)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (regularmilled)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (small grainimported)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (whiteimported)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (denikassiaimported)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (medium grainimported)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (long grainimported)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (importedEgyptian)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (importedIndian)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (importedTanzanian)"] <-"Rice"
+food_groups$food_group[food_groups$food_name == "Rice (imported)"] <-"Rice"
 
-food_groups$food_group[food_groups$food_name ==   "Beans"] <-"Beans"
-food_groups$food_group[food_groups$food_name ==   "Beans (black)"] <-"Beans"
-food_groups$food_group[food_groups$food_name ==   "Beans (butter)"] <-"Beans"
-food_groups$food_group[food_groups$food_name ==   "Beans (catarino)"] <-"Beans"
-food_groups$food_group[food_groups$food_name ==   "Beans (dry)"] <-"Beans"
-food_groups$food_group[food_groups$food_name ==   "Beans (favadry)"] <-"Beans"
-food_groups$food_group[food_groups$food_name ==   "Beans (greenfresh)"] <-"Beans"
-food_groups$food_group[food_groups$food_name ==   "Beans (kidney red)"] <-"Beans"
-food_groups$food_group[food_groups$food_name ==   "Beans (kidney white)"] <-"Beans"
-food_groups$food_group[food_groups$food_name ==   "Beans (kidney)"] <-"Beans"
-food_groups$food_group[food_groups$food_name ==   "Beans (magnum)"] <-"Beans"
-food_groups$food_group[food_groups$food_name ==   "Beans (mung)"] <-"Beans"
-food_groups$food_group[food_groups$food_name ==   "Beans (niebe)"] <-"Beans"
-food_groups$food_group[food_groups$food_name ==   "Beans (redfresh)"] <-"Beans"
-food_groups$food_group[food_groups$food_name ==   "Beans (red)"] <-"Beans"
-food_groups$food_group[food_groups$food_name ==   "Beans (silk red)"] <-"Beans"
-food_groups$food_group[food_groups$food_name ==   "Beans (string)"] <-"Beans"
-food_groups$food_group[food_groups$food_name ==   "Beans (sugar-red)"] <-"Beans"
-food_groups$food_group[food_groups$food_name ==   "Beans (sugar)"] <-"Beans"
-food_groups$food_group[food_groups$food_name ==   "Beans (white)"] <-"Beans"
-food_groups$food_group[food_groups$food_name ==   "Beans(mash)"] <-"Beans"
+food_groups$food_group[food_groups$food_name == "Beans"] <-"Beans"
+food_groups$food_group[food_groups$food_name == "Beans (black)"] <-"Beans"
+food_groups$food_group[food_groups$food_name == "Beans (butter)"] <-"Beans"
+food_groups$food_group[food_groups$food_name == "Beans (catarino)"] <-"Beans"
+food_groups$food_group[food_groups$food_name == "Beans (dry)"] <-"Beans"
+food_groups$food_group[food_groups$food_name == "Beans (favadry)"] <-"Beans"
+food_groups$food_group[food_groups$food_name == "Beans (greenfresh)"] <-"Beans"
+food_groups$food_group[food_groups$food_name == "Beans (kidney red)"] <-"Beans"
+food_groups$food_group[food_groups$food_name == "Beans (kidney white)"] <-"Beans"
+food_groups$food_group[food_groups$food_name == "Beans (kidney)"] <-"Beans"
+food_groups$food_group[food_groups$food_name == "Beans (magnum)"] <-"Beans"
+food_groups$food_group[food_groups$food_name == "Beans (mung)"] <-"Beans"
+food_groups$food_group[food_groups$food_name == "Beans (niebe)"] <-"Beans"
+food_groups$food_group[food_groups$food_name == "Beans (redfresh)"] <-"Beans"
+food_groups$food_group[food_groups$food_name == "Beans (red)"] <-"Beans"
+food_groups$food_group[food_groups$food_name == "Beans (silk red)"] <-"Beans"
+food_groups$food_group[food_groups$food_name == "Beans (string)"] <-"Beans"
+food_groups$food_group[food_groups$food_name == "Beans (sugar-red)"] <-"Beans"
+food_groups$food_group[food_groups$food_name == "Beans (sugar)"] <-"Beans"
+food_groups$food_group[food_groups$food_name == "Beans (white)"] <-"Beans"
+food_groups$food_group[food_groups$food_name == "Beans(mash)"] <-"Beans"
 
-food_groups$food_group[food_groups$food_name ==   "Sorghum"] <-"Sorghum"
-food_groups$food_group[food_groups$food_name ==   "Sorghum (food aid)"] <-"Sorghum"
-food_groups$food_group[food_groups$food_name ==   "Sorghum (red)"] <-"Sorghum"
-food_groups$food_group[food_groups$food_name ==   "Sorghum (taghalit)"] <-"Sorghum"
-food_groups$food_group[food_groups$food_name ==   "Sorghum (white)"] <-"Sorghum"
+food_groups$food_group[food_groups$food_name == "Sorghum"] <-"Sorghum"
+food_groups$food_group[food_groups$food_name == "Sorghum (food aid)"] <-"Sorghum"
+food_groups$food_group[food_groups$food_name == "Sorghum (red)"] <-"Sorghum"
+food_groups$food_group[food_groups$food_name == "Sorghum (taghalit)"] <-"Sorghum"
+food_groups$food_group[food_groups$food_name == "Sorghum (white)"] <-"Sorghum"
 
-food_groups$food_group[food_groups$food_name ==   "Oil"] <-"Oil"
-food_groups$food_group[food_groups$food_name ==   "Oil (cooking)"] <-"Oil"
-food_groups$food_group[food_groups$food_name ==   "Oil (cotton)"] <-"Oil"
-food_groups$food_group[food_groups$food_name ==   "Oil (groundnut)"] <-"Oil"
-food_groups$food_group[food_groups$food_name ==   "Oil (maize)"] <-"Oil"
-food_groups$food_group[food_groups$food_name ==   "Oil (mustard)"] <-"Oil"
-food_groups$food_group[food_groups$food_name ==   "Oil (olive)"] <-"Oil"
-food_groups$food_group[food_groups$food_name ==   "Oil (palm)"] <-"Oil"
-food_groups$food_group[food_groups$food_name ==   "Oil (soybean)"] <-"Oil"
-food_groups$food_group[food_groups$food_name ==   "Oil (sunflower)"] <-"Oil"
-food_groups$food_group[food_groups$food_name ==   "Oil (vegetablelocal)"] <-"Oil"
-food_groups$food_group[food_groups$food_name ==   "Oil (vegetable)"] <-"Oil"
-food_groups$food_group[food_groups$food_name ==   "Oil (mixedimported)"] <-"Oil"
-food_groups$food_group[food_groups$food_name ==   "Oil (vegetableimported)"] <- "Oil"
+food_groups$food_group[food_groups$food_name == "Oil"] <-"Oil"
+food_groups$food_group[food_groups$food_name == "Oil (cooking)"] <-"Oil"
+food_groups$food_group[food_groups$food_name == "Oil (cotton)"] <-"Oil"
+food_groups$food_group[food_groups$food_name == "Oil (groundnut)"] <-"Oil"
+food_groups$food_group[food_groups$food_name == "Oil (maize)"] <-"Oil"
+food_groups$food_group[food_groups$food_name == "Oil (mustard)"] <-"Oil"
+food_groups$food_group[food_groups$food_name == "Oil (olive)"] <-"Oil"
+food_groups$food_group[food_groups$food_name == "Oil (palm)"] <-"Oil"
+food_groups$food_group[food_groups$food_name == "Oil (soybean)"] <-"Oil"
+food_groups$food_group[food_groups$food_name == "Oil (sunflower)"] <-"Oil"
+food_groups$food_group[food_groups$food_name == "Oil (vegetablelocal)"] <-"Oil"
+food_groups$food_group[food_groups$food_name == "Oil (vegetable)"] <-"Oil"
+food_groups$food_group[food_groups$food_name == "Oil (mixedimported)"] <-"Oil"
+food_groups$food_group[food_groups$food_name == "Oil (vegetableimported)"] <- "Oil"
 
-food_groups$food_group[food_groups$food_name ==   "Maize"] <- "Maize"
-food_groups$food_group[food_groups$food_name ==   "Maize (local)"] <-"Maize"
-food_groups$food_group[food_groups$food_name ==   "Maize (white)"] <-"Maize"
-food_groups$food_group[food_groups$food_name ==   "Maize (yellow)"] <-"Maize"
-food_groups$food_group[food_groups$food_name ==   "Maize meal"] <-"Maize"
-food_groups$food_group[food_groups$food_name ==   "Maize meal (local)"] <-"Maize"
-food_groups$food_group[food_groups$food_name ==   "Maize meal (whitebreakfast)"] <-"Maize"
-food_groups$food_group[food_groups$food_name ==   "Maize meal (whitefirst grade)"] <-"Maize"
-food_groups$food_group[food_groups$food_name ==   "Maize meal (whiteroller)"] <-"Maize"
-food_groups$food_group[food_groups$food_name ==   "Maize meal (whitewith bran)"] <-"Maize"
-food_groups$food_group[food_groups$food_name ==   "Maize meal (whitewithout bran)"] <-"Maize"
+food_groups$food_group[food_groups$food_name == "Maize"] <- "Maize"
+food_groups$food_group[food_groups$food_name == "Maize (local)"] <-"Maize"
+food_groups$food_group[food_groups$food_name == "Maize (white)"] <-"Maize"
+food_groups$food_group[food_groups$food_name == "Maize (yellow)"] <-"Maize"
+food_groups$food_group[food_groups$food_name == "Maize meal"] <-"Maize"
+food_groups$food_group[food_groups$food_name == "Maize meal (local)"] <-"Maize"
+food_groups$food_group[food_groups$food_name == "Maize meal (whitebreakfast)"] <-"Maize"
+food_groups$food_group[food_groups$food_name == "Maize meal (whitefirst grade)"] <-"Maize"
+food_groups$food_group[food_groups$food_name == "Maize meal (whiteroller)"] <-"Maize"
+food_groups$food_group[food_groups$food_name == "Maize meal (whitewith bran)"] <-"Maize"
+food_groups$food_group[food_groups$food_name == "Maize meal (whitewithout bran)"] <-"Maize"
 food_groups$food_group[food_groups$food_name =="Maize (imported)"] <-"Maize"
 
 # # Run this if you want to unifiy top 7 foods
@@ -329,6 +331,37 @@ food <- food[c("country", "country_code", "country_income_group", "region", "cit
 
 # Export Cleaned Data
 write.csv(food, file = "data/clean/food_data.csv", row.names=FALSE)
+
+# LOAD MAP GRAPHIC-------------------------------------------
+gpclibPermit()
+world.map <- readOGR(dsn="data/map", layer="TM_WORLD_BORDERS_SIMPL-0.3")
+world.ggmap <- fortify(world.map, region = "NAME")
+
+n <- length(unique(world.ggmap$id))
+worldmap <- data.frame(id = unique(world.ggmap$id),
+                       growth = 4*runif(n),
+                       category = factor(sample(1:5, n, replace=T)))
+
+Var1 <- as.vector(unique(worldmap$id))
+countries <- as.data.frame(Var1)
+countries$Freq <- NA
+map <- as.data.frame(table(food$country))
+map <- full_join(map, countries)
+
+map <- 
+  ggplot(map, aes(map_id = Var1)) +
+    geom_map(aes(fill = Freq), map =world.ggmap) +
+    expand_limits(x = world.ggmap$long, y = world.ggmap$lat) +
+    ggtitle("Frequency of Foods") +
+    scale_color_gradientn(colours = rainbow(5)) +
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+          panel.background = element_blank(), axis.line = element_line(colour = "black"),
+          axis.title.x=element_blank(),
+          axis.text.x=element_blank(),
+          axis.ticks.x=element_blank(),
+          axis.title.y=element_blank(),
+          axis.text.y=element_blank(),
+          axis.ticks.y=element_blank())
 
 # Load Functions For Analysis-------------------------------------------
 convert_month <- function(number){
@@ -553,9 +586,6 @@ price_to_survive_rice_year_avg <- function(grouped_df){
   price_to_survive_df
 }
 
-avg <- price_to_survive_rice_year_avg(rice)
-avg2 <- price_to_survive_rice_year_avg(rice)
-
 # Grouping functions
 import_type_grouping <- function(grouped_food_df){
   not_import <- filter(grouped_food_df, import=="Not Import")
@@ -689,7 +719,7 @@ plot_region_price <- function(food_group_df){
     geom_line(alpha = 0.5) + 
     scale_x_date(date_breaks = "2 year", date_labels = "%m-%Y") +
     geom_smooth() +
-    ggtitle(paste0(title, ' ',title2,' Price')) +
+    ggtitle(paste0(title, ' ',title2,' Price by Region')) +
     labs(x = "Date", y = "Price Per One Gram")
   # ggtitle(paste0(food_group_df,'World Wide Price'))
 }
@@ -885,8 +915,8 @@ plot_region_box <- function(food_group_df){
     ggplot(food_group_df, aes(x = region, y = monthly_inflation, col=region)) +
     geom_boxplot() +
     theme(legend.position="none") +
-    ggtitle(paste0('Inflation of ', title, ' Across Regions')) +
-    labs(x = "Monthly Inflation", y = "World Regions") +
+    ggtitle(paste0('Inflation of ', title, ' by Region')) +
+    labs(y = "Monthly Inflation", x = "World Regions") +
     theme(legend.position="top", legend.direction="horizontal")
   plot + coord_flip()
 }
@@ -1081,8 +1111,9 @@ plot_country_price <- function(grouped_df, country_name, foodName){
   plot <-
     ggplot(grouped_df, aes(x=date, y=price_per_one_unit)) +
       geom_line() + 
-      scale_x_date(date_breaks = "2 year", date_labels = "%m-%Y") +
-      ggtitle(paste0(country_name,', ', foodName))
+      scale_x_date(date_breaks = "1 year", date_labels = "%m/%Y") +
+      ggtitle(paste0(country_name,', ', foodName)) +
+      expand_limits(x = c(as.Date("2000-01-01"),as.Date("2015-12-01")))
   plot
 }
 
@@ -1127,6 +1158,7 @@ plot_country_inflation <- function(grouped_df, country_name, foodName){
       ggtitle(paste0(country_name,', ', foodName))
   plot
 }
+
 
 # country_inflation_list_fun <- function(grouped_df, foodName, regionNeeded) {
 #   grouped_df <- filter(grouped_df, region==regionNeeded)
@@ -1183,12 +1215,15 @@ country_inflation_list_fun <- function(grouped_df, foodName, regionNeeded) {
 }
 
 region_price_list_fun <- function(food_avg_region) {
+  list <- list()
+  
   Middle_East_North_Africa <- filter(food_avg_region, region=="Middle East & North Africa")
   if (is.data.frame(Middle_East_North_Africa) && nrow(Middle_East_North_Africa)==0) { 
   }else {
     color <- "#00BFC4"
     Middle_East_North_Africa_plot <- region_price_line(Middle_East_North_Africa)
     Middle_East_North_Africa_plot <- Middle_East_North_Africa_plot + geom_line(colour=paste(color))
+    list[["Middle East & North Africa"]] <- Middle_East_North_Africa_plot
   }
   
   Europe_Central_Asia <- filter(rice_avg_region, region=="Europe & Central Asia")
@@ -1197,14 +1232,16 @@ region_price_list_fun <- function(food_avg_region) {
     color <- "#B79F00"
     Europe_Central_Asia_plot <- region_price_line(Europe_Central_Asia)
     Europe_Central_Asia_plot <- Europe_Central_Asia_plot + geom_line(colour=paste(color))
+    list[["Europe & Central Asia"]] <- Europe_Central_Asia_plot
   }
   
   South_Asia <- filter(food_avg_region, region=="South Asia")
   if (is.data.frame(South_Asia) && nrow(South_Asia)==0) { 
   }else {  
     color <- "#619CFF"
-    South_Asia_plot_plot <- region_price_line(South_Asia)
-    South_Asia_plot_plot <- South_Asia_plot_plot + geom_line(colour=paste(color))
+    South_Asia_plot <- region_price_line(South_Asia)
+    South_Asia_plot <- South_Asia_plot + geom_line(colour=paste(color))
+    list[["South Asia"]] <- South_Asia_plot
   }
   
   East_Asia_Pacific <- filter(food_avg_region, region=="East Asia & Pacific")
@@ -1213,6 +1250,7 @@ region_price_list_fun <- function(food_avg_region) {
     color <- "#F8766D"
     East_Asia_Pacific_plot <- region_price_line(East_Asia_Pacific)
     East_Asia_Pacific_plot <- East_Asia_Pacific_plot + geom_line(colour=paste(color))
+    list[["East Asia & Pacific"]] <- East_Asia_Pacific_plot
   }
   
   Latin_America_Caribbean <- filter(food_avg_region, region=="Latin America & Caribbean")
@@ -1221,6 +1259,7 @@ region_price_list_fun <- function(food_avg_region) {
     color <- "#00BA38"
     Latin_America_Caribbean_plot <- region_price_line(Latin_America_Caribbean)
     Latin_America_Caribbean_plot <- Latin_America_Caribbean_plot + geom_line(colour=paste(color))
+    list[["Latin America & Caribbean"]] <- Latin_America_Caribbean_plot
   }
   
   Sub_Saharan_Africa <- filter(food_avg_region, region=="Sub-Saharan Africa")
@@ -1229,9 +1268,9 @@ region_price_list_fun <- function(food_avg_region) {
     color <- "#F564E3"
     Sub_Saharan_Africa_plot <- region_price_line(Sub_Saharan_Africa)
     Sub_Saharan_Africa_plot <- Sub_Saharan_Africa_plot + geom_line(colour=paste(color))
+    list[["Sub-Saharan Africa"]] <- Sub_Saharan_Africa_plot
   }
-  
-  region_list <- list(if (exists("Sub_Saharan_Africa_plot")) Sub_Saharan_Africa_plot, if (exists("Latin_America_Caribbean_plot")) Latin_America_Caribbean_plot, if (exists("East_Asia_Pacific_plot")) East_Asia_Pacific_plot, if (exists("South_Asia_plot")) South_Asia_plot, if (exists("Europe_Central_Asia_plot")) Europe_Central_Asia_plot, if (exists("Middle_East_North_Africa_plot")) Middle_East_North_Africa_plot)
+  list
 }
 
 # IDENTIFY OUTLIERS-------------------
@@ -1242,8 +1281,9 @@ region_price_list_fun <- function(food_avg_region) {
 
 # Cleaning for Rice Analysis---------------------------------
 rice <- food_group_by("Rice")
+
 # Remove outlier
-rice_no_lib <- filter(rice, country!="Liberia")
+rice <- rice[-c(20716, 58206, 57626, 89587, 59231, 63897), ] #Ethiopia
 
 # Find world average price for rice and plot price and inflation
 rice_world_avg <- world_average(rice)
@@ -1252,16 +1292,6 @@ rice_world_avg_no_lib <- world_average(rice)
 # Calulate price across regions
 rice_avg_region <- grouping_by_region_average(rice)
 rice_avg_region_no_lib <- grouping_by_region_average(rice_no_lib)
-
-# Boxplot withouth outlers
-# Filteres out outliers Armenia Rwanda Syrian Arab Republic Timor-Leste Bolivia Liberia
-rice_box <- rice 
-rice_box <- filter(rice_box, country!="Liberia")
-rice_box <- filter(rice_box, country!="Armenia")
-rice_box <- filter(rice_box, country!="Rwanda")
-rice_box <- filter(rice_box, country!="Syrian Arab Republic")
-rice_box <- filter(rice_box, country!="Timor-Leste")
-rice_box <- filter(rice_box, country!="Bolivia")
 
 # Finds average by seller
 # rice_avg_seller <- seller_type_average(rice)
@@ -1274,7 +1304,6 @@ rice_import <- import_type_grouping(rice)
 # Group import type and find averege for local and import countries 
 # identify countries with local entries
 local <- rice[grepl("local", rice$food_name), ]
-# View(as.data.frame(table(local$country)))
 
 Mali <- national_average_fun(filter(local, country=="Mali"))
 Guinea <- national_average_fun(filter(local, country=="Guinea"))
@@ -1373,6 +1402,9 @@ Zambia <- national_average_fun(filter(rice, country=="Zambia  "))
 rice2 <- do.call("rbind", list(Afghanistan, Algeria, Armenia, Bangladesh, Benin, Bolivia, Burkina_Faso, Cameroon, Cape_Verde, Central_African_Republic, Chad, Colombia, Cote_dIvoire, Democratic_Republic_Congo, Djibouti, El_Salvador, Ethiopia, Ghana, Guinea, Guinea_Bissau, Haiti, India, Iran, Iraq, Kyrgyzstan, Liberia, Madagascar, Malawi, Mali, Mauritania, Mozambique, Myanmar, Nepal, Niger, Nigeria, Pakistan, Peru, Philippines, Rwanda, Senegal, Somalia, Sri_Lanka, Syrian_Arab_Republic, Tajikistan, Timor_Leste, Ukraine, United_Republic_Tanzania, Yemen, Zambia))
 rm(Afghanistan, Algeria, Armenia, Bangladesh, Benin, Bolivia, Burkina_Faso, Cameroon, Cape_Verde, Central_African_Republic, Chad, Colombia, Cote_dIvoire, Democratic_Republic_Congo, Djibouti, El_Salvador, Ethiopia, Ghana, Guinea, Guinea_Bissau, Haiti, India, Iran, Iraq, Kyrgyzstan, Liberia, Madagascar, Malawi, Mali, Mauritania, Mozambique, Myanmar, Nepal, Niger, Nigeria, Pakistan, Peru, Philippines, Rwanda, Senegal, Somalia, Sri_Lanka, Syrian_Arab_Republic, Tajikistan, Timor_Leste, Ukraine, United_Republic_Tanzania, Yemen, Zambia)
 
+# Filter out Somalia becaus no PPP 
+rice2 <- filter(rice2, country!="Somalia")
+
 # Filter out the countries without national averge
 rice <- filter(rice, market=="National Average")
 
@@ -1391,8 +1423,15 @@ rice_price_to_survive_no_lib_nig <- filter(rice_price_to_survive_no_lib_nig, cou
 # Show countries without standard dev
 # show_no_stdv(rice)
 
+# Remove Outliers
+rice <- rice[-1635, ] #Liberia
+plot_country_box(rice)
+
 # Cleaning for Maize Analysis---------------------------------
 maize <- food_group_by("Maize")
+
+# Remove outliers
+maize <- maize[-c(20716, 58206, 57626, 89587, 59231, 63897, 59587, 23915), ] #Ethiopia
 
 # Find world average price for rice and plot price and inflation
 maize_world_avg <- world_average(maize)
@@ -1450,6 +1489,9 @@ Zimbabwe <- national_average_fun(filter(maize, country=="Zimbabwe"))
 maize2 <- do.call("rbind", list(Benin, Burkina_Faso, Burundi, Cameroon, Central_African_Republic, Chad, Colombia, Cote_dIvoire, Democratic_Republic_Congo, El_Salvador, Ethiopia, Gambia, Ghana, Guatemala, Guinea_Bissau, Haiti, Kenya, Kyrgyzstan, Lesotho, Malawi, Mali, Mozambique, Myanmar, Niger, Nigeria, Peru, Rwanda, Senegal, Somalia, South_Sudan, Tajikistan, Timor_Leste, Uganda, United_Republic_Tanzania, Zambia, Zimbabwe))
 rm(Benin, Burkina_Faso, Burundi, Cameroon, Central_African_Republic, Chad, Colombia, Cote_dIvoire, Democratic_Republic_Congo, El_Salvador, Ethiopia, Gambia, Ghana, Guatemala, Guinea_Bissau, Haiti, Kenya, Kyrgyzstan, Lesotho, Malawi, Mali, Mozambique, Myanmar, Niger, Nigeria, Peru, Rwanda, Senegal, Somalia, South_Sudan, Tajikistan, Timor_Leste, Uganda, United_Republic_Tanzania, Zambia, Zimbabwe)
 
+# Filter out Somalia becaus no PPP 
+maize2 <- filter(maize2, country!="Somalia")
+
 # Filter out the countries without national averge
 maize <- filter(maize, market=="National Average")
 
@@ -1466,6 +1508,10 @@ rm(maize2)
 
 # Cleaning for Sorghum Analysis---------------------------------
 sorghum <- food_group_by("Sorghum")
+
+# remove outliers
+sorghum <- sorghum[-c(27619, 26802, 30155), ] #Ethiopia
+
 
 # Find world average price for rice and plot price and inflation
 sorghum_world_avg <- world_average(sorghum)
@@ -1506,6 +1552,9 @@ Zimbabwe <- national_average_fun(filter(sorghum, country=="Zimbabwe"))
 # rbind the newly calculated national averages
 sorghum2 <- do.call("rbind", list(Benin, Burkina_Faso , Cameroon, Chad, Djibouti, Ethiopia , Gambia , Guinea_Bissau , Kenya, Mali , Mauritania, Niger , Nigeria, Rwanda , Senegal , Somalia, South_Sudan, Sudan , Uganda, Zambia, Zimbabwe ))
 rm(Benin, Burkina_Faso , Cameroon, Chad, Djibouti, Ethiopia , Gambia , Guinea_Bissau , Kenya, Mali , Mauritania, Niger , Nigeria, Rwanda , Senegal , Somalia, South_Sudan, Sudan , Uganda, Zambia, Zimbabwe )
+
+# Filter out Somalia becaus no PPP 
+sorghum2 <- filter(sorghum2, country!="Somalia")
 
 # Filter out the countries without national averge
 sorghum <- filter(sorghum, market=="National Average")
@@ -1696,7 +1745,6 @@ Ukraine <- national_average_fun(filter(oil, country=="Ukraine"))
 Yemen <- national_average_fun(filter(oil, country=="Yemen"))
 Zimbabwe  <- national_average_fun(filter(oil, country=="Zimbabwe"))
 
-
 # rbind the newly calculated national averages
 oil2 <- do.call("rbind", list(Algeria, Armenia, Bangladesh, Cambodia, Central_African_Republic, Colombia, Congo, Cote_dIvoire, Democratic_Republic_Congo, Djibouti, Gambia, Guinea, Guinea_Bissau, India, Iran, Iraq, Kenya, Kyrgyzstan, Lao_Peoples_Democratic_Republic, Lebanon, Lesotho, Liberia, Madagascar, Mauritania, Myanmar, Pakistan, Peru, South_Sudan, State_Palestine, Syrian_Arab_Republic, Tajikistan, Ukraine, Yemen, Zimbabwe))
 rm(Algeria, Armenia, Bangladesh, Cambodia, Central_African_Republic, Colombia, Congo, Cote_dIvoire, Democratic_Republic_Congo, Djibouti, Gambia, Guinea, Guinea_Bissau, India, Iran, Iraq, Kenya, Kyrgyzstan, Lao_Peoples_Democratic_Republic, Lebanon, Lesotho, Liberia, Madagascar, Mauritania, Myanmar, Pakistan, Peru, South_Sudan, State_Palestine, Syrian_Arab_Republic, Tajikistan, Ukraine, Yemen, Zimbabwe)
@@ -1726,6 +1774,7 @@ rm(oil2)
 
 # Load Plots For Report-------------------------------------------
 # Regional price plots for all foods 
+options(scipen = 50) #disable scientific notation
 rice_region_list <- region_price_list_fun(rice_avg_region)
 maize_region_list <- region_price_list_fun(maize_avg_region)
 sorghum_region_list <- region_price_list_fun(sorghum_avg_region)
@@ -1735,39 +1784,39 @@ oil_region_list <- region_price_list_fun(oil_avg_region)
 
 rice_region_price_matrix <- ggmatrix(
   rice_region_list, 6, 1,
-  yAxisLabels = c("Sub-Saharan Africa", "Latin America & Caribean", "East Asia & Pacific", "South Asia","Europe & Central Asia", "Middle East & North Africa"),
-  title = "Rice Regions"
+  yAxisLabels = names(rice_region_list),
+  title = "Rice Price by Region"
   )
 
 
 maize_region_price_matrix <- ggmatrix(
-  maize_region_list, 6, 1,
+  maize_region_list, 3, 1,
   yAxisLabels = names(maize_region_list),
-  title = "Maize Regions"
+  title = "Maize Price by Region"
 )
 
 sorghum_region_price_matrix <- ggmatrix(
-  sorghum_region_list, 6, 1,
+  sorghum_region_list, 4, 1,
   yAxisLabels = names(sorghum_region_list),
-  title = "Rice Regions"
+  title = "Sorghum Regions"
 )
 
 beans_region_price_matrix <- ggmatrix(
   beans_region_list, 6, 1,
   yAxisLabels = names(beans_region_list),
-  title = "Maize Regions"
+  title = "Beans Price by Region"
 )
 
 millet_region_price_matrix <- ggmatrix(
-  millet_region_list, 6, 1,
+  millet_region_list, 3, 1,
   yAxisLabels = names(millet_region_list),
-  title = "Maize Regions"
+  title = "Millet Price by Region"
 )
 
 oil_region_price_matrix <- ggmatrix(
   oil_region_list, 6, 1,
   yAxisLabels = names(oil_region_list),
-  title = "Maize Regions"
+  title = "Oil Price by Region"
 )
 
 
@@ -1783,37 +1832,37 @@ Sub_Saharan_Africa_rice_price_list <- country_price_list_fun(rice, "Rice", "Sub-
 East_Asia_Pacific_rice_price_matrix <- ggmatrix(
   East_Asia_Pacific_rice_price_list, 4, 1,
   yAxisLabels = names(East_Asia_Pacific_rice_price_list),
-  title = "East Asia & Pacific"
+  title = "East Asia & Pacific, Rice Price"
 )
 
 Middle_East_North_Africa_rice_price_matrix <- ggmatrix(
   Middle_East_North_Africa_rice_price_list, 3, 1,
   yAxisLabels = names(Middle_East_North_Africa_rice_price_list),
-  title = "Middle East & North Africa"
+  title = "Middle East & North Africa, Rice Price"
 )
 
 Europe_Central_Asia_rice_price_matrix <- ggmatrix(
   Europe_Central_Asia_rice_price_list, 3, 1,
   yAxisLabels = names(Europe_Central_Asia_rice_price_list),
-  title = "Europe & Central Asia"
+  title = "Europe & Central Asia, Rice Price"
 )
 
 South_Asia_rice_price_matrix <- ggmatrix(
   South_Asia_rice_price_list, 5, 1,
   yAxisLabels = names(South_Asia_rice_price_list),
-  title = "South Asia"
+  title = "South Asia, Rice Price"
 )
 
 Latin_America_Caribbean_rice_price_matrix <- ggmatrix(
   Latin_America_Caribbean_rice_price_list, 3, 1,
   yAxisLabels = names(Latin_America_Caribbean_rice_price_list),
-  title = "Latin America and Caribbean"
+  title = "Latin America and Caribbean, Rice Price"
 )
 
 Sub_Saharan_Africa_rice_price_matrix <- ggmatrix(
   Sub_Saharan_Africa_rice_price_list, 11, 1,
   yAxisLabels = names(Sub_Saharan_Africa_rice_price_list),
-  title = "Sub-Saharan Africa"
+  title = "Sub-Saharan Africa, Rice Price"
 )
 
 # Inflation
@@ -1827,37 +1876,37 @@ Sub_Saharan_Africa_rice_inflation_list <- country_inflation_list_fun(rice, "Rice
 East_Asia_Pacific_rice_inflation_matrix <- ggmatrix(
   East_Asia_Pacific_rice_inflation_list, 4, 1,
   yAxisLabels = names(East_Asia_Pacific_rice_inflation_list),
-  title = "East Asia & Pacific"
+  title = "East Asia & Pacific, Rice Inflation"
 )
 
 Middle_East_North_Africa_rice_inflation_matrix <- ggmatrix(
   Middle_East_North_Africa_rice_inflation_list, 3, 1,
   yAxisLabels = names(Middle_East_North_Africa_rice_inflation_list),
-  title = "Middle East & North Africa"
+  title = "Middle East & North Africa, Rice Inflation"
 )
 
 Europe_Central_Asia_rice_inflation_matrix <- ggmatrix(
   Europe_Central_Asia_rice_inflation_list, 3, 1,
   yAxisLabels = names(Europe_Central_Asia_rice_inflation_list),
-  title = "Europe & Central Asia"
+  title = "Europe & Central Asia, Rice Inflation"
 )
 
 South_Asia_rice_inflation_matrix <- ggmatrix(
   South_Asia_rice_inflation_list, 5, 1,
   yAxisLabels = names(South_Asia_rice_inflation_list),
-  title = "South Asia"
+  title = "South Asia, Rice Inflation"
 )
 
 Latin_America_Caribbean_rice_inflation_matrix <- ggmatrix(
   Latin_America_Caribbean_rice_inflation_list, 3, 1,
   yAxisLabels = names(Latin_America_Caribbean_rice_inflation_list),
-  title = "Latin America and Caribbean"
+  title = "Latin America and Caribbean, Rice Inflation"
 )
 
 Sub_Saharan_Africa_rice_inflation_matrix <- ggmatrix(
   Sub_Saharan_Africa_rice_inflation_list, 11, 1,
   yAxisLabels = names(Sub_Saharan_Africa_rice_inflation_list),
-  title = "Sub-Saharan Africa"
+  title = "Sub-Saharan Africa, Rice Inflation"
 )
 
 # maize plots 
@@ -1870,28 +1919,25 @@ Sub_Saharan_Africa_maize_price_list <- country_price_list_fun(maize, "Maize", "S
 East_Asia_Pacific_maize_price_matrix <- ggmatrix(
   East_Asia_Pacific_maize_price_list, 2, 1,
   yAxisLabels = names(East_Asia_Pacific_maize_price_list),
-  title = "East Asia & Pacific"
+  title = "East Asia & Pacific, Maize Price"
 )
 
-length(Europe_Central_Asia_maize_price_list)
 Europe_Central_Asia_maize_price_matrix <- ggmatrix(
   Europe_Central_Asia_maize_price_list, 2, 1,
   yAxisLabels = names(Europe_Central_Asia_maize_price_list),
-  title = "Europe & Central Asia"
+  title = "Europe & Central Asia, Maize Price"
 )
 
-length(Latin_America_Caribbean_maize_price_list)
 Latin_America_Caribbean_maize_price_matrix <- ggmatrix(
   Latin_America_Caribbean_maize_price_list, 8, 1,
   yAxisLabels = names(Latin_America_Caribbean_maize_price_list),
-  title = "Latin America and Caribbean"
+  title = "Latin America and Caribbean, Maize Price"
 )
 
-length(Sub_Saharan_Africa_maize_price_list)
 Sub_Saharan_Africa_maize_price_matrix <- ggmatrix(
   Sub_Saharan_Africa_maize_price_list, 28, 1,
   yAxisLabels = names(Sub_Saharan_Africa_maize_price_list),
-  title = "Sub-Saharan Africa"
+  title = "Sub-Saharan Africa, Maize Price"
 )
 
 # Inflation
@@ -1903,25 +1949,25 @@ Sub_Saharan_Africa_maize_inflation_list <- country_inflation_list_fun(maize, "Ma
 East_Asia_Pacific_maize_inflation_matrix <- ggmatrix(
   East_Asia_Pacific_maize_inflation_list, 4, 1,
   yAxisLabels = names(East_Asia_Pacific_maize_inflation_list),
-  title = "East Asia & Pacific"
+  title = "East Asia & Pacific, Maize Inflation"
 )
 
 Europe_Central_Asia_maize_inflation_matrix <- ggmatrix(
   Europe_Central_Asia_maize_inflation_list, 3, 1,
   yAxisLabels = names(Europe_Central_Asia_maize_inflation_list),
-  title = "Europe & Central Asia"
+  title = "Europe & Central Asia, Maize Inflation"
 )
 
 Latin_America_Caribbean_maize_inflation_matrix <- ggmatrix(
   Latin_America_Caribbean_maize_inflation_list, 8, 1,
   yAxisLabels = names(Latin_America_Caribbean_maize_inflation_list),
-  title = "Latin America and Caribbean"
+  title = "Latin America and Caribbean, Maize Inflation"
 )
 
 Sub_Saharan_Africa_maize_inflation_matrix <- ggmatrix(
   Sub_Saharan_Africa_maize_inflation_list, 28, 1,
   yAxisLabels = names(Sub_Saharan_Africa_maize_inflation_list),
-  title = "Sub-Saharan Africa"
+  title = "Sub-Saharan Africa, Maize Inflation"
 )
 
 
@@ -1931,25 +1977,22 @@ Middle_East_North_Africa_sorghum_price_list <- country_price_list_fun(sorghum, "
 Latin_America_Caribbean_sorghum_price_list <- country_price_list_fun(sorghum, "Sorghum", "Latin America & Caribbean")
 Sub_Saharan_Africa_sorghum_price_list <- country_price_list_fun(sorghum, "Sorghum", "Sub-Saharan Africa")
 
-length(Middle_East_North_Africa_sorghum_price_list)
 Middle_East_North_sorghum_Africa_price_matrix <- ggmatrix(
   Middle_East_North_Africa_sorghum_price_list, 1, 1,
   yAxisLabels = names(Middle_East_North_Africa_sorghum_price_list),
-  title = "Middle East & North Africa"
+  title = "Middle East & North Africa, Sorghum Price"
 )
 
-length(Latin_America_Caribbean_sorghum_price_matrix)
 Latin_America_Caribbean_sorghum_price_matrix <- ggmatrix(
   Latin_America_Caribbean_sorghum_price_list, 19, 1,
   yAxisLabels = names(Latin_America_Caribbean_sorghum_price_list),
-  title = "Latin America and Caribbean"
+  title = "Latin America and Caribbean, Sorghum Price"
 )
 
-length(Sub_Saharan_Africa_sorghum_price_list)
 Sub_Saharan_Africa_sorghum_price_matrix <- ggmatrix(
   Sub_Saharan_Africa_sorghum_price_list, 20, 1,
   yAxisLabels = names(Sub_Saharan_Africa_sorghum_price_list),
-  title = "Sub-Saharan Africa"
+  title = "Sub-Saharan Africa, Sorghum Price"
 )
 
 # Inflation
@@ -1960,19 +2003,19 @@ Sub_Saharan_Africa_sorghum_inflation_list <- country_inflation_list_fun(sorghum,
 Middle_East_North_Africa_sorghum_inflation_matrix <- ggmatrix(
   Middle_East_North_Africa_sorghum_inflation_list, 3, 1,
   yAxisLabels = names(Middle_East_North_Africa_sorghum_inflation_list),
-  title = "Middle East & North Africa"
+  title = "Middle East & North Africa, Sorghum Inflation"
 )
 
 Latin_America_Caribbean_sorghum_inflation_matrix <- ggmatrix(
   Latin_America_Caribbean_sorghum_inflation_list, 3, 1,
   yAxisLabels = names(Latin_America_Caribbean_sorghum_inflation_list),
-  title = "Latin America and Caribbean"
+  title = "Latin America and Caribbean, Sorghum Inflation"
 )
 
 Sub_Saharan_Africa_sorghum_inflation_matrix <- ggmatrix(
   Sub_Saharan_Africa_sorghum_inflation_list, 20, 1,
   yAxisLabels = names(Sub_Saharan_Africa_sorghum_inflation_list),
-  title = "Sub-Saharan Africa"
+  title = "Sub-Saharan Africa, Sorghum Inflation"
 )
 
 # beans plots 
@@ -1984,45 +2027,40 @@ South_Asia_beans_price_list <- country_price_list_fun(beans, "Beans", "South Asi
 Latin_America_Caribbean_beans_price_list <- country_price_list_fun(beans, "Beans", "Latin America & Caribbean")
 Sub_Saharan_Africa_beans_price_list <- country_price_list_fun(beans, "Beans", "Sub-Saharan Africa")
 
-length(East_Asia_Pacific_beans_price_list)
 East_Asia_Pacific_beans_price_matrix <- ggmatrix(
   East_Asia_Pacific_beans_price_list, 2, 1,
   yAxisLabels = names(East_Asia_Pacific_beans_price_list),
-  title = "East Asia & Pacific"
+  title = "East Asia & Pacific, Bean Price"
 )
 
-length(Middle_East_North_Africa_beans_price_list)
 Middle_East_North_Africa_beans_price_matrix <- ggmatrix(
   Middle_East_North_Africa_beans_price_list, 5, 1,
   yAxisLabels = names(Middle_East_North_Africa_beans_price_list),
-  title = "Middle East & North Africa"
+  title = "Middle East & North Africa, Bean Price"
 )
 
-length(Europe_Central_Asia_beans_price_list)
 Europe_Central_Asia_beans_price_matrix <- ggmatrix(
   Europe_Central_Asia_beans_price_list, 2, 1,
   yAxisLabels = names(Europe_Central_Asia_beans_price_list),
-  title = "Europe & Central Asia"
+  title = "Europe & Central Asia, Bean Price"
 )
 
 South_Asia_beans_price_matrix <- ggmatrix(
   South_Asia_beans_price_list, 1, 1,
   yAxisLabels = names(South_Asia_beans_price_list),
-  title = "South Asia"
+  title = "South Asia, Bean Price"
 )
 
-length(Latin_America_Caribbean_beans_price_list)
 Latin_America_Caribbean_beans_price_matrix <- ggmatrix(
   Latin_America_Caribbean_beans_price_list, 6, 1,
   yAxisLabels = names(Latin_America_Caribbean_beans_price_list),
-  title = "Latin America and Caribbean"
+  title = "Latin America and Caribbean, Bean Price"
 )
 
-length(Sub_Saharan_Africa_beans_price_list)
 Sub_Saharan_Africa_beans_price_matrix <- ggmatrix(
   Sub_Saharan_Africa_beans_price_list, 21, 1,
   yAxisLabels = names(Sub_Saharan_Africa_beans_price_list),
-  title = "Sub-Saharan Africa"
+  title = "Sub-Saharan Africa, Bean Price"
 )
 
 # Inflation
@@ -2036,37 +2074,37 @@ Sub_Saharan_Africa_beans_inflation_list <- country_inflation_list_fun(beans, "Be
 East_Asia_Pacific_beans_inflation_matrix <- ggmatrix(
   East_Asia_Pacific_beans_inflation_list, 2, 1,
   yAxisLabels = names(East_Asia_Pacific_beans_inflation_list),
-  title = "East Asia & Pacific"
+  title = "East Asia & Pacific, Bean Inflation"
 )
 
 Middle_East_North_Africa_beans_inflation_matrix <- ggmatrix(
   Middle_East_North_Africa_beans_inflation_list, 5, 1,
   yAxisLabels = names(Middle_East_North_Africa_beans_inflation_list),
-  title = "Middle East & North Africa"
+  title = "Middle East & North Africa, Bean Inflation"
 )
 
 Europe_Central_Asia_beans_inflation_matrix <- ggmatrix(
   Europe_Central_Asia_beans_inflation_list, 2, 1,
   yAxisLabels = names(Europe_Central_Asia_beans_inflation_list),
-  title = "Europe & Central Asia"
+  title = "Europe & Central Asia, Bean Inflation"
 )
 
 South_Asia_beans_inflation_matrix <- ggmatrix(
   South_Asia_beans_inflation_list, 1, 1,
   yAxisLabels = names(South_Asia_beans_inflation_list),
-  title = "South Asia"
+  title = "South Asia, Bean Inflation"
 )
 
 Latin_America_Caribbean_beans_inflation_matrix <- ggmatrix(
   Latin_America_Caribbean_beans_inflation_list, 6, 1,
   yAxisLabels = names(Latin_America_Caribbean_beans_inflation_list),
-  title = "Latin America and Caribbean"
+  title = "Latin America and Caribbean, Bean Inflation"
 )
 
 Sub_Saharan_Africa_beans_inflation_matrix <- ggmatrix(
   Sub_Saharan_Africa_beans_inflation_list, 21, 1,
   yAxisLabels = names(Sub_Saharan_Africa_beans_inflation_list),
-  title = "Sub-Saharan Africa"
+  title = "Sub-Saharan Africa, Bean Inflation"
 )
 
 
@@ -2075,18 +2113,16 @@ Sub_Saharan_Africa_beans_inflation_matrix <- ggmatrix(
 Middle_East_North_Africa_millet_price_list <- country_price_list_fun(millet, "Millet", "Middle East & North Africa")
 Sub_Saharan_Africa_millet_price_list <- country_price_list_fun(millet, "Millet", "Sub-Saharan Africa")
 
-length(Middle_East_North_Africa_millet_price_list)
 Middle_East_North_Africa_millet_price_matrix <- ggmatrix(
   Middle_East_North_Africa_millet_price_list, 1, 1,
   yAxisLabels = names(Middle_East_North_Africa_millet_price_list),
-  title = "Middle East & North Africa"
+  title = "Middle East & North Africa, Millet Price"
 )
 
-length(Sub_Saharan_Africa_millet_price_list)
 Sub_Saharan_Africa_millet_price_matrix <- ggmatrix(
   Sub_Saharan_Africa_millet_price_list, 13, 1,
   yAxisLabels = names(Sub_Saharan_Africa_millet_price_list),
-  title = "Sub-Saharan Africa"
+  title = "Sub-Saharan Africa, Millet Price"
 )
 
 # Inflation
@@ -2096,13 +2132,13 @@ Sub_Saharan_Africa_millet_inflation_list <- country_inflation_list_fun(millet, "
 Middle_East_North_Africa_millet_inflation_matrix <- ggmatrix(
   Middle_East_North_Africa_millet_inflation_list, 3, 1,
   yAxisLabels = names(Middle_East_North_Africa_millet_inflation_list),
-  title = "Middle East & North Africa"
+  title = "Middle East & North Africa, Millet Price"
 )
 
 Sub_Saharan_Africa_millet_inflation_matrix <- ggmatrix(
   Sub_Saharan_Africa_millet_inflation_list, 11, 1,
   yAxisLabels = names(Sub_Saharan_Africa_millet_inflation_list),
-  title = "Sub-Saharan Africa"
+  title = "Sub-Saharan Africa, Millet Price"
 )
 
 # oil plots 
@@ -2114,46 +2150,40 @@ South_Asia_oil_price_list <- country_price_list_fun(oil, "Oil", "South Asia")
 Latin_America_Caribbean_oil_price_list <- country_price_list_fun(oil, "Oil", "Latin America & Caribbean")
 Sub_Saharan_Africa_oil_price_list <- country_price_list_fun(oil, "Oil", "Sub-Saharan Africa")
 
-length(East_Asia_Pacific_oil_price_list)
 East_Asia_Pacific_oil_price_matrix <- ggmatrix(
   East_Asia_Pacific_oil_price_list, 4, 1,
   yAxisLabels = names(East_Asia_Pacific_oil_price_list),
-  title = "East Asia & Pacific"
+  title = "East Asia & Pacific, Oil Price"
 )
 
-length(Middle_East_North_Africa_oil_price_list)
 Middle_East_North_Africa_oil_price_matrix <- ggmatrix(
   Middle_East_North_Africa_oil_price_list, 9, 1,
   yAxisLabels = names(Middle_East_North_Africa_oil_price_list),
-  title = "Middle East & North Africa"
+  title = "Middle East & North Africa, Oil Price"
 )
 
-length(Europe_Central_Asia_oil_price_list)
 Europe_Central_Asia_oil_price_matrix <- ggmatrix(
   Europe_Central_Asia_oil_price_list, 5, 1,
   yAxisLabels = names(Europe_Central_Asia_oil_price_list),
-  title = "Europe & Central Asia"
+  title = "Europe & Central Asia, Oil Price"
 )
 
-length(South_Asia_oil_price_list)
 South_Asia_oil_price_matrix <- ggmatrix(
   South_Asia_oil_price_list, 3, 1,
   yAxisLabels = names(South_Asia_oil_price_list),
-  title = "South Asia"
+  title = "South Asia, Oil Price"
 )
 
-length(Latin_America_Caribbean_oil_price_list)
 Latin_America_Caribbean_oil_price_matrix <- ggmatrix(
   Latin_America_Caribbean_oil_price_list, 3, 1,
   yAxisLabels = names(Latin_America_Caribbean_oil_price_list),
-  title = "Latin America and Caribbean"
+  title = "Latin America and Caribbean, Oil Price"
 )
 
-length(Sub_Saharan_Africa_oil_price_list)
 Sub_Saharan_Africa_oil_price_matrix <- ggmatrix(
   Sub_Saharan_Africa_oil_price_list, 15, 1,
   yAxisLabels = names(Sub_Saharan_Africa_oil_price_list),
-  title = "Sub-Saharan Africa"
+  title = "Sub-Saharan Africa, Oil Price"
 )
 
 # Inflation
@@ -2167,47 +2197,41 @@ Sub_Saharan_Africa_oil_inflation_list <- country_inflation_list_fun(oil, "Oil", 
 East_Asia_Pacific_oil_inflation_matrix <- ggmatrix(
   East_Asia_Pacific_oil_inflation_list, 4, 1,
   yAxisLabels = names(East_Asia_Pacific_oil_inflation_list),
-  title = "East Asia & Pacific"
+  title = "East Asia & Pacific, Oil Inflation"
 )
 
 Middle_East_North_Africa_oil_inflation_matrix <- ggmatrix(
   Middle_East_North_Africa_oil_inflation_list, 9, 1,
   yAxisLabels = names(Middle_East_North_Africa_oil_inflation_list),
-  title = "Middle East & North Africa"
+  title = "Middle East & North Africa, Oil Inflation"
 )
 
 Europe_Central_Asia_oil_inflation_matrix <- ggmatrix(
   Europe_Central_Asia_oil_inflation_list, 5, 1,
   yAxisLabels = names(Europe_Central_Asia_oil_inflation_list),
-  title = "Europe & Central Asia"
+  title = "Europe & Central Asia, Oil Inflation"
 )
 
 South_Asia_oil_inflation_matrix <- ggmatrix(
   South_Asia_oil_inflation_list, 5, 1,
   yAxisLabels = names(South_Asia_oil_inflation_list),
-  title = "South Asia"
+  title = "South Asia, Oil Inflation"
 )
 
 Latin_America_Caribbean_oil_inflation_matrix <- ggmatrix(
   Latin_America_Caribbean_oil_inflation_list, 3, 1,
   yAxisLabels = names(Latin_America_Caribbean_oil_inflation_list),
-  title = "Latin America and Caribbean"
+  title = "Latin America and Caribbean, Oil Inflation"
 )
 
 Sub_Saharan_Africa_oil_inflation_matrix <- ggmatrix(
   Sub_Saharan_Africa_oil_inflation_list, 15, 1,
   yAxisLabels = names(Sub_Saharan_Africa_oil_inflation_list),
-  title = "Sub-Saharan Africa"
+  title = "Sub-Saharan Africa, Oil Inflation"
 )
 
 save.image("report/objects_for_analysis.RData")
 
-install.packages("dplyr")
-install.packages("readr")
-install.packages("data.table")
-install.packages("reshape")
-install.packages("tidyr")
-install.packages("tibble")
-install.packages("ggplot2")
-install.packages("GGally")
-install.packages("rmarkdown")
+
+
+
