@@ -265,9 +265,7 @@ Inflation Country Box
 plot_country_box(maize)
 ```
 
-***add countries with high inflation
-
-Countries that have a unstable inflation are Myramar and South Sudan. South Sudan instability is cause from the issues discussed above. As for Myrammar......
+Countries that have a unstable inflation are Myramar and South Sudan. South Sudan instability is cause from the issues discussed above. As for Myanmar this is interensting because maize production has increased steadily since 2000 (https://knoema.com/atlas/Myanmar/topics/Agriculture/Crops-Production-Yield/Maize-yield).
 
 ```{r, echo=FALSE, fig.width=14, fig.height=4, echo=FALSE, message=FALSE, warning=FALSE}
 East_Asia_Pacific_maize_inflation_matrix
@@ -417,8 +415,8 @@ plot_country_box(beans)
 ```
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Countries that have a unstable inflation are Timor-Leste and Malawi. 
-***Why Timor-Leste and Malawi have unstable prices 
+Countries that have a unstable inflation are Timor-Leste and Malawi. In recently year Timor-Leste has been effected greatly by climate change and population growth. In addition poor and unstable agricultural resources are previlent with ony 30% of arable land being used for cropping or in combination with animal grazing. (GOTL (2007) Government of Timor-Leste IV Constitutional Government Program 2007–2012. http://ageconsearch.umn.edu/bitstream/125077/2/2012AC%20Lopes%20CP.pdf). 
+
 
 
 ```{r, fig.width=14,fig.height=10, echo=FALSE, message=FALSE, warning=FALSE}
@@ -473,7 +471,7 @@ plot_region_box(millet_avg_region)
 
 ```{r, fig.width=14,  fig.height=2, echo=FALSE, message=FALSE, warning=FALSE}
 Middle_East_North_Africa_millet_price_matrix
-`88``
+```
 ```{r, fig.width=14,  fig.height=26, echo=FALSE, message=FALSE, warning=FALSE}
 Sub_Saharan_Africa_millet_price_matrix
 ```
