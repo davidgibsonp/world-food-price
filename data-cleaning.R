@@ -2228,34 +2228,3 @@ Sub_Saharan_Africa_oil_inflation_matrix <- ggmatrix(
 save.image("report/objects_for_analysis.RData")
 
 
-
-
-
-
-Middle_East_North_Africa <- filter(beans_avg_region, region=="Middle East & North Africa")
-Europe_Central_Asia <- filter(beans_avg_region, region=="Europe & Central Asia")
-South_Asia <- filter(beans_avg_region, region=="South Asia")
-East_Asia_Pacific <- filter(beans_avg_region, region=="East Asia & Pacific")
-Latin_America_Caribbean <- filter(beans_avg_region, region=="Latin America & Caribbean")
-
-Middle_East_North_Africa <- region_price_line(Middle_East_North_Africa)
-Europe_Central_Asia <- region_price_line(Europe_Central_Asia)
-South_Asia <- region_price_line(South_Asia)
-East_Asia_Pacific <- region_price_line(East_Asia_Pacific)
-Latin_America_Caribbean <- region_price_line(Latin_America_Caribbean)
-
-
-ggplot(Latin_America_Caribbean, aes(x=date,y=price_per_one_unit)) +
-  geom_line()
-
-list <- list(Middle_East_North_Africa, Europe_Central_Asia, South_Asia, East_Asia_Pacific, Latin_America_Caribbean)
-
-ggmatrix(
-  list, 6, 1,
-  yAxisLabels = names(list)
-)
-
-beans_region_price_matrix
-
-
-
