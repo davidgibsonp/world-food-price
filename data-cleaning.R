@@ -223,7 +223,7 @@ not_import$import <- "Not Import"
 food <- do.call("rbind", list(import, not_import, local))
 rm(import, not_import, local)
 
-# Unify top 7 foods
+# Unify top 7 foods into specified food groups
 food_groups <- food
 food_groups$food_name <- as.character(food_groups$food_name)
 food_groups$food_group <- as.character(food_groups$food_name)
@@ -612,28 +612,6 @@ df_country_food <- function(country_name, foodName){
 }
 
 food_group_by <- function(food_to_group){
-  grouping <- data.frame(matrix(ncol = 20, nrow = 0))
-  df_single_country_food <- function(country_name, foodName){
-    df <- filter(food, country==country_name, food_name==foodName)
-    if(dim(df)[1] < 10){
-      
-    }else{
-      df$month <- sapply(df$month, convert_month)
-      df$date <- as.Date(paste0(df$year,'-',df$month,'-01'))
-      df$monthly_inflation <- 100*(df$price/lag(df$price) - 1)
-      df
-    }
-  }
-  
-  for (i in unique(food$country)){
-    df <- df_single_country_food(i, food_to_group)
-    grouping <- rbind(df, grouping)
-  }
-  grouping
-}
-
-
-food_group_by <- function(food_to_group){
   df_single_country_food <- function(country_name, foodGroup){
     df <- filter(food, country==country_name, food_group==foodGroup)
     if(dim(df)[1] < 10){
@@ -653,10 +631,6 @@ food_group_by <- function(food_to_group){
   }
   grouping
 }
-
-
-
-
 
 
 show_no_nat_avg <- function(grouped_food_df){
@@ -698,18 +672,6 @@ plot_group_price <- function(food_group_df){
     labs(x = "Date", y = "Price Per One Gram")
 }
 
-
-# plot_group_inflation_by_country <- function(food_group_df){
-#   title <- as.character(head(food_group_df$country, 1))
-#   ggplot(food_group_df, aes(x=date, y=monthly_inflation, col=country)) +
-#     geom_line(alpha = 0.5) + 
-#     scale_x_date(date_breaks = "2 year", date_labels = "%m-%Y") +
-#     geom_smooth() +
-#     ggtitle(paste0(title,'Inflation')) +
-#     labs(x = "Monthly Inflation", y = "Count")
-#   # ggtitle(paste0(food_group_df,'World Wide Price'))
-# }
-
 plot_region_price <- function(food_group_df){
   title <- as.character(head(food_group_df$country, 1))
   title2 <- as.character(head(food_group_df$food_group, 1))
@@ -720,19 +682,8 @@ plot_region_price <- function(food_group_df){
     ggtitle(paste0(title, ' ',title2,' Price by Region')) +
     labs(x = "Date", y = "Price Per One Gram")
 }
-  
-# plot_region_inflation <- function(food_group_df){
-#   ggplot(food_group_df, aes(x=date, y=monthly_inflation, col=region)) +
-#     geom_line(alpha = 0.5) + 
-#     scale_x_date(date_breaks = "2 year", date_labels = "%m-%Y") +
-#     geom_smooth()
-#   # ggtitle(paste0(food_group_df,'World Wide Price'))
-# }
 
 price_to_survive_plot_bar <- function(price_to_survive_df){
-  # price_to_survive_df <- filter(price_to_survive_df, country!="Liberia")
-  # price_to_survive_df <- filter(price_to_survive_df, country!="Nigeria")
-  # 
   plot <- 
     ggplot(price_to_survive_df) +
     geom_bar(aes(x=country,y=price_to_survive, col=country),stat="identity") +
@@ -742,8 +693,6 @@ price_to_survive_plot_bar <- function(price_to_survive_df){
 }
 
 price_to_survive_plot_line <- function(price_to_survive_df){
-  # price_to_survive_df <- filter(price_to_survive_df, country!="Liberia")
-  # price_to_survive_df <- filter(price_to_survive_df, country!="Nigeria")
   ggplot(price_to_survive_df, aes(x=year, y=price_to_survive, col=country)) +
     geom_line() 
 }
@@ -891,6 +840,7 @@ plot_country_box <- function(food_group_df){
   plot <-
     ggplot(food_group_df, aes(x = country, y = monthly_inflation, col=region)) +
     geom_boxplot() +
+    facet_grid(region~.,scales="free_y") +
     theme(legend.position="none") +
     ggtitle(paste0('Inflation of ', title, ' Across Countries')) +
     labs(y = "Monthly Inflation", x = "Countries")
@@ -915,7 +865,7 @@ plot_region_box <- function(food_group_df){
     ggtitle(paste0('Inflation of ', title, ' by Region')) +
     labs(y = "Monthly Inflation", x = "World Regions") +
     theme(legend.position="top", legend.direction="horizontal")
-  plot + coord_flip()
+  plot + coord_flip() 
 }
 
 plot_all_box <- function(food_group_df){
@@ -1008,90 +958,90 @@ facet_price_county <- function(grouped_df){
     scale_x_date(date_breaks = "2 year", date_labels = "%m-%Y") 
 }
 
-facet_inflation_county_by_East_Asia_Pacific <- function(grouped_df){
-  East_Asia_Pacific <- filter(grouped_df, region=="East Asia & Pacific")
-  ggplot(East_Asia_Pacific, aes(x=monthly_inflation, col=country)) +
-    geom_histogram(bins = 25, color='black', fill='white') +
-    facet_grid(. ~ country) +
-    theme(legend.position="none") +
-    ggtitle('East Asia & Pacific')
-}
-
-facet_inflation_county_by_Latin_America_Caribbean <- function(grouped_df){
-  facet_county_by_Latin_America_Caribbean <- filter(grouped_df, region=="Latin America & Caribbean")
-  ggplot(facet_county_by_Latin_America_Caribbean, aes(x=monthly_inflation, col=country)) +
-    geom_histogram(bins = 25, color='black', fill='white') +
-    facet_grid(. ~ country) +
-    theme(legend.position="none") +
-    ggtitle('Latin America & Caribbean')
-}
-
-facet_inflation_county_by_South_Asia <- function(grouped_df){
-  South_Asia <- filter(grouped_df, region=="South Asia")
-  ggplot(South_Asia, aes(x=monthly_inflation, col=country)) +
-    geom_histogram(bins = 25, color='black', fill='white') +
-    facet_grid(. ~ country) +
-    theme(legend.position="none") +
-    ggtitle('South Asia')
-}
-
-facet_inflation_county_by_Europe_Central_Asia <- function(grouped_df){
-  Europe_Central_Asia <- filter(grouped_df, region=="Europe & Central Asia")
-  ggplot(Europe_Central_Asia, aes(x=monthly_inflation, col=country)) +
-    geom_histogram(bins = 25, color='black', fill='white') +
-    facet_grid(. ~ country) +
-    theme(legend.position="none") +
-    ggtitle('Europe & Central Asia')
-}
-
-facet_inflation_county_by_Middle_East_North_Africa <- function(grouped_df){
-  Middle_East_North_Africa <- filter(grouped_df, region=="Middle East & North Africa")
-  ggplot(Middle_East_North_Africa, aes(x=monthly_inflation, col=country)) +
-    geom_histogram(bins = 25, color='black', fill='white') +
-    facet_grid(. ~ country) +
-    theme(legend.position="none") +
-    ggtitle('Middle East & North Africa')
-}
-
-facet_inflation_county_by_Sub_Saharan_Africa <- function(grouped_df){
-  Sub_Saharan_Africa <- filter(grouped_df, region=="Sub-Saharan Africa")
-  ggplot(Sub_Saharan_Africa, aes(x=monthly_inflation, col=country)) +
-    geom_histogram(bins = 25, color='black', fill='white') +
-    facet_grid(. ~ country) +
-    theme(legend.position="none") +
-    ggtitle('Sub-Saharan Africa')
-}
-
-facet_inflation_county_by_Sub_Saharan_Africa_B <- function(grouped_df){
-  Sub_Saharan_Africa <- filter(grouped_df, region=="Sub-Saharan Africa")
-  Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Nigeria")
-  Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Senegal")
-  Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Benin")
-  Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Cote d'Ivoire")
-  Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="United Republic of Tanzania")
-  
-  ggplot(Sub_Saharan_Africa, aes(x=monthly_inflation, col=country)) +
-    geom_histogram(bins = 25, color='black', fill='white') +
-    facet_grid(. ~ country) +
-    theme(legend.position="none") +
-    ggtitle('Sub-Saharan Africa')
-  
-}       
-
-facet_inflation_county_by_Sub_Saharan_Africa_A <- function(grouped_df){
-  Sub_Saharan_Africa <- filter(grouped_df, region=="Sub-Saharan Africa")
-  Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Ghana")
-  Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Liberia")
-  Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Somalia")
-  Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Guinea-Bissau")
-  Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Cote d'Ivori")
-  Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Swaziland")
-  ggplot(Sub_Saharan_Africa, aes(x=monthly_inflation, col=country)) +
-    geom_histogram(bins = 25, color='black', fill='white') +
-    facet_grid(. ~ country) +
-    theme(legend.position="none") +
-    ggtitle('Sub-Saharan Africa')
-}
+# facet_inflation_county_by_East_Asia_Pacific <- function(grouped_df){
+#   East_Asia_Pacific <- filter(grouped_df, region=="East Asia & Pacific")
+#   ggplot(East_Asia_Pacific, aes(x=monthly_inflation, col=country)) +
+#     geom_histogram(bins = 25, color='black', fill='white') +
+#     facet_grid(. ~ country) +
+#     theme(legend.position="none") +
+#     ggtitle('East Asia & Pacific')
+# }
+# 
+# facet_inflation_county_by_Latin_America_Caribbean <- function(grouped_df){
+#   facet_county_by_Latin_America_Caribbean <- filter(grouped_df, region=="Latin America & Caribbean")
+#   ggplot(facet_county_by_Latin_America_Caribbean, aes(x=monthly_inflation, col=country)) +
+#     geom_histogram(bins = 25, color='black', fill='white') +
+#     facet_grid(. ~ country) +
+#     theme(legend.position="none") +
+#     ggtitle('Latin America & Caribbean')
+# }
+# 
+# facet_inflation_county_by_South_Asia <- function(grouped_df){
+#   South_Asia <- filter(grouped_df, region=="South Asia")
+#   ggplot(South_Asia, aes(x=monthly_inflation, col=country)) +
+#     geom_histogram(bins = 25, color='black', fill='white') +
+#     facet_grid(. ~ country) +
+#     theme(legend.position="none") +
+#     ggtitle('South Asia')
+# }
+# 
+# facet_inflation_county_by_Europe_Central_Asia <- function(grouped_df){
+#   Europe_Central_Asia <- filter(grouped_df, region=="Europe & Central Asia")
+#   ggplot(Europe_Central_Asia, aes(x=monthly_inflation, col=country)) +
+#     geom_histogram(bins = 25, color='black', fill='white') +
+#     facet_grid(. ~ country) +
+#     theme(legend.position="none") +
+#     ggtitle('Europe & Central Asia')
+# }
+# 
+# facet_inflation_county_by_Middle_East_North_Africa <- function(grouped_df){
+#   Middle_East_North_Africa <- filter(grouped_df, region=="Middle East & North Africa")
+#   ggplot(Middle_East_North_Africa, aes(x=monthly_inflation, col=country)) +
+#     geom_histogram(bins = 25, color='black', fill='white') +
+#     facet_grid(. ~ country) +
+#     theme(legend.position="none") +
+#     ggtitle('Middle East & North Africa')
+# }
+# 
+# facet_inflation_county_by_Sub_Saharan_Africa <- function(grouped_df){
+#   Sub_Saharan_Africa <- filter(grouped_df, region=="Sub-Saharan Africa")
+#   ggplot(Sub_Saharan_Africa, aes(x=monthly_inflation, col=country)) +
+#     geom_histogram(bins = 25, color='black', fill='white') +
+#     facet_grid(. ~ country) +
+#     theme(legend.position="none") +
+#     ggtitle('Sub-Saharan Africa')
+# }
+# 
+# facet_inflation_county_by_Sub_Saharan_Africa_B <- function(grouped_df){
+#   Sub_Saharan_Africa <- filter(grouped_df, region=="Sub-Saharan Africa")
+#   Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Nigeria")
+#   Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Senegal")
+#   Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Benin")
+#   Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Cote d'Ivoire")
+#   Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="United Republic of Tanzania")
+#   
+#   ggplot(Sub_Saharan_Africa, aes(x=monthly_inflation, col=country)) +
+#     geom_histogram(bins = 25, color='black', fill='white') +
+#     facet_grid(. ~ country) +
+#     theme(legend.position="none") +
+#     ggtitle('Sub-Saharan Africa')
+#   
+# }       
+# 
+# facet_inflation_county_by_Sub_Saharan_Africa_A <- function(grouped_df){
+#   Sub_Saharan_Africa <- filter(grouped_df, region=="Sub-Saharan Africa")
+#   Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Ghana")
+#   Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Liberia")
+#   Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Somalia")
+#   Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Guinea-Bissau")
+#   Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Cote d'Ivori")
+#   Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Swaziland")
+#   ggplot(Sub_Saharan_Africa, aes(x=monthly_inflation, col=country)) +
+#     geom_histogram(bins = 25, color='black', fill='white') +
+#     facet_grid(. ~ country) +
+#     theme(legend.position="none") +
+#     ggtitle('Sub-Saharan Africa')
+# }
 
 region_price_line <- function(food_avg_region) {
   plot<- 
@@ -1112,6 +1062,17 @@ plot_country_price <- function(grouped_df, country_name, foodName){
       scale_x_date(date_breaks = "1 year", date_labels = "%m/%Y") +
       ggtitle(paste0(country_name,', ', foodName)) +
       expand_limits(x = c(as.Date("2000-01-01"),as.Date("2015-12-01")),  y = c(0,0.0125))
+  plot
+}
+
+plot_country_price_facet <- function(grouped_df, regionNeeded){
+  plot <-
+    ggplot(grouped_df, aes(x=date, y=price_per_one_unit, col = country)) +
+    geom_line() +
+    scale_x_date(date_breaks = "1 year", date_labels = "%m/%Y") +
+    expand_limits(x = c(as.Date("2000-01-01"),as.Date("2015-12-01"))) +
+    labs(y = "Price Per One Unit", x = "Date") + 
+    ggtitle(paste(regionNeeded))
   plot
 }
 
@@ -1146,8 +1107,14 @@ country_price_list_fun <- function(grouped_df, foodName, regionNeeded) {
         list[[paste(i)]] <- plot
       }
     }
+  
+  
+  if (length(list) <= 4) {
+    list <- plot_country_price_facet(grouped_df, paste(regionNeeded))
+  }
   list
 }
+
 
 plot_country_inflation <- function(grouped_df, country_name, foodName){
   plot<-
@@ -1824,23 +1791,23 @@ South_Asia_rice_price_list <- country_price_list_fun(rice, "Rice", "South Asia")
 Latin_America_Caribbean_rice_price_list <- country_price_list_fun(rice, "Rice", "Latin America & Caribbean")
 Sub_Saharan_Africa_rice_price_list <- country_price_list_fun(rice, "Rice", "Sub-Saharan Africa")
 
-East_Asia_Pacific_rice_price_matrix <- ggmatrix(
-  East_Asia_Pacific_rice_price_list, 4, 1,
-  yAxisLabels = names(East_Asia_Pacific_rice_price_list),
-  title = "East Asia & Pacific, Rice Price"
-)
-
-Middle_East_North_Africa_rice_price_matrix <- ggmatrix(
-  Middle_East_North_Africa_rice_price_list, 3, 1,
-  yAxisLabels = names(Middle_East_North_Africa_rice_price_list),
-  title = "Middle East & North Africa, Rice Price"
-)
-
-Europe_Central_Asia_rice_price_matrix <- ggmatrix(
-  Europe_Central_Asia_rice_price_list, 3, 1,
-  yAxisLabels = names(Europe_Central_Asia_rice_price_list),
-  title = "Europe & Central Asia, Rice Price"
-)
+# East_Asia_Pacific_rice_price_matrix <- ggmatrix(
+#   East_Asia_Pacific_rice_price_list, 4, 1,
+#   yAxisLabels = names(East_Asia_Pacific_rice_price_list),
+#   title = "East Asia & Pacific, Rice Price"
+# )
+# 
+# Middle_East_North_Africa_rice_price_matrix <- ggmatrix(
+#   Middle_East_North_Africa_rice_price_list, 3, 1,
+#   yAxisLabels = names(Middle_East_North_Africa_rice_price_list),
+#   title = "Middle East & North Africa, Rice Price"
+# )
+# 
+# Europe_Central_Asia_rice_price_matrix <- ggmatrix(
+#   Europe_Central_Asia_rice_price_list, 3, 1,
+#   yAxisLabels = names(Europe_Central_Asia_rice_price_list),
+#   title = "Europe & Central Asia, Rice Price"
+# )
 
 South_Asia_rice_price_matrix <- ggmatrix(
   South_Asia_rice_price_list, 5, 1,
@@ -1848,11 +1815,11 @@ South_Asia_rice_price_matrix <- ggmatrix(
   title = "South Asia, Rice Price"
 )
 
-Latin_America_Caribbean_rice_price_matrix <- ggmatrix(
-  Latin_America_Caribbean_rice_price_list, 3, 1,
-  yAxisLabels = names(Latin_America_Caribbean_rice_price_list),
-  title = "Latin America and Caribbean, Rice Price"
-)
+# Latin_America_Caribbean_rice_price_matrix <- ggmatrix(
+#   Latin_America_Caribbean_rice_price_list, 3, 1,
+#   yAxisLabels = names(Latin_America_Caribbean_rice_price_list),
+#   title = "Latin America and Caribbean, Rice Price"
+# )
 
 Sub_Saharan_Africa_rice_price_matrix <- ggmatrix(
   Sub_Saharan_Africa_rice_price_list, 11, 1,
@@ -1911,17 +1878,17 @@ Europe_Central_Asia_maize_price_list <- country_price_list_fun(maize, "Maize", "
 Latin_America_Caribbean_maize_price_list <- country_price_list_fun(maize, "Maize", "Latin America & Caribbean")
 Sub_Saharan_Africa_maize_price_list <- country_price_list_fun(maize, "Maize", "Sub-Saharan Africa")
 
-East_Asia_Pacific_maize_price_matrix <- ggmatrix(
-  East_Asia_Pacific_maize_price_list, 2, 1,
-  yAxisLabels = names(East_Asia_Pacific_maize_price_list),
-  title = "East Asia & Pacific, Maize Price"
-)
-
-Europe_Central_Asia_maize_price_matrix <- ggmatrix(
-  Europe_Central_Asia_maize_price_list, 2, 1,
-  yAxisLabels = names(Europe_Central_Asia_maize_price_list),
-  title = "Europe & Central Asia, Maize Price"
-)
+# East_Asia_Pacific_maize_price_matrix <- ggmatrix(
+#   East_Asia_Pacific_maize_price_list, 2, 1,
+#   yAxisLabels = names(East_Asia_Pacific_maize_price_list),
+#   title = "East Asia & Pacific, Maize Price"
+# )
+# 
+# Europe_Central_Asia_maize_price_matrix <- ggmatrix(
+#   Europe_Central_Asia_maize_price_list, 2, 1,
+#   yAxisLabels = names(Europe_Central_Asia_maize_price_list),
+#   title = "Europe & Central Asia, Maize Price"
+# )
 
 Latin_America_Caribbean_maize_price_matrix <- ggmatrix(
   Latin_America_Caribbean_maize_price_list, 8, 1,
@@ -1971,18 +1938,19 @@ Sub_Saharan_Africa_maize_inflation_matrix <- ggmatrix(
 Middle_East_North_Africa_sorghum_price_list <- country_price_list_fun(sorghum, "Sorghum", "Middle East & North Africa")
 Latin_America_Caribbean_sorghum_price_list <- country_price_list_fun(sorghum, "Sorghum", "Latin America & Caribbean")
 Sub_Saharan_Africa_sorghum_price_list <- country_price_list_fun(sorghum, "Sorghum", "Sub-Saharan Africa")
+Latin_America_Caribbean_sorghum_price_list <- country_price_list_fun(sorghum, "Sorghum", "Latin America & Caribbean")
 
-Middle_East_North_sorghum_Africa_price_matrix <- ggmatrix(
-  Middle_East_North_Africa_sorghum_price_list, 1, 1,
-  yAxisLabels = names(Middle_East_North_Africa_sorghum_price_list),
-  title = "Middle East & North Africa, Sorghum Price"
-)
+# Middle_East_North_sorghum_Africa_price_matrix <- ggmatrix(
+#   Middle_East_North_Africa_sorghum_price_list, 1, 1,
+#   yAxisLabels = names(Middle_East_North_Africa_sorghum_price_list),
+#   title = "Middle East & North Africa, Sorghum Price"
+# )
 
-Latin_America_Caribbean_sorghum_price_matrix <- ggmatrix(
-  Latin_America_Caribbean_sorghum_price_list, 19, 1,
-  yAxisLabels = names(Latin_America_Caribbean_sorghum_price_list),
-  title = "Latin America and Caribbean, Sorghum Price"
-)
+# Latin_America_Caribbean_sorghum_price_matrix <- ggmatrix(
+#   Latin_America_Caribbean_sorghum_price_list, 1, 1,
+#   yAxisLabels = names(Latin_America_Caribbean_sorghum_price_list),
+#   title = "Latin America and Caribbean, Sorghum Price"
+# )
 
 Sub_Saharan_Africa_sorghum_price_matrix <- ggmatrix(
   Sub_Saharan_Africa_sorghum_price_list, 20, 1,
@@ -2022,11 +1990,11 @@ South_Asia_beans_price_list <- country_price_list_fun(beans, "Beans", "South Asi
 Latin_America_Caribbean_beans_price_list <- country_price_list_fun(beans, "Beans", "Latin America & Caribbean")
 Sub_Saharan_Africa_beans_price_list <- country_price_list_fun(beans, "Beans", "Sub-Saharan Africa")
 
-East_Asia_Pacific_beans_price_matrix <- ggmatrix(
-  East_Asia_Pacific_beans_price_list, 2, 1,
-  yAxisLabels = names(East_Asia_Pacific_beans_price_list),
-  title = "East Asia & Pacific, Bean Price"
-)
+# East_Asia_Pacific_beans_price_matrix <- ggmatrix(
+#   East_Asia_Pacific_beans_price_list, 2, 1,
+#   yAxisLabels = names(East_Asia_Pacific_beans_price_list),
+#   title = "East Asia & Pacific, Bean Price"
+# )
 
 Middle_East_North_Africa_beans_price_matrix <- ggmatrix(
   Middle_East_North_Africa_beans_price_list, 5, 1,
@@ -2034,17 +2002,17 @@ Middle_East_North_Africa_beans_price_matrix <- ggmatrix(
   title = "Middle East & North Africa, Bean Price"
 )
 
-Europe_Central_Asia_beans_price_matrix <- ggmatrix(
-  Europe_Central_Asia_beans_price_list, 2, 1,
-  yAxisLabels = names(Europe_Central_Asia_beans_price_list),
-  title = "Europe & Central Asia, Bean Price"
-)
-
-South_Asia_beans_price_matrix <- ggmatrix(
-  South_Asia_beans_price_list, 1, 1,
-  yAxisLabels = names(South_Asia_beans_price_list),
-  title = "South Asia, Bean Price"
-)
+# Europe_Central_Asia_beans_price_matrix <- ggmatrix(
+#   Europe_Central_Asia_beans_price_list, 2, 1,
+#   yAxisLabels = names(Europe_Central_Asia_beans_price_list),
+#   title = "Europe & Central Asia, Bean Price"
+# )
+# 
+# South_Asia_beans_price_matrix <- ggmatrix(
+#   South_Asia_beans_price_list, 1, 1,
+#   yAxisLabels = names(South_Asia_beans_price_list),
+#   title = "South Asia, Bean Price"
+# )
 
 Latin_America_Caribbean_beans_price_matrix <- ggmatrix(
   Latin_America_Caribbean_beans_price_list, 6, 1,
@@ -2108,11 +2076,11 @@ Sub_Saharan_Africa_beans_inflation_matrix <- ggmatrix(
 Middle_East_North_Africa_millet_price_list <- country_price_list_fun(millet, "Millet", "Middle East & North Africa")
 Sub_Saharan_Africa_millet_price_list <- country_price_list_fun(millet, "Millet", "Sub-Saharan Africa")
 
-Middle_East_North_Africa_millet_price_matrix <- ggmatrix(
-  Middle_East_North_Africa_millet_price_list, 1, 1,
-  yAxisLabels = names(Middle_East_North_Africa_millet_price_list),
-  title = "Middle East & North Africa, Millet Price"
-)
+# Middle_East_North_Africa_millet_price_matrix <- ggmatrix(
+#   Middle_East_North_Africa_millet_price_list, 1, 1,
+#   yAxisLabels = names(Middle_East_North_Africa_millet_price_list),
+#   title = "Middle East & North Africa, Millet Price"
+# )
 
 Sub_Saharan_Africa_millet_price_matrix <- ggmatrix(
   Sub_Saharan_Africa_millet_price_list, 13, 1,
@@ -2145,11 +2113,11 @@ South_Asia_oil_price_list <- country_price_list_fun(oil, "Oil", "South Asia")
 Latin_America_Caribbean_oil_price_list <- country_price_list_fun(oil, "Oil", "Latin America & Caribbean")
 Sub_Saharan_Africa_oil_price_list <- country_price_list_fun(oil, "Oil", "Sub-Saharan Africa")
 
-East_Asia_Pacific_oil_price_matrix <- ggmatrix(
-  East_Asia_Pacific_oil_price_list, 4, 1,
-  yAxisLabels = names(East_Asia_Pacific_oil_price_list),
-  title = "East Asia & Pacific, Oil Price"
-)
+# East_Asia_Pacific_oil_price_matrix <- ggmatrix(
+#   East_Asia_Pacific_oil_price_list, 4, 1,
+#   yAxisLabels = names(East_Asia_Pacific_oil_price_list),
+#   title = "East Asia & Pacific, Oil Price"
+# )
 
 Middle_East_North_Africa_oil_price_matrix <- ggmatrix(
   Middle_East_North_Africa_oil_price_list, 9, 1,
@@ -2163,17 +2131,17 @@ Europe_Central_Asia_oil_price_matrix <- ggmatrix(
   title = "Europe & Central Asia, Oil Price"
 )
 
-South_Asia_oil_price_matrix <- ggmatrix(
-  South_Asia_oil_price_list, 3, 1,
-  yAxisLabels = names(South_Asia_oil_price_list),
-  title = "South Asia, Oil Price"
-)
-
-Latin_America_Caribbean_oil_price_matrix <- ggmatrix(
-  Latin_America_Caribbean_oil_price_list, 3, 1,
-  yAxisLabels = names(Latin_America_Caribbean_oil_price_list),
-  title = "Latin America and Caribbean, Oil Price"
-)
+# South_Asia_oil_price_matrix <- ggmatrix(
+#   South_Asia_oil_price_list, 3, 1,
+#   yAxisLabels = names(South_Asia_oil_price_list),
+#   title = "South Asia, Oil Price"
+# )
+# 
+# Latin_America_Caribbean_oil_price_matrix <- ggmatrix(
+#   Latin_America_Caribbean_oil_price_list, 3, 1,
+#   yAxisLabels = names(Latin_America_Caribbean_oil_price_list),
+#   title = "Latin America and Caribbean, Oil Price"
+# )
 
 Sub_Saharan_Africa_oil_price_matrix <- ggmatrix(
   Sub_Saharan_Africa_oil_price_list, 15, 1,

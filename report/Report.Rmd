@@ -119,19 +119,23 @@ As expected Sub-Saharan Africa is the most unstable region with the most signifi
 Latin America & Caribbean has the smallest quartile range, which means it is one of the most stable regions for rice price. Fluctuation of rice production may not impact the rice price as much as other regions since wheat, maize, and beans highly supplement this population’s diet. I also found that within the last ten years Latin America & Caribbean benefited from a growing economy and is trying to maintain stability.
 
 ```{r, echo=FALSE,fig.width=14, fig.height=6, message=FALSE, warning=FALSE}
-Middle_East_North_Africa_rice_price_matrix
+# Middle_East_North_Africa_rice_price_matrix
+Middle_East_North_Africa_rice_price_list
 ```
 ```{r, echo=FALSE,fig.width=14, fig.height=8, message=FALSE, warning=FALSE}
-East_Asia_Pacific_rice_price_matrix
+# East_Asia_Pacific_rice_price_matrix
+East_Asia_Pacific_rice_price_list
 ```
 ```{r, echo=FALSE,fig.width=14, fig.height=6, message=FALSE, warning=FALSE}
-Europe_Central_Asia_rice_price_matrix
+# Europe_Central_Asia_rice_price_matrix
+Europe_Central_Asia_rice_price_list
 ```
 ```{r, echo=FALSE,fig.width=14, fig.height=10, message=FALSE, warning=FALSE}
 South_Asia_rice_price_matrix
 ```
 ```{r, echo=FALSE,fig.width=14, fig.height=6, message=FALSE, warning=FALSE}
-Latin_America_Caribbean_rice_price_matrix
+# Latin_America_Caribbean_rice_price_matrix
+Latin_America_Caribbean_rice_price_list
 ```
 ```{r, echo=FALSE,fig.width=12, fig.height=22,message=FALSE, warning=FALSE}
 Sub_Saharan_Africa_rice_price_matrix
@@ -189,18 +193,6 @@ plot_import_countries_inflation(rice_countries_and_imports)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 Chad and Mali have an identical distribution for both Import and Not Listed which leads me to believe that rice I categorized as Not Listed may be imported rice. Additionally, for both these countries, Local rice has a much less stable price, which makes sense because of seasonal crops. Mali has three growing seasons, main season Oct-Dec, off-season Dec-Jan and deepwater rice May-July.  (http://ricepedia.org/mali). Then Chad has two seasons, main season Oct - Dec and off-season June - July. (http://www.fao.org/docrep/005/Y4347E/y4347e0f.htm). Off season rice has to be grown in well-irrigated areas.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-The last analysis I will do for rice is the price to survive. Which is a price for a year's worth of rice which is equilin to 1000 calories of rice a day? The calculated that 1000 calories of rice are about 769.23076923 G.
- 
-#```{r, echo=FALSE, fig.width=14, message=FALSE, warning=FALSE}
-price_to_survive_plot_line(rice_price_to_survive)
-price_to_survive_plot_bar(rice_price_to_survive)  
-
-
-price_to_survive_plot_line(rice_price_to_survive_no_lib_nig)#Took out nigeria and liberia
-price_to_survive_plot_bar(rice_price_to_survive_no_lib_nig)
-#```
-
 ------
 
 #4. Maize {#Maizelink}
@@ -237,10 +229,12 @@ Short summary
 
 Countr Price Matrixs
 ```{r, echo=FALSE, fig.width=14, fig.height=4, echo=FALSE, message=FALSE, warning=FALSE}
-East_Asia_Pacific_maize_price_matrix
+# East_Asia_Pacific_maize_price_matrix
+East_Asia_Pacific_maize_price_list
 ```
 ```{r, echo=FALSE, fig.width=14, fig.height=4, echo=FALSE, message=FALSE, warning=FALSE}
-Europe_Central_Asia_maize_price_matrix
+# Europe_Central_Asia_maize_price_matrix
+Europe_Central_Asia_maize_price_list
 ```
 ```{r, echo=FALSE, fig.width=14, fig.height=16, echo=FALSE, message=FALSE, warning=FALSE}
 Latin_America_Caribbean_maize_price_matrix
@@ -250,7 +244,7 @@ Sub_Saharan_Africa_maize_price_matrix
 ```
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Countries with a noticeably higher price for maize are South Sudan, Nigeria, and Guinea-Bissau. After 2006 Guinea-Bissau saw a drastic decrease in harvest yield which would account for the higher prices(https://knoema.com/FAOPRDSC2016R/production-statistics-crops-crops-processed?country=1000860-guinea-bissau&item=1000920-maize). The reason for the decrease is likely due to climate change. The high prices in South Sudan can be justified by famines that have affected south Sudan since 2001. Currently, South Sudan is recovering from a famine that hit early 2017. Also, conflict between rebels and the government was in action from 2003 to 2005, this was known as The Darfur conflict(http://www.waterforsouthsudan.org/brief-history-of-south-sudan/).
+Countries with a noticeably higher price for maize are South Sudan, Nigeria, and Guinea-Bissau. After 2006 Guinea-Bissau saw a drastic decrease in harvest yield which would account for the higher prices(https://knoema.com/FAOPRDSC2016R/production-statistics-crops-crops-processed?country=1000860-guinea-bissau&item=1000920-maize). The reason for the decrease is likely due to climate change. The high prices in South Sudan can be justified by famines that have affected south Sudan since 2001. Currently, South Sudan is recovering from a famine that hit early 2017. Also, a conflict between rebels and the government was in action from 2003 to 2005, this was known as The Darfur conflict(http://www.waterforsouthsudan.org/brief-history-of-south-sudan/).
 
 
 ```{r, fig.width=14, echo=FALSE,  fig.height=8,message=FALSE, warning=FALSE}
@@ -258,7 +252,7 @@ plot_region_box(maize_avg_region)
 ```
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-By looking at the inflation for each region we see that Sub_Sahara has the most outliers, but East Asia and Pacific has a larger quartile range. This is interesting because after research there has been a big push for maize farming in Asia. After the Philippines’ success with genetically modified corn. Vietnam and Indonesia we close to follow. (http://www.thehindubusinessline.com/economy/agri-business/south-east-asia-could-be-corn-hub-for-asia-pacific/article4140604.ece). The reason fo the push is an increase in domestic animal feed demand. This instability of price is likely caused by the shift from imported maize to local maize.
+By looking at the inflation for each region we see that Sub_Sahara has the most outliers, but East Asia and Pacific has a larger quartile range. This is interesting because after research there has been a big push for maize farming in Asia. After the Philippines’ success with genetically modified corn. Vietnam and Indonesia we close to follow. (http://www.thehindubusinessline.com/economy/agri-business/south-east-asia-could-be-corn-hub-for-asia-pacific/article4140604.ece). The reason for the push is an increase in domestic animal feed demand. This instability of price is likely caused by the shift from imported maize to local maize.
 
 
 Inflation Country Box
@@ -287,7 +281,7 @@ Sub_Saharan_Africa_maize_inflation_matrix
 #5. Sorghum {#Sorghumlink}
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-The third food in the analysis is Sorghum. Which is a cereal grain and is the ﬁfth most important cereal crop in the world, largely because of its natural drought tolerance and versatility as the food, feed, and fuel (https://wholegrainscouncil.org/whole-grains-101/easy-ways-enjoy-whole-grains/grain-month-calendar/sorghum-june-grain-month). For these reasons it is mostly grown in Africa and Australia. For this data set, we most see it in Africa.
+The third food in the analysis is Sorghum. Which is a cereal grain and is the ﬁfth most important cereal crop in the world, largely because of its natural drought tolerance and versatility as the food, feed, and fuel (https://wholegrainscouncil.org/whole-grains-101/easy-ways-enjoy-whole-grains/grain-month-calendar/sorghum-june-grain-month). For these reasons it is mostly grown in Africa and Australia. For this data set, we mostly see it in Africa.
 
 ```{r, fig.width=14, echo=FALSE,  fig.height=8,message=FALSE, warning=FALSE}
 plot_group_price(sorghum_world_avg)
@@ -308,7 +302,7 @@ plot_region_price(sorghum_avg_region)
 ```
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Once again a vast majority of the data is from Sub-Saharan Africa. Also the extremely low prices in Latin America & The Caribbean. Which is interesting because sorghum production is not very large in this region. Though for this dataset the region is represented by one country, Honduras. Additionally, for the Middle East and North Africa, there is only data from one country, so the only true representation of a region is for Sub-Saharan Africa. 
+Once again a vast majority of the data is from Sub-Saharan Africa. Also the extremely low prices in Latin America & The Caribbean. Which is interesting because sorghum production is not very large in this region. Though for this data set the region is represented by one country, Honduras. Additionally, for the Middle East and North Africa, there is only data from one country, so the only true representation of a region is for Sub-Saharan Africa. 
 
 ```{r, fig.width=14, fig.height=8, echo=FALSE, message=FALSE, warning=FALSE}
 sorghum_region_price_matrix
@@ -322,10 +316,12 @@ plot_region_box(sorghum_avg_region)
 ```
 
 ```{r, echo=FALSE,fig.width=14, fig.height=2, message=FALSE, warning=FALSE}
-Middle_East_North_sorghum_Africa_price_matrix
+# Middle_East_North_sorghum_Africa_price_matrix
+Middle_East_North_Africa_sorghum_price_list
 ```
 ```{r, echo=FALSE,fig.width=14, fig.height=2, message=FALSE, warning=FALSE}
-Latin_America_Caribbean_sorghum_price_matrix
+# Latin_America_Caribbean_sorghum_price_matrix
+Latin_America_Caribbean_sorghum_price_list
 ```
 ```{r, echo=FALSE,fig.width=14, fig.height=38, message=FALSE, warning=FALSE}
 Sub_Saharan_Africa_sorghum_price_matrix
@@ -355,7 +351,7 @@ Sub_Saharan_Africa_sorghum_inflation_matrix
 #6. Beans {#Beanslink}
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-The next food for analysis is beans. Which similar to rice is a more international food soo there is much more diversity in the data.
+The next food for analysis is beans. Which similar to rice is a more international food so there is much more diversity in the data.
 
 ```{r, fig.width=14, echo=FALSE,  fig.height=8,message=FALSE, warning=FALSE}
 plot_group_price(beans_world_avg)
@@ -390,13 +386,16 @@ plot_region_box(beans_avg_region)
 Middle_East_North_Africa_beans_price_matrix
 ```
 ```{r, fig.width=14,  fig.height=4, echo=FALSE, message=FALSE, warning=FALSE}
-East_Asia_Pacific_beans_price_matrix
+# East_Asia_Pacific_beans_price_matrix
+East_Asia_Pacific_beans_price_list
 ```
 ```{r, fig.width=14,  fig.height=4, echo=FALSE, message=FALSE, warning=FALSE}
-Europe_Central_Asia_beans_price_matrix
+# Europe_Central_Asia_beans_price_matrix
+Europe_Central_Asia_beans_price_list
 ```
 ```{r, fig.width=14,  fig.height=2, echo=FALSE, message=FALSE, warning=FALSE}
-South_Asia_beans_price_matrix
+# South_Asia_beans_price_matrix
+South_Asia_beans_price_list
 ```
 ```{r, fig.width=14,  fig.height=12, echo=FALSE, message=FALSE, warning=FALSE}
 Latin_America_Caribbean_beans_price_matrix
@@ -469,7 +468,8 @@ plot_region_box(millet_avg_region)
 ```
 
 ```{r, fig.width=14,  fig.height=2, echo=FALSE, message=FALSE, warning=FALSE}
-Middle_East_North_Africa_millet_price_matrix
+# Middle_East_North_Africa_millet_price_matrix
+Middle_East_North_Africa_millet_price_list
 ```
 ```{r, fig.width=14,  fig.height=26, echo=FALSE, message=FALSE, warning=FALSE}
 Sub_Saharan_Africa_millet_price_matrix
@@ -496,7 +496,7 @@ Sub_Saharan_Africa_millet_inflation_matrix
 #8. Conclusion {#Conclusionlink)
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Enormous insight can be gained from this dataset. I took a broad approach by combing the top foods and looking at their prices throughout the world. Africa had the majority of my data.
+Enormous insight can be gained from this data set. I took a broad approach by combing the top foods and looking at their prices throughout the world. Africa had the majority of my data.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;      
 This broad approach showed the price of food is greatly determined by natural resources, rainy seasons, import/export policies and politics. African politics and civil wars are a tremendous factor in countries with food insecurity. Also stable inflation does not seem to effect food prices where high inflation does.
