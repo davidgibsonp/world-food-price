@@ -758,6 +758,7 @@ plot_region_price_facet_B <- function(food_group_df){
 }
 
 plot_import_countries_price <- function(countries_and_imports_df){
+  
   ggplot(countries_and_imports_df, aes(x=date, y=price_per_one_unit, col=import)) +
     geom_line(alpha = 0.5) + 
     facet_grid(.~country) +
@@ -847,6 +848,16 @@ plot_country_box <- function(food_group_df){
   plot + coord_flip()
 }
 
+plot_all_country_box <- function(food_group_df){
+  title <- as.character(head(food_group_df$food_group, 1))
+  plot <-
+    ggplot(food_group_df, aes(x = country, y = monthly_inflation, col=region)) +
+    geom_boxplot() +
+    theme(legend.position="none") +
+    ggtitle(paste0('Inflation of ', title, ' Across Countries')) +
+    labs(y = "Monthly Inflation", x = "Countries")
+  plot + coord_flip()
+}
 
 plot_world_box <- function(food_group_df){
   plot <-
@@ -1117,34 +1128,12 @@ country_price_list_fun <- function(grouped_df, foodName, regionNeeded) {
 
 
 plot_country_inflation <- function(grouped_df, country_name, foodName){
-  plot<-
-    ggplot(grouped_df, aes(x=monthly_inflation, col=country)) +
+    ggplot(grouped_df, aes(x=monthly_inflation)) +
       geom_histogram() +
       ggtitle(paste0(country_name,', ', foodName)) +
-      expand_limits(x = c(-100,100)) 
-  plot
+      expand_limits(x = c(-100,100)) +
+      theme(legend.position="none")
 }
-
-
-# country_inflation_list_fun <- function(grouped_df, foodName, regionNeeded) {
-#   grouped_df <- filter(grouped_df, region==regionNeeded)
-#   table <- table(grouped_df$country)
-#   countries <- names(table)
-#   
-#   list <- list()
-#   
-#   for(i in countries) {
-#     df <- filter(grouped_df, country==i)
-#     plot <- plot_country_inflation(df, paste(i), foodName)
-#     if (is.data.frame(df) && nrow(df)==0) {
-#       
-#     } else {
-#       list[[paste(i)]] <- plot
-#     }
-#   }
-#   list
-# }
-
 
 country_inflation_list_fun <- function(grouped_df, foodName, regionNeeded) {
   grouped_df <- filter(grouped_df, region==regionNeeded)

@@ -33,17 +33,19 @@ load(file="objects_for_analysis.RData")
 #1. Introduction {#Introlink}
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-This paper analyzes international food prices looking at countries, food groups, currency, food measurements, inflation, and other data. The data for this analysis was collected by the United Nation's World Food Programme’s vulnerability analysis and is updated monthly. The dataset can be retrieved from [here](data.humdata.org/dataset/wfp-food-prices) 
+This paper analyzes international food prices looking at countries, food groups, currency, food measurements, inflation, and other data. The data for this analysis was collected by the United Nation's World Food Programme’s vulnerability analysis and is updated monthly. The most up to date dataset can be retrieved from [Humdata](data.humdata.org/dataset/wfp-food-prices) the exact data used in this analysis is on [Dropbox](https://www.dropbox.com/sh/7gtmkpie1zfeqh4/AAAA8hNs5uRM-E-Q-73q5JSSa?dl=0), and the code is on [Github](https://github.com/davidgibsonp/world-food-price).
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+This was my final capstone project for the Foundations of Data Science course through [Springboard](https://www.springboard.com/workshops/data-science). The goal was to tie together all the topics that I learned through out the course. Although in this analysis I did not implement any statistical modeling I did become very comfortable with R and its associated libraries. 
 
 ------
 
 #2. Exploratory Analysis and Data Cleaning {#Cleaninglink}
 
-
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-After loading the dataset into R Programming, I realized the magnitude of the data I am analyzing. There are 687,253 objects of 18 variables, 74 countries, 304 different types food, and 60 currencies. With so many different objects I needed to clean the data before I started my analysis. I kept my cleaning phase as broad as possible by retaining as many objects as possible.
+After loading the dataset into R, I realized the magnitude of the data. There are 687,253 objects of 18 variables, 74 countries, 304 different types food, and 60 currencies. With so many different objects I needed to clean the data before I started my analysis. I kept my cleaning phase as broad as possible by retaining as many objects as possible.
 
-One think to note about thus data set is most of the data is from Africa.
+One thing to note about this data set is most of the data is from Africa thus not being an accurate representation of the international prices.
 
 ```{r, fig.width=14, echo=FALSE, fig.height=8, message=FALSE, warning=FALSE}
 map
@@ -51,7 +53,7 @@ map
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 For ease of viewing, I renamed columns and removed ones that would not be useful. Originally I wrote a function for a year and month column to merge and make a date column, but I retained both year and month columns. For a country code column, I downloaded an existing data frame and performed a left join on the top, so every country had its appropriate code. This also created a region and income group column. I performed the same join to categorize food groups such as fruits, meat, and bread. I found some entries were not food such as fuel and manual labor. I left them in but grouped them as "Not Food."
-The hardest part of the cleaning was unifying the price because I had 60 unique currencies over the last two decades. Not only was the exchange rate a factor, so was inflation and deflation. To overcome this, I downloaded a data set of Purchasing Power Parities (PPP) conversion factors from the World Bank. This accounted for both inflation and exchange rate. Once I had the PPP data set, I wrote a function to match every country and year with its appropriate PPP factor. Once I had a column with PPP factor, I then calculated a unified price column by dividing the original price by the new PPP factor column. Unfortunately the PPP data set did not have a PPP factor for every country and every year, so these entries were deleted.
+The hardest part of the cleaning was unifying the price because I had 60 unique currencies over the last two decades. Not only was the exchange rate a factor, so was inflation and deflation. To overcome this, I downloaded a data set of Purchasing Power Parities (PPP) conversion factors from the World Bank. This accounted for both inflation and exchange rate. Once I had the PPP data set, I wrote a function to match every country and year with its appropriate PPP factor. Once I had a column with PPP factor, I then calculated a unified price column by dividing the original price by the new PPP factor column. Unfortunately, the PPP data set did not have a PPP factor for every country and every year, so these entries were deleted.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 I thought my analysis could begin, but I next had to unify the unit of measurement column first. Foods were measured differently in kilograms, grams, pounds, gallons, milliliters, liters and even Haitian marmite and Argentinian cuartilla. I converted everything to gram or liter measurement units. I divided the unified price by units to calculate a price per one unit column.
@@ -68,22 +70,21 @@ I went back to cleaning. Did I write a function that would group calculate the n
 #3.Rice {#ricelink}
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-I started the analysis with the food that had the most entries which were rice with 67,003 entries. With each food, I started the analysis with a worldwide view and then narrowed it down to a six region's and then narrowed it further to specific countries.
+I started the analysis with the food that had the most entries which was rice with 67,003 entries. With each food, I started the with a worldwide view and then narrowed it down to a six region's and then narrowed it further to specific countries.
 
 ```{r, fig.width=14, echo=FALSE, fig.height=8, message=FALSE, warning=FALSE}
 plot_group_price(rice_world_avg)
 ```
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
-The overall price for rice has increased in the last decade. Additionally there a dramatic spike in the price from 2006 - 2007. 
+The overall price for rice has increased in the last decade. Additionally there is a dramatic spike in the price from 2006 - 2007. 
 
 ```{r, echo=FALSE,  fig.width=14, message=FALSE, warning=FALSE, fig.align='center'}
 plot_group_inflation_hist(rice_world_avg)
 ```
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-As for the inflation of rice, there is a normal distribution which means the overall price of rice is stable. There are a few outliers which are cause by a few specific countries that have high inflation
-
+As for the inflation of rice, there is a symmetric histogram which means the overall price of rice is stable. There are a few outliers which are caused by a few specific countries that have high inflation. For example, the bin at 100 means the price increase by 100%.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 In order to investigate the spikes from 2006 - 2007 a line chart with all regions plotted is apropietate.
@@ -93,7 +94,7 @@ plot_region_price(rice_avg_region)
 ```
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-You can see that an East Asia & Pacific, South Asia, Latin America & Caribbean and finally the Middle East & North Africa all seem to have a similar trend. While Europe & Central Asia has a slightly higher price. Most notably is Sub-Saharan Africa which has multiple spikes in price which is most likely the cause of the spikes in 2006. Unfortunately, you can see that we do not have a complete time series for all regions. 
+You can see that in East Asia & Pacific, South Asia, Latin America & Caribbean and finally the Middle East & North Africa all seem to have a similar trend. While Europe & Central Asia has a slightly higher price. Most notably is Sub-Saharan Africa which has multiple spikes in price which is most likely the cause of the spikes in 2006. Unfortunately, you can see that we do not have a complete time series for all regions. 
 
 
 ```{r, fig.width=14,  fig.height=9 ,echo=FALSE, message=FALSE, warning=FALSE}
@@ -101,10 +102,10 @@ rice_region_price_matrix
 ```
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-After a closer look at each region, it is easy to see that Sub-Saharan Africa had volatile price increase. Sub-Saharan Africa is most prone to food price volatility out of all the regions due to shortages, poverty, and political conflict. Sub-Saharan Africa is why there were two spikes when all regions were plotted together.
+After a closer look at each region, it is easy to see that Sub-Saharan Africa had a volatile price increase. Sub-Saharan Africa is most prone to food price volatility out of all the regions due to shortages, poverty, and political conflict. Sub-Saharan Africa is why there were two spikes when all regions were plotted together.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-In East Asia & Pacific the price drops for a few years but then picks up again. The price drop and slow increase could be due to the economies of certain countries, population changes, and technology of harvesting. Similarly, a price drop and increase exist in the Middle East & North Africa, but I do not have enough data to see if this was a trend. South Asia has the most controlled price since over 90% of the global rice is produced in the Asia-Pacific Region. The price of rice is stable for people in these countries. (http://www.fao.org/docrep/003/x6905e/x6905e04.htm)
+In East Asia & Pacific the price drops for a few years but then picks up again. The price drop and slow increase could be due to the economies of certain countries, population changes, and technology of harvesting. Similarly, a price drop and increase exist in the Middle East & North Africa, but I do not have enough data to see if this was a trend. South Asia has the most controlled price since over 90% of the global rice is produced in the Asia-Pacific Region. The price of rice is stable for people in these countries [FAO](http://www.fao.org/docrep/003/x6905e/x6905e04.htm).  
        
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 Price only tells half of the story. Inflation for each region will show which regions are stable and unstable. To do this, I created a box plot.
@@ -142,10 +143,10 @@ Sub_Saharan_Africa_rice_price_matrix
 ```
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Both Liberia and Nigeria have extremely high prices. The cause for the high prices is likely due to the aftermath of the second Liberian Civil War which ended in 2003 in addition to facing political corruption (http://www.bbc.com/news/world-africa-13732188). The high prices in Nigeria are likely caused by them for math and the after math of their 2008 food crisis. (http://ageconsearch.umn.edu/bitstream/212712/2/IIAAE%20Nigeria.pdf)
+Both Liberia and Nigeria have extremely high prices. The cause for the high prices is likely due to the aftermath of the second Liberian Civil War which ended in 2003 in addition to facing political corruption [BBC](http://www.bbc.com/news/world-africa-13732188). The high prices in Nigeria are likely caused by them for math and the after math of their 2008 food crisis. [UMN](http://ageconsearch.umn.edu/bitstream/212712/2/IIAAE%20Nigeria.pdf)
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-In order to look at inflation using a box plot is good to compare many countries. 
+In order to look at inflation a box plot is great to compare many countries. 
 
 ```{r, echo=FALSE, fig.width=14, fig.height=14, message=FALSE, warning=FALSE}
 plot_country_box(rice)
@@ -176,7 +177,7 @@ Sub_Saharan_Africa_rice_inflation_matrix
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 With so many rice values, I have enough rice classified as import and local. I can compare the price of local and imported rice to see if there is a correlation between the two. 
 
-```{r, echo=FALSE, fig.width=16, message=FALSE, warning=FALSE}
+```{r, echo=FALSE, fig.width=16, fig.height=8, message=FALSE, warning=FALSE}
 plot_import_countries_price(rice_countries_and_imports)
 ```
 
@@ -191,7 +192,7 @@ plot_import_countries_inflation(rice_countries_and_imports)
 ```
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Chad and Mali have an identical distribution for both Import and Not Listed which leads me to believe that rice I categorized as Not Listed may be imported rice. Additionally, for both these countries, Local rice has a much less stable price, which makes sense because of seasonal crops. Mali has three growing seasons, main season Oct-Dec, off-season Dec-Jan and deepwater rice May-July.  (http://ricepedia.org/mali). Then Chad has two seasons, main season Oct - Dec and off-season June - July. (http://www.fao.org/docrep/005/Y4347E/y4347e0f.htm). Off season rice has to be grown in well-irrigated areas.
+Chad and Mali have an identical histograms for both Import and Not Listed which leads me to believe that rice I categorized as Not Listed may be imported rice. Additionally, for both these countries, Local rice has a much less stable price, which makes sense because of seasonal crops. Mali has three growing seasons, main season Oct-Dec, off-season Dec-Jan and deepwater rice May-July [Ricepedia](http://ricepedia.org/mali). Then Chad has two seasons, main season Oct - Dec and off-season June - July [FAO](http://www.fao.org/docrep/005/Y4347E/y4347e0f.htm). Off season rice has to be grown in well-irrigated areas.
 
 ------
 
@@ -212,22 +213,19 @@ plot_group_inflation_hist(maize_world_avg)
 ```
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-As for inflation, there is a normal distribution similar to rice meaning the overall price for maize has been stable for the last decade.
+As for inflation, there is a symmetric curve similar to rice meaning the overall price for maize has been stable for the last decade.
 
 ```{r, fig.width=14,echo=FALSE,  fig.height=8,message=FALSE, warning=FALSE}
 plot_region_price(maize_avg_region)
 ```
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Since maize is not as universal of food as rice, we do not have data for all regions. Additionally, there is not a consistency of time for each region. For Sub-Saharan Africa, there is an almost identical spike from 2002 to 2003 and is the cause of the world wide spike the world wide maize plot. This spike was caused by a Southern African drought that lasted from 2002 to about 2005. The crisis affected mainly Malawi, Zambia, Lesotho, Zimbabwe, Swaziland and part of Mozambique (World Health Organization (WHO), 4 Aug 2002: http://www.africanwater.org/drought_crisis_2002.htm). There is data for all six of these countries  Additionally the World Food Program (WFP) estimates that more than 2.6 million people were affected by the food security crisis (http://pdf.usaid.gov/pdf_docs/Pnacp289.pdf).
+Since maize is not as universal of food as rice, we do not have data for all regions. Additionally, there is not a consistency of time for each region. For Sub-Saharan Africa, there is an almost identical spike from 2002 to 2003 and is the cause of the world wide spike the world wide maize plot. This spike was caused by a Southern African drought that lasted from 2002 to about 2005. The crisis affected mainly Malawi, Zambia, Lesotho, Zimbabwe, Swaziland and part of Mozambique [World Health Organization](http://www.africanwater.org/drought_crisis_2002.htm). There is data for all six of these countries  Additionally the World Food Program (WFP) estimates that more than 2.6 million people were affected by the food security crisis [USAid](http://pdf.usaid.gov/pdf_docs/Pnacp289.pdf).
 
 ```{r, fig.width=14, fig.height=6, echo=FALSE, message=FALSE, warning=FALSE}
 maize_region_price_matrix
 ```
 
-Short summary 
-
-Countr Price Matrixs
 ```{r, echo=FALSE, fig.width=14, fig.height=4, echo=FALSE, message=FALSE, warning=FALSE}
 # East_Asia_Pacific_maize_price_matrix
 East_Asia_Pacific_maize_price_list
@@ -244,7 +242,7 @@ Sub_Saharan_Africa_maize_price_matrix
 ```
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Countries with a noticeably higher price for maize are South Sudan, Nigeria, and Guinea-Bissau. After 2006 Guinea-Bissau saw a drastic decrease in harvest yield which would account for the higher prices(https://knoema.com/FAOPRDSC2016R/production-statistics-crops-crops-processed?country=1000860-guinea-bissau&item=1000920-maize). The reason for the decrease is likely due to climate change. The high prices in South Sudan can be justified by famines that have affected south Sudan since 2001. Currently, South Sudan is recovering from a famine that hit early 2017. Also, a conflict between rebels and the government was in action from 2003 to 2005, this was known as The Darfur conflict(http://www.waterforsouthsudan.org/brief-history-of-south-sudan/).
+Countries with a noticeably higher price for maize are South Sudan, Nigeria, and Guinea-Bissau. After 2006 Guinea-Bissau saw a drastic decrease in harvest yield which would account for the higher prices[Knema](https://knoema.com/FAOPRDSC2016R/production-statistics-crops-crops-processed?country=1000860-guinea-bissau&item=1000920-maize). The reason for the decrease is likely due to climate change. The high prices in South Sudan can be justified by famines that have affected south Sudan since 2001. Currently, South Sudan is recovering from a famine that hit early 2017. Also, a conflict between rebels and the government was in action from 2003 to 2005, this was known as The Darfur conflict[Water For Sudan](http://www.waterforsouthsudan.org/brief-history-of-south-sudan/).
 
 
 ```{r, fig.width=14, echo=FALSE,  fig.height=8,message=FALSE, warning=FALSE}
@@ -252,15 +250,13 @@ plot_region_box(maize_avg_region)
 ```
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-By looking at the inflation for each region we see that Sub_Sahara has the most outliers, but East Asia and Pacific has a larger quartile range. This is interesting because after research there has been a big push for maize farming in Asia. After the Philippines’ success with genetically modified corn. Vietnam and Indonesia we close to follow. (http://www.thehindubusinessline.com/economy/agri-business/south-east-asia-could-be-corn-hub-for-asia-pacific/article4140604.ece). The reason for the push is an increase in domestic animal feed demand. This instability of price is likely caused by the shift from imported maize to local maize.
+By looking at the inflation for each region we see that Sub_Sahara has the most outliers, but East Asia and Pacific has a larger quartile range. This is interesting because after research there has been a big push for maize farming in Asia. After the Philippines’ success with genetically modified corn. Vietnam and Indonesia we close to follow. [The Hindu Business Line](http://www.thehindubusinessline.com/economy/agri-business/south-east-asia-could-be-corn-hub-for-asia-pacific/article4140604.ece). The reason for the push is an increase in domestic animal feed demand. This instability of price is likely caused by the shift from imported maize to local maize.
 
-
-Inflation Country Box
 ```{r, echo=FALSE, fig.width=14, fig.height=14, message=FALSE, warning=FALSE}
 plot_country_box(maize)
 ```
 
-Countries that have an unstable inflation are Myramar and South Sudan. South Sudan instability is caused by the issues discussed above. As for Myanmar, this is interesting because maize production has increased steadily since 2000 (https://knoema.com/atlas/Myanmar/topics/Agriculture/Crops-Production-Yield/Maize-yield).
+Countries that have an unstable inflation are Myramar and South Sudan. South Sudan instability is caused by the issues discussed above. As for Myanmar, this is interesting because maize production has increased steadily since 2000 [Knoema](https://knoema.com/atlas/Myanmar/topics/Agriculture/Crops-Production-Yield/Maize-yield).
 
 ```{r, echo=FALSE, fig.width=14, fig.height=4, echo=FALSE, message=FALSE, warning=FALSE}
 East_Asia_Pacific_maize_inflation_matrix
@@ -281,7 +277,7 @@ Sub_Saharan_Africa_maize_inflation_matrix
 #5. Sorghum {#Sorghumlink}
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-The third food in the analysis is Sorghum. Which is a cereal grain and is the ﬁfth most important cereal crop in the world, largely because of its natural drought tolerance and versatility as the food, feed, and fuel (https://wholegrainscouncil.org/whole-grains-101/easy-ways-enjoy-whole-grains/grain-month-calendar/sorghum-june-grain-month). For these reasons it is mostly grown in Africa and Australia. For this data set, we mostly see it in Africa.
+The third food in the analysis is Sorghum. Which is a cereal grain and is the ﬁfth most important cereal crop in the world, largely because of its natural drought tolerance and versatility as the food, feed, and fuel [Whole Grain Council](https://wholegrainscouncil.org/whole-grains-101/easy-ways-enjoy-whole-grains/grain-month-calendar/sorghum-june-grain-month). For these reasons it is mostly grown in Africa and Australia. For this data set, we mostly see it in Africa.
 
 ```{r, fig.width=14, echo=FALSE,  fig.height=8,message=FALSE, warning=FALSE}
 plot_group_price(sorghum_world_avg)
@@ -295,7 +291,7 @@ plot_group_inflation_hist(sorghum_world_avg)
 ```
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-As far as the inflation of sorghum there is a fairly large distribution meaning prices fluctuate often.
+As far as the inflation of sorghum there is a less symmetric histogram meaning prices fluctuate often.
 
 ```{r, fig.width=14,echo=FALSE,  fig.height=8,message=FALSE, warning=FALSE}
 plot_region_price(sorghum_avg_region)
@@ -351,7 +347,7 @@ Sub_Saharan_Africa_sorghum_inflation_matrix
 #6. Beans {#Beanslink}
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-The next food for analysis is beans. Which similar to rice is a more international food so there is much more diversity in the data.
+The next food for analysis is beans. Which similar to rice is a more international food, so there is much more diversity in the data.
 
 ```{r, fig.width=14, echo=FALSE,  fig.height=8,message=FALSE, warning=FALSE}
 plot_group_price(beans_world_avg)
@@ -405,7 +401,7 @@ Sub_Saharan_Africa_beans_price_matrix
 ```
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Like regions, the price varies greatly between countries. The countries with the highest prices are Turkey, Congo, Nigeria and South Sudan In Turkey we see prices increase as they take in more Syrian refugees. From June 2014 Turkey had taken in over 750,000 Syrian refugees, this number grew to over 1,700,000 by the same time in 2015 (https://www.crisisgroup.org/europe-central-asia/western-europemediterranean/turkey/turkey-s-refugee-crisis-politics-permanence). The price increase in Congo could be to an increase in Congo cocoa and coffee beans but this can not be confirmed. 
+Like regions, the price varies greatly between countries. The countries with the highest prices are Turkey, Congo, Nigeria and South Sudan In Turkey we see prices increase as they take in more Syrian refugees. From June 2014 Turkey had taken in over 750,000 Syrian refugees, this number grew to over 1,700,000 by the same time in 2015 [Crisis Group](https://www.crisisgroup.org/europe-central-asia/western-europemediterranean/turkey/turkey-s-refugee-crisis-politics-permanence). The price increase in Congo could be to an increase in Congo cocoa and coffee beans, but this can not be confirmed. 
 
 
 ```{r, echo=FALSE, fig.width=14, fig.height=14, message=FALSE, warning=FALSE}
@@ -413,7 +409,7 @@ plot_country_box(beans)
 ```
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Countries that have an unstable inflation are Timor-Leste and Malawi. In recently year Timor-Leste has been effected greatly by climate change and population growth. Also poor and unstable agricultural resources are prevalent with only 30% of arable land being used for cropping or in combination with animal grazing. (GOTL (2007) Government of Timor-Leste IV Constitutional Government Program 2007–2012. http://ageconsearch.umn.edu/bitstream/125077/2/2012AC%20Lopes%20CP.pdf). 
+Countries that have an unstable inflation are Timor-Leste and Malawi. In recently year Timor-Leste has been effected greatly by climate change and population growth. Also poor and unstable agricultural resources are prevalent with only 30% of arable land being used for cropping or in combination with animal grazing [Government of Timor-Leste](http://ageconsearch.umn.edu/bitstream/125077/2/2012AC%20Lopes%20CP.pdf). 
 
 
 
@@ -441,14 +437,14 @@ Sub_Saharan_Africa_beans_inflation_matrix
 #7. Millet {#Milletlink}
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Millet grain is another cereal and the final food for analysis. Millet is most common in Asia and Africa with 97% of all millet production. For this dataset prices are for Africa.
+Millet grain is another cereal and the final food for analysis. Millet is most common in Asia and Africa with 97% of all millet production. For this data set prices are for Africa.
 
 ```{r, fig.width=14, echo=FALSE,  fig.height=8,message=FALSE, warning=FALSE}
 plot_group_price(millet_world_avg)
 ```
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Over the last few years millet has had a lot of fluctuation in price but overall the average has stayed around $0.0010. 
+Over the last few years millet has had a lot of fluctuation in price, but overall the average has stayed around $0.0010. 
 
 
 ```{r, echo=FALSE, fig.width=14, message=FALSE, warning=FALSE, fig.align='center'}
@@ -479,10 +475,8 @@ Sub_Saharan_Africa_millet_price_matrix
 Variation in price is low from country to country. The most expensive countries once again are Nigeria and Guinea-Bissau.
  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-A normal inflation distribution exists in every country but Chad, where there is a much wider distribution. Chad is ranked as one of the poorest nations in the world with 55% of its 11.2 million citizens living below the poverty line and 36% living in extreme poverty (World Bank). Additionally in the 2010 United Nations Development Program’s Human Development Index, measuring a countries standard of living, Chad ranks 163th out of 169 countries. This explains food insecurities like famine and inflation.
+There is symmetric inflation in every country but Chad, where there is a much wider histogram. Chad is ranked as one of the poorest nations in the world with 55% of its 11.2 million citizens living below the poverty line and 36% living in extreme poverty [World Bank](http://www.worldbank.org/). Additionally in the 2010 United Nations Development Program’s Human Development Index, measuring a countries standard of living, Chad ranks 163th out of 169 countries. This explains food insecurities like famine and inflation.
 
-
-Inflation Country Box
 ```{r, echo=FALSE, fig.width=14, fig.height=10, message=FALSE, warning=FALSE}
 plot_country_box(millet)
 ```
@@ -496,8 +490,14 @@ Sub_Saharan_Africa_millet_inflation_matrix
 #8. Conclusion {#Conclusionlink)
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Enormous insight can be gained from this data set. I took a broad approach by combing the top foods and looking at their prices throughout the world. Africa had the majority of my data.
+Enormous insight can be gained from this data set. I decided to take a broad approach by combing the top foods and looking at their prices and inflation throughout the world, region, and country. 
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;      
-This broad approach showed the price of food is greatly determined by natural resources, rainy seasons, import/export policies and politics. African politics and civil wars are a tremendous factor in countries with food insecurity. Also stable inflation does not seem to effect food prices where high inflation does.
+This broad approach showed the price of food is greatly determined by nature, rainy seasons, droughts and famines. Additionally, politics plays a great role in food prices. Civil war can make prices skyrocket, and a big push for genetically modified foods can cause prices to go down. Since Africa is prone to both natural and political instabilities, they are suffering greatly from insecure food prices. Also, a stable inflation does not seem to affect food prices nearly as much as high inflation.
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+The final find was that one countries price does not affect the price of another. Unless these countries share natural disasters such as droughts or famines. The country that is less developed will suffer more. 
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+In the future, I do plan to further improve this analysis by creating and interactive web application to not only analyze the 5 top foods but all contained in this dataset. Also, I want to add statistical model, but I need to spend more time thinking about what I want to gain from this.
 
