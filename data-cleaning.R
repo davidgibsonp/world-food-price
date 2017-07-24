@@ -416,22 +416,6 @@ national_average_fun <- function(country_df_with_out_national_average){
   national_average_df
 }
 
-# national_average_fun <- function(country_df_with_out_national_average){
-#   national_average_df <- country_df_with_out_national_average[0,]
-#   for (x in unique(country_df_with_out_national_average$date)){
-#     df <- filter(country_df_with_out_national_average, date==x)
-#     empty_df <- df[1,]
-#     empty_df$price_per_one_unit <- mean(df$price_per_one_unit)
-#     empty_df$unified_price <- mean(df$unified_price)
-#     empty_df$ppp_factor <- mean(df$ppp_factor)
-#     empty_df$price <- mean(df$price)
-#     empty_df$city <- ""
-#     empty_df$market <- "National Average"
-#     national_average_df <- rbind(empty_df, national_average_df)
-#   }
-#   national_average_df
-# }
-
 world_average <- function(grouped_food_df){
   world_average <- grouped_food_df[0,]
   for (x in unique(grouped_food_df$date)){
@@ -968,91 +952,6 @@ facet_price_county <- function(grouped_df){
     theme(legend.position="none") +
     scale_x_date(date_breaks = "2 year", date_labels = "%m-%Y") 
 }
-
-# facet_inflation_county_by_East_Asia_Pacific <- function(grouped_df){
-#   East_Asia_Pacific <- filter(grouped_df, region=="East Asia & Pacific")
-#   ggplot(East_Asia_Pacific, aes(x=monthly_inflation, col=country)) +
-#     geom_histogram(bins = 25, color='black', fill='white') +
-#     facet_grid(. ~ country) +
-#     theme(legend.position="none") +
-#     ggtitle('East Asia & Pacific')
-# }
-# 
-# facet_inflation_county_by_Latin_America_Caribbean <- function(grouped_df){
-#   facet_county_by_Latin_America_Caribbean <- filter(grouped_df, region=="Latin America & Caribbean")
-#   ggplot(facet_county_by_Latin_America_Caribbean, aes(x=monthly_inflation, col=country)) +
-#     geom_histogram(bins = 25, color='black', fill='white') +
-#     facet_grid(. ~ country) +
-#     theme(legend.position="none") +
-#     ggtitle('Latin America & Caribbean')
-# }
-# 
-# facet_inflation_county_by_South_Asia <- function(grouped_df){
-#   South_Asia <- filter(grouped_df, region=="South Asia")
-#   ggplot(South_Asia, aes(x=monthly_inflation, col=country)) +
-#     geom_histogram(bins = 25, color='black', fill='white') +
-#     facet_grid(. ~ country) +
-#     theme(legend.position="none") +
-#     ggtitle('South Asia')
-# }
-# 
-# facet_inflation_county_by_Europe_Central_Asia <- function(grouped_df){
-#   Europe_Central_Asia <- filter(grouped_df, region=="Europe & Central Asia")
-#   ggplot(Europe_Central_Asia, aes(x=monthly_inflation, col=country)) +
-#     geom_histogram(bins = 25, color='black', fill='white') +
-#     facet_grid(. ~ country) +
-#     theme(legend.position="none") +
-#     ggtitle('Europe & Central Asia')
-# }
-# 
-# facet_inflation_county_by_Middle_East_North_Africa <- function(grouped_df){
-#   Middle_East_North_Africa <- filter(grouped_df, region=="Middle East & North Africa")
-#   ggplot(Middle_East_North_Africa, aes(x=monthly_inflation, col=country)) +
-#     geom_histogram(bins = 25, color='black', fill='white') +
-#     facet_grid(. ~ country) +
-#     theme(legend.position="none") +
-#     ggtitle('Middle East & North Africa')
-# }
-# 
-# facet_inflation_county_by_Sub_Saharan_Africa <- function(grouped_df){
-#   Sub_Saharan_Africa <- filter(grouped_df, region=="Sub-Saharan Africa")
-#   ggplot(Sub_Saharan_Africa, aes(x=monthly_inflation, col=country)) +
-#     geom_histogram(bins = 25, color='black', fill='white') +
-#     facet_grid(. ~ country) +
-#     theme(legend.position="none") +
-#     ggtitle('Sub-Saharan Africa')
-# }
-# 
-# facet_inflation_county_by_Sub_Saharan_Africa_B <- function(grouped_df){
-#   Sub_Saharan_Africa <- filter(grouped_df, region=="Sub-Saharan Africa")
-#   Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Nigeria")
-#   Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Senegal")
-#   Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Benin")
-#   Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Cote d'Ivoire")
-#   Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="United Republic of Tanzania")
-#   
-#   ggplot(Sub_Saharan_Africa, aes(x=monthly_inflation, col=country)) +
-#     geom_histogram(bins = 25, color='black', fill='white') +
-#     facet_grid(. ~ country) +
-#     theme(legend.position="none") +
-#     ggtitle('Sub-Saharan Africa')
-#   
-# }       
-# 
-# facet_inflation_county_by_Sub_Saharan_Africa_A <- function(grouped_df){
-#   Sub_Saharan_Africa <- filter(grouped_df, region=="Sub-Saharan Africa")
-#   Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Ghana")
-#   Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Liberia")
-#   Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Somalia")
-#   Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Guinea-Bissau")
-#   Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Cote d'Ivori")
-#   Sub_Saharan_Africa <- filter(Sub_Saharan_Africa, country!="Swaziland")
-#   ggplot(Sub_Saharan_Africa, aes(x=monthly_inflation, col=country)) +
-#     geom_histogram(bins = 25, color='black', fill='white') +
-#     facet_grid(. ~ country) +
-#     theme(legend.position="none") +
-#     ggtitle('Sub-Saharan Africa')
-# }
 
 region_price_line <- function(food_avg_region) {
   plot<- 
