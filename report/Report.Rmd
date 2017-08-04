@@ -7,9 +7,14 @@ pdf_document: default
 ```{r include = FALSE}
 require(ggplot2)
 require(GGally)
+require(knitr)
 
 load(file="objects_for_analysis.RData")
 ```
+```{r echo = FALSE, results = 'asis',message=FALSE, warning=FALSE}
+kable(rice_stdv_df[order(-rice_stdv_df$avg_infla),], row.names = FALSE, caption = "Rice Standard Deviation vs Avgerage Inflation Table")
+```
+
 
 ```{r, echo=FALSE,fig.width=12,message=FALSE, warning=FALSE}
 stdv_inflation_scatter(rice_stdv_df)
